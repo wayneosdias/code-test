@@ -1,0 +1,5688 @@
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"bas.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	batterySimulationNotify
+  20              		.bss
+  21              		.align	1
+  22              		.type	batterySimulationNotify, %object
+  23              		.size	batterySimulationNotify, 2
+  24              	batterySimulationNotify:
+  25 0000 0000     		.space	2
+  26              		.section	.rodata
+  27              		.align	2
+  28              	.LC0:
+  29 0000 42415320 		.ascii	"BAS event: %lx, \000"
+  29      6576656E 
+  29      743A2025 
+  29      6C782C20 
+  29      00
+  30 0011 000000   		.align	2
+  31              	.LC3:
+  32 0014 4359424C 		.ascii	"CYBLE_EVT_BASS_NOTIFICATION_ENABLED: %x \015\012\000"
+  32      455F4556 
+  32      545F4241 
+  32      53535F4E 
+  32      4F544946 
+  33 003f 00       		.align	2
+  34              	.LC6:
+  35 0040 4359424C 		.ascii	"CYBLE_EVT_BASS_NOTIFICATION_DISABLED: %x \015\012\000"
+  35      455F4556 
+  35      545F4241 
+  35      53535F4E 
+  35      4F544946 
+  36              		.align	2
+  37              	.LC8:
+  38 006c 4E6F7420 		.ascii	"Not supported event\015\000"
+  38      73757070 
+  38      6F727465 
+  38      64206576 
+  38      656E740D 
+  39              		.section	.text.BasCallBack,"ax",%progbits
+  40              		.align	2
+  41              		.global	BasCallBack
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 2
+
+
+  42              		.code	16
+  43              		.thumb_func
+  44              		.type	BasCallBack, %function
+  45              	BasCallBack:
+  46              	.LFB36:
+  47              		.file 1 "bas.c"
+   1:bas.c         **** /*******************************************************************************
+   2:bas.c         **** * File Name: bas.c
+   3:bas.c         **** *
+   4:bas.c         **** * Version: 1.0
+   5:bas.c         **** *
+   6:bas.c         **** * Description:
+   7:bas.c         **** *  This file contains BAS callback handler function.
+   8:bas.c         **** *
+   9:bas.c         **** * Hardware Dependency:
+  10:bas.c         **** *  CY8CKIT-042 BLE
+  11:bas.c         **** * 
+  12:bas.c         **** ********************************************************************************
+  13:bas.c         **** * Copyright 2016, Cypress Semiconductor Corporation.  All rights reserved.
+  14:bas.c         **** * You may use this file only in accordance with the license, terms, conditions,
+  15:bas.c         **** * disclaimers, and limitations in the end user license agreement accompanying
+  16:bas.c         **** * the software package with which this file was provided.
+  17:bas.c         **** *******************************************************************************/
+  18:bas.c         **** 
+  19:bas.c         **** #include "common.h"
+  20:bas.c         **** #include "bas.h"
+  21:bas.c         **** 
+  22:bas.c         **** #if (BAS_SIMULATE_ENABLE != 0)
+  23:bas.c         **** uint16 batterySimulationNotify = 0u;
+  24:bas.c         **** #endif /* (BAS_SIMULATE_ENABLE != 0) */
+  25:bas.c         **** 
+  26:bas.c         **** #if (BAS_MEASURE_ENABLE != 0)
+  27:bas.c         **** uint16 batteryMeasureNotify = 0u;
+  28:bas.c         **** #endif /* (BAS_MEASURE_ENABLE != 0) */
+  29:bas.c         **** 
+  30:bas.c         **** 
+  31:bas.c         **** /*******************************************************************************
+  32:bas.c         **** * Function Name: BasCallBack()
+  33:bas.c         **** ********************************************************************************
+  34:bas.c         **** *
+  35:bas.c         **** * Summary:
+  36:bas.c         **** *   This is an event callback function to receive service specific events from 
+  37:bas.c         **** *   Battery Service.
+  38:bas.c         **** *
+  39:bas.c         **** * Parameters:
+  40:bas.c         **** *  event - the event code
+  41:bas.c         **** *  *eventParam - the event parameters
+  42:bas.c         **** *
+  43:bas.c         **** * Return:
+  44:bas.c         **** *  None.
+  45:bas.c         **** *
+  46:bas.c         **** *******************************************************************************/
+  47:bas.c         **** void BasCallBack(uint32 event, void *eventParam)
+  48:bas.c         **** {
+  48              		.loc 1 48 0
+  49              		.cfi_startproc
+  50              		@ args = 0, pretend = 0, frame = 16
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 3
+
+
+  51              		@ frame_needed = 1, uses_anonymous_args = 0
+  52 0000 80B5     		push	{r7, lr}
+  53              		.cfi_def_cfa_offset 8
+  54              		.cfi_offset 7, -8
+  55              		.cfi_offset 14, -4
+  56 0002 84B0     		sub	sp, sp, #16
+  57              		.cfi_def_cfa_offset 24
+  58 0004 00AF     		add	r7, sp, #0
+  59              		.cfi_def_cfa_register 7
+  60 0006 7860     		str	r0, [r7, #4]
+  61 0008 3960     		str	r1, [r7]
+  49:bas.c         ****     uint8 locServiceIndex;
+  50:bas.c         ****     
+  51:bas.c         ****     locServiceIndex = ((CYBLE_BAS_CHAR_VALUE_T *)eventParam)->serviceIndex;
+  62              		.loc 1 51 0
+  63 000a 0F23     		movs	r3, #15
+  64 000c FB18     		adds	r3, r7, r3
+  65 000e 3A68     		ldr	r2, [r7]
+  66 0010 9278     		ldrb	r2, [r2, #2]
+  67 0012 1A70     		strb	r2, [r3]
+  52:bas.c         ****     DBG_PRINTF("BAS event: %lx, ", event);
+  68              		.loc 1 52 0
+  69 0014 7A68     		ldr	r2, [r7, #4]
+  70 0016 1F4B     		ldr	r3, .L16
+  71 0018 1100     		movs	r1, r2
+  72 001a 1800     		movs	r0, r3
+  73 001c FFF7FEFF 		bl	printf
+  53:bas.c         ****     
+  54:bas.c         ****     switch(event)
+  74              		.loc 1 54 0
+  75 0020 7B68     		ldr	r3, [r7, #4]
+  76 0022 313B     		subs	r3, r3, #49
+  77 0024 FF3B     		subs	r3, r3, #255
+  78 0026 052B     		cmp	r3, #5
+  79 0028 26D8     		bhi	.L2
+  80 002a 9A00     		lsls	r2, r3, #2
+  81 002c 1A4B     		ldr	r3, .L16+4
+  82 002e D318     		adds	r3, r2, r3
+  83 0030 1B68     		ldr	r3, [r3]
+  84 0032 9F46     		mov	pc, r3
+  85              		.section	.rodata
+  86 0081 000000   		.align	2
+  87              	.L4:
+  88 0084 34000000 		.word	.L3
+  89 0088 56000000 		.word	.L5
+  90 008c 82000000 		.word	.L13
+  91 0090 82000000 		.word	.L13
+  92 0094 82000000 		.word	.L13
+  93 0098 82000000 		.word	.L13
+  94              		.section	.text.BasCallBack
+  95              	.L3:
+  55:bas.c         ****     {
+  56:bas.c         ****         case CYBLE_EVT_BASS_NOTIFICATION_ENABLED:
+  57:bas.c         ****             DBG_PRINTF("CYBLE_EVT_BASS_NOTIFICATION_ENABLED: %x \r\n", locServiceIndex);
+  96              		.loc 1 57 0
+  97 0034 0F23     		movs	r3, #15
+  98 0036 FB18     		adds	r3, r7, r3
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 4
+
+
+  99 0038 1A78     		ldrb	r2, [r3]
+ 100 003a 184B     		ldr	r3, .L16+8
+ 101 003c 1100     		movs	r1, r2
+ 102 003e 1800     		movs	r0, r3
+ 103 0040 FFF7FEFF 		bl	printf
+  58:bas.c         ****         #if (BAS_SIMULATE_ENABLE != 0)
+  59:bas.c         ****             if(BAS_SERVICE_SIMULATE == locServiceIndex)
+ 104              		.loc 1 59 0
+ 105 0044 0F23     		movs	r3, #15
+ 106 0046 FB18     		adds	r3, r7, r3
+ 107 0048 1B78     		ldrb	r3, [r3]
+ 108 004a 002B     		cmp	r3, #0
+ 109 004c 1BD1     		bne	.L14
+  60:bas.c         ****             {
+  61:bas.c         ****                 batterySimulationNotify = ENABLED;
+ 110              		.loc 1 61 0
+ 111 004e 144B     		ldr	r3, .L16+12
+ 112 0050 0122     		movs	r2, #1
+ 113 0052 1A80     		strh	r2, [r3]
+  62:bas.c         ****             }
+  63:bas.c         ****         #endif /*  (BAS_SIMULATE_ENABLE != 0) */        
+  64:bas.c         ****         #if (BAS_MEASURE_ENABLE != 0)
+  65:bas.c         ****             if(BAS_SERVICE_MEASURE == locServiceIndex)
+  66:bas.c         ****             {
+  67:bas.c         ****                 batteryMeasureNotify = ENABLED;
+  68:bas.c         ****             }
+  69:bas.c         ****         #endif /*  (BAS_MEASURE_ENABLE != 0) */     
+  70:bas.c         ****             break;
+ 114              		.loc 1 70 0
+ 115 0054 17E0     		b	.L14
+ 116              	.L5:
+  71:bas.c         ****         case CYBLE_EVT_BASS_NOTIFICATION_DISABLED:
+  72:bas.c         ****             DBG_PRINTF("CYBLE_EVT_BASS_NOTIFICATION_DISABLED: %x \r\n", locServiceIndex);
+ 117              		.loc 1 72 0
+ 118 0056 0F23     		movs	r3, #15
+ 119 0058 FB18     		adds	r3, r7, r3
+ 120 005a 1A78     		ldrb	r2, [r3]
+ 121 005c 114B     		ldr	r3, .L16+16
+ 122 005e 1100     		movs	r1, r2
+ 123 0060 1800     		movs	r0, r3
+ 124 0062 FFF7FEFF 		bl	printf
+  73:bas.c         ****         #if (BAS_SIMULATE_ENABLE != 0)
+  74:bas.c         ****             if(BAS_SERVICE_SIMULATE == locServiceIndex)
+ 125              		.loc 1 74 0
+ 126 0066 0F23     		movs	r3, #15
+ 127 0068 FB18     		adds	r3, r7, r3
+ 128 006a 1B78     		ldrb	r3, [r3]
+ 129 006c 002B     		cmp	r3, #0
+ 130 006e 0CD1     		bne	.L15
+  75:bas.c         ****             {
+  76:bas.c         ****                 batterySimulationNotify = DISABLED;
+ 131              		.loc 1 76 0
+ 132 0070 0B4B     		ldr	r3, .L16+12
+ 133 0072 0022     		movs	r2, #0
+ 134 0074 1A80     		strh	r2, [r3]
+  77:bas.c         ****             }
+  78:bas.c         ****         #endif /*  (BAS_SIMULATE_ENABLE != 0) */        
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 5
+
+
+  79:bas.c         ****         #if (BAS_MEASURE_ENABLE != 0)
+  80:bas.c         ****             if(BAS_SERVICE_MEASURE == locServiceIndex)
+  81:bas.c         ****             {
+  82:bas.c         ****                 batteryMeasureNotify = DISABLED;
+  83:bas.c         ****             }
+  84:bas.c         ****         #endif /*  (BAS_MEASURE_ENABLE != 0) */     
+  85:bas.c         ****             break;
+ 135              		.loc 1 85 0
+ 136 0076 08E0     		b	.L15
+ 137              	.L2:
+  86:bas.c         ****         case CYBLE_EVT_BASC_NOTIFICATION:
+  87:bas.c         ****             break;
+  88:bas.c         ****         case CYBLE_EVT_BASC_READ_CHAR_RESPONSE:
+  89:bas.c         ****             break;
+  90:bas.c         ****         case CYBLE_EVT_BASC_READ_DESCR_RESPONSE:
+  91:bas.c         ****             break;
+  92:bas.c         ****         case CYBLE_EVT_BASC_WRITE_DESCR_RESPONSE:
+  93:bas.c         ****             break;
+  94:bas.c         **** 		default:
+  95:bas.c         ****             DBG_PRINTF("Not supported event\r\n");
+ 138              		.loc 1 95 0
+ 139 0078 0B4B     		ldr	r3, .L16+20
+ 140 007a 1800     		movs	r0, r3
+ 141 007c FFF7FEFF 		bl	puts
+  96:bas.c         **** 			break;
+ 142              		.loc 1 96 0
+ 143 0080 04E0     		b	.L11
+ 144              	.L13:
+  93:bas.c         **** 		default:
+ 145              		.loc 1 93 0
+ 146 0082 C046     		nop
+ 147 0084 02E0     		b	.L11
+ 148              	.L14:
+  70:bas.c         ****         case CYBLE_EVT_BASS_NOTIFICATION_DISABLED:
+ 149              		.loc 1 70 0
+ 150 0086 C046     		nop
+ 151 0088 00E0     		b	.L11
+ 152              	.L15:
+  85:bas.c         ****         case CYBLE_EVT_BASC_NOTIFICATION:
+ 153              		.loc 1 85 0
+ 154 008a C046     		nop
+ 155              	.L11:
+  97:bas.c         ****     }
+  98:bas.c         **** }
+ 156              		.loc 1 98 0
+ 157 008c C046     		nop
+ 158 008e BD46     		mov	sp, r7
+ 159 0090 04B0     		add	sp, sp, #16
+ 160              		@ sp needed
+ 161 0092 80BD     		pop	{r7, pc}
+ 162              	.L17:
+ 163              		.align	2
+ 164              	.L16:
+ 165 0094 00000000 		.word	.LC0
+ 166 0098 84000000 		.word	.L4
+ 167 009c 14000000 		.word	.LC3
+ 168 00a0 00000000 		.word	batterySimulationNotify
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 6
+
+
+ 169 00a4 40000000 		.word	.LC6
+ 170 00a8 6C000000 		.word	.LC8
+ 171              		.cfi_endproc
+ 172              	.LFE36:
+ 173              		.size	BasCallBack, .-BasCallBack
+ 174              		.section	.text.BasInit,"ax",%progbits
+ 175              		.align	2
+ 176              		.global	BasInit
+ 177              		.code	16
+ 178              		.thumb_func
+ 179              		.type	BasInit, %function
+ 180              	BasInit:
+ 181              	.LFB37:
+  99:bas.c         **** 
+ 100:bas.c         **** 
+ 101:bas.c         **** /*******************************************************************************
+ 102:bas.c         **** * Function Name: BasInit()
+ 103:bas.c         **** ********************************************************************************
+ 104:bas.c         **** *
+ 105:bas.c         **** * Summary:
+ 106:bas.c         **** *   Initializes the battery service.
+ 107:bas.c         **** *
+ 108:bas.c         **** *******************************************************************************/
+ 109:bas.c         **** void BasInit(void)
+ 110:bas.c         **** {
+ 182              		.loc 1 110 0
+ 183              		.cfi_startproc
+ 184              		@ args = 0, pretend = 0, frame = 8
+ 185              		@ frame_needed = 1, uses_anonymous_args = 0
+ 186 0000 90B5     		push	{r4, r7, lr}
+ 187              		.cfi_def_cfa_offset 12
+ 188              		.cfi_offset 4, -12
+ 189              		.cfi_offset 7, -8
+ 190              		.cfi_offset 14, -4
+ 191 0002 85B0     		sub	sp, sp, #20
+ 192              		.cfi_def_cfa_offset 32
+ 193 0004 02AF     		add	r7, sp, #8
+ 194              		.cfi_def_cfa 7, 24
+ 111:bas.c         ****     CYBLE_API_RESULT_T apiResult;
+ 112:bas.c         ****     uint16 cccdValue;
+ 113:bas.c         ****     
+ 114:bas.c         ****     /* Register service specific callback function */
+ 115:bas.c         ****     CyBle_BasRegisterAttrCallback(BasCallBack);
+ 195              		.loc 1 115 0
+ 196 0006 114B     		ldr	r3, .L21
+ 197 0008 1800     		movs	r0, r3
+ 198 000a FFF7FEFF 		bl	CyBle_BasRegisterAttrCallback
+ 116:bas.c         **** 
+ 117:bas.c         ****     /* Read CCCD configurations from flash */
+ 118:bas.c         **** #if (BAS_SIMULATE_ENABLE != 0)
+ 119:bas.c         ****     apiResult = CyBle_BassGetCharacteristicDescriptor(BAS_SERVICE_SIMULATE, CYBLE_BAS_BATTERY_LEVEL
+ 199              		.loc 1 119 0
+ 200 000e BC1D     		adds	r4, r7, #6
+ 201 0010 3B1D     		adds	r3, r7, #4
+ 202 0012 0093     		str	r3, [sp]
+ 203 0014 0223     		movs	r3, #2
+ 204 0016 0022     		movs	r2, #0
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 7
+
+
+ 205 0018 0021     		movs	r1, #0
+ 206 001a 0020     		movs	r0, #0
+ 207 001c FFF7FEFF 		bl	CyBle_BassGetCharacteristicDescriptor
+ 208 0020 0300     		movs	r3, r0
+ 209 0022 2380     		strh	r3, [r4]
+ 120:bas.c         ****         CYBLE_BAS_BATTERY_LEVEL_CCCD, CYBLE_CCCD_LEN, (uint8 *)&cccdValue);
+ 121:bas.c         ****     if((apiResult == CYBLE_ERROR_OK) && (cccdValue != 0u))
+ 210              		.loc 1 121 0
+ 211 0024 BB1D     		adds	r3, r7, #6
+ 212 0026 1B88     		ldrh	r3, [r3]
+ 213 0028 002B     		cmp	r3, #0
+ 214 002a 0AD1     		bne	.L20
+ 215              		.loc 1 121 0 is_stmt 0 discriminator 1
+ 216 002c 3B1D     		adds	r3, r7, #4
+ 217 002e 1B88     		ldrh	r3, [r3]
+ 218 0030 002B     		cmp	r3, #0
+ 219 0032 06D0     		beq	.L20
+ 122:bas.c         ****     {
+ 123:bas.c         ****         batterySimulationNotify |= ENABLED;
+ 220              		.loc 1 123 0 is_stmt 1
+ 221 0034 064B     		ldr	r3, .L21+4
+ 222 0036 1B88     		ldrh	r3, [r3]
+ 223 0038 0122     		movs	r2, #1
+ 224 003a 1343     		orrs	r3, r2
+ 225 003c 9AB2     		uxth	r2, r3
+ 226 003e 044B     		ldr	r3, .L21+4
+ 227 0040 1A80     		strh	r2, [r3]
+ 228              	.L20:
+ 124:bas.c         ****     }
+ 125:bas.c         **** #endif /* (BAS_SIMULATE_ENABLE != 0) */
+ 126:bas.c         **** #if (BAS_MEASURE_ENABLE != 0)
+ 127:bas.c         ****     apiResult = CyBle_BassGetCharacteristicDescriptor(BAS_SERVICE_MEASURE, CYBLE_BAS_BATTERY_LEVEL,
+ 128:bas.c         ****         CYBLE_BAS_BATTERY_LEVEL_CCCD, CYBLE_CCCD_LEN, (uint8 *)&cccdValue);
+ 129:bas.c         ****     if((apiResult == CYBLE_ERROR_OK) && (cccdValue != 0u))
+ 130:bas.c         ****     {
+ 131:bas.c         ****         batteryMeasureNotify |= ENABLED;
+ 132:bas.c         ****     }
+ 133:bas.c         **** #endif /* (BAS_MEASURE_ENABLE != 0) */
+ 134:bas.c         **** }
+ 229              		.loc 1 134 0
+ 230 0042 C046     		nop
+ 231 0044 BD46     		mov	sp, r7
+ 232 0046 03B0     		add	sp, sp, #12
+ 233              		@ sp needed
+ 234 0048 90BD     		pop	{r4, r7, pc}
+ 235              	.L22:
+ 236 004a C046     		.align	2
+ 237              	.L21:
+ 238 004c 00000000 		.word	BasCallBack
+ 239 0050 00000000 		.word	batterySimulationNotify
+ 240              		.cfi_endproc
+ 241              	.LFE37:
+ 242              		.size	BasInit, .-BasInit
+ 243              		.section	.rodata
+ 244              		.align	2
+ 245              	.LC17:
+ 246 009c 41504920 		.ascii	"API Error: %x \015\012\000"
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 8
+
+
+ 246      4572726F 
+ 246      723A2025 
+ 246      78200D0A 
+ 246      00
+ 247 00ad 000000   		.align	2
+ 248              	.LC19:
+ 249 00b0 53696D75 		.ascii	"SimulBatteryLevelUpdate: %d \015\012\000"
+ 249      6C426174 
+ 249      74657279 
+ 249      4C657665 
+ 249      6C557064 
+ 250              		.section	.text.SimulateBattery,"ax",%progbits
+ 251              		.align	2
+ 252              		.global	SimulateBattery
+ 253              		.code	16
+ 254              		.thumb_func
+ 255              		.type	SimulateBattery, %function
+ 256              	SimulateBattery:
+ 257              	.LFB38:
+ 135:bas.c         **** 
+ 136:bas.c         **** 
+ 137:bas.c         **** #if (BAS_MEASURE_ENABLE != 0)
+ 138:bas.c         ****     
+ 139:bas.c         **** 
+ 140:bas.c         **** /*******************************************************************************
+ 141:bas.c         **** * Function Name: MeasureBattery()
+ 142:bas.c         **** ********************************************************************************
+ 143:bas.c         **** *
+ 144:bas.c         **** * Summary:
+ 145:bas.c         **** *   This function measures the battery voltage and sends it to the client.
+ 146:bas.c         **** *
+ 147:bas.c         **** *******************************************************************************/
+ 148:bas.c         **** void MeasureBattery(void)
+ 149:bas.c         **** {
+ 150:bas.c         **** 	int16 adcResult;
+ 151:bas.c         ****     int32 mvolts;
+ 152:bas.c         **** 	uint32 sarControlReg;
+ 153:bas.c         ****     uint8 batteryLevel;
+ 154:bas.c         ****     CYBLE_API_RESULT_T apiResult;
+ 155:bas.c         ****     
+ 156:bas.c         ****     static uint32 batteryTimer = BATTERY_TIMEOUT;
+ 157:bas.c         ****     
+ 158:bas.c         ****     if(--batteryTimer == 0u) 
+ 159:bas.c         ****     {
+ 160:bas.c         ****         batteryTimer = BATTERY_TIMEOUT;
+ 161:bas.c         ****         
+ 162:bas.c         ****     	/* Set the reference to VBG and enable reference bypass */
+ 163:bas.c         ****     	sarControlReg = ADC_SAR_CTRL_REG & ~ADC_VREF_MASK;
+ 164:bas.c         ****     	ADC_SAR_CTRL_REG = sarControlReg | ADC_VREF_INTERNAL1024BYPASSED;
+ 165:bas.c         ****     	
+ 166:bas.c         ****     	/* 25 ms delay for reference capacitor to charge */
+ 167:bas.c         ****     	CyDelay(25);             
+ 168:bas.c         ****     	
+ 169:bas.c         ****     	/* Set the reference to VDD and disable reference bypass */
+ 170:bas.c         ****     	sarControlReg = ADC_SAR_CTRL_REG & ~ADC_VREF_MASK;
+ 171:bas.c         ****     	ADC_SAR_CTRL_REG = sarControlReg | ADC_VREF_VDDA;
+ 172:bas.c         **** 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 9
+
+
+ 173:bas.c         ****     	/* Perform a measurement. Store this value in Vref. */
+ 174:bas.c         ****     	CyDelay(1);
+ 175:bas.c         ****     	ADC_StartConvert();
+ 176:bas.c         ****     	ADC_IsEndConversion(ADC_WAIT_FOR_RESULT);
+ 177:bas.c         **** 
+ 178:bas.c         ****         adcResult = ADC_GetResult16(ADC_BATTERY_CHANNEL);
+ 179:bas.c         ****     	/* Calculate input voltage by using ratio of ADC counts from reference
+ 180:bas.c         ****     	*  and ADC Full Scale counts. 
+ 181:bas.c         ****         */
+ 182:bas.c         ****     	mvolts = (1024 * 2048) / adcResult;
+ 183:bas.c         ****         
+ 184:bas.c         ****         /* Convert battery level voltage to percentage using linear approximation
+ 185:bas.c         ****         *  divided to two sections according to typical performance of 
+ 186:bas.c         ****         *  CR2033 battery specification:
+ 187:bas.c         ****         *  3V - 100%
+ 188:bas.c         ****         *  2.8V - 29%
+ 189:bas.c         ****         *  2.0V - 0%
+ 190:bas.c         ****         */
+ 191:bas.c         ****         if(mvolts < MEASURE_BATTERY_MIN)
+ 192:bas.c         ****         {
+ 193:bas.c         ****             batteryLevel = 0;
+ 194:bas.c         ****         }
+ 195:bas.c         ****         else if(mvolts < MEASURE_BATTERY_MID)
+ 196:bas.c         ****         {
+ 197:bas.c         ****             batteryLevel = (mvolts - MEASURE_BATTERY_MIN) * MEASURE_BATTERY_MID_PERCENT / 
+ 198:bas.c         ****                            (MEASURE_BATTERY_MID - MEASURE_BATTERY_MIN); 
+ 199:bas.c         ****         }
+ 200:bas.c         ****         else if(mvolts < MEASURE_BATTERY_MAX)
+ 201:bas.c         ****         {
+ 202:bas.c         ****             batteryLevel = MEASURE_BATTERY_MID_PERCENT +
+ 203:bas.c         ****                            (mvolts - MEASURE_BATTERY_MID) * (100 - MEASURE_BATTERY_MID_PERCENT) / 
+ 204:bas.c         ****                            (MEASURE_BATTERY_MAX - MEASURE_BATTERY_MID); 
+ 205:bas.c         ****         }
+ 206:bas.c         ****         else
+ 207:bas.c         ****         {
+ 208:bas.c         ****             batteryLevel = CYBLE_BAS_MAX_BATTERY_LEVEL_VALUE;
+ 209:bas.c         ****         }
+ 210:bas.c         ****     #if (BAS_MEASURE_LP_LED != 0u)
+ 211:bas.c         ****         if(batteryLevel < LOW_BATTERY_LIMIT)
+ 212:bas.c         ****         {
+ 213:bas.c         ****             LowPower_LED_Write(LED_ON);
+ 214:bas.c         ****         }
+ 215:bas.c         ****         else
+ 216:bas.c         ****         {
+ 217:bas.c         ****             LowPower_LED_Write(LED_OFF);
+ 218:bas.c         ****         }
+ 219:bas.c         ****     #endif /* (BAS_MEASURE_LP_LED != 0u) */
+ 220:bas.c         ****     
+ 221:bas.c         ****         if(batteryMeasureNotify == ENABLED)
+ 222:bas.c         ****         {
+ 223:bas.c         ****             /* Update Battery Level characteristic value and send Notification */
+ 224:bas.c         ****             apiResult = CyBle_BassSendNotification(cyBle_connHandle, BAS_SERVICE_MEASURE, CYBLE_BAS
+ 225:bas.c         ****                 sizeof(batteryLevel), &batteryLevel);
+ 226:bas.c         ****         }
+ 227:bas.c         ****         else
+ 228:bas.c         ****         {
+ 229:bas.c         ****             /* Update Battery Level characteristic value */
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 10
+
+
+ 230:bas.c         ****             apiResult = CyBle_BassSetCharacteristicValue(BAS_SERVICE_MEASURE, 
+ 231:bas.c         ****                 CYBLE_BAS_BATTERY_LEVEL, sizeof(batteryLevel), &batteryLevel);
+ 232:bas.c         ****         }
+ 233:bas.c         ****             
+ 234:bas.c         ****         if(apiResult != CYBLE_ERROR_OK)
+ 235:bas.c         ****         {
+ 236:bas.c         ****             DBG_PRINTF("API Error: %x \r\n", apiResult);
+ 237:bas.c         ****             batteryMeasureNotify = DISABLED;
+ 238:bas.c         ****         }
+ 239:bas.c         ****         else
+ 240:bas.c         ****         {
+ 241:bas.c         ****             DBG_PRINTF("MeasureBatteryLevelUpdate: %d \r\n",batteryLevel);
+ 242:bas.c         ****         }
+ 243:bas.c         ****     }
+ 244:bas.c         **** }
+ 245:bas.c         **** 
+ 246:bas.c         **** #endif /*  (BAS_MEASURE_ENABLE != 0) */
+ 247:bas.c         **** 
+ 248:bas.c         **** #if (BAS_SIMULATE_ENABLE != 0)
+ 249:bas.c         **** 
+ 250:bas.c         **** 
+ 251:bas.c         **** /*******************************************************************************
+ 252:bas.c         **** * Function Name: SimulateBattery()
+ 253:bas.c         **** ********************************************************************************
+ 254:bas.c         **** *
+ 255:bas.c         **** * Summary:
+ 256:bas.c         **** *   The custom function to simulate Battery Voltage.
+ 257:bas.c         **** *
+ 258:bas.c         **** *******************************************************************************/
+ 259:bas.c         **** void SimulateBattery(void)
+ 260:bas.c         **** {
+ 258              		.loc 1 260 0
+ 259              		.cfi_startproc
+ 260              		@ args = 0, pretend = 0, frame = 8
+ 261              		@ frame_needed = 1, uses_anonymous_args = 0
+ 262 0000 90B5     		push	{r4, r7, lr}
+ 263              		.cfi_def_cfa_offset 12
+ 264              		.cfi_offset 4, -12
+ 265              		.cfi_offset 7, -8
+ 266              		.cfi_offset 14, -4
+ 267 0002 85B0     		sub	sp, sp, #20
+ 268              		.cfi_def_cfa_offset 32
+ 269 0004 02AF     		add	r7, sp, #8
+ 270              		.cfi_def_cfa 7, 24
+ 261:bas.c         ****     static uint32 batteryTimer = BATTERY_TIMEOUT;
+ 262:bas.c         ****     static uint8 batteryLevel = SIM_BATTERY_MIN;
+ 263:bas.c         ****     CYBLE_API_RESULT_T apiResult;
+ 264:bas.c         ****     
+ 265:bas.c         ****     if((CyBle_GattGetBusyStatus() == CYBLE_STACK_STATE_FREE) && (--batteryTimer == 0u))
+ 271              		.loc 1 265 0
+ 272 0006 2E4B     		ldr	r3, .L30
+ 273 0008 1B78     		ldrb	r3, [r3]
+ 274 000a DBB2     		uxtb	r3, r3
+ 275 000c 002B     		cmp	r3, #0
+ 276 000e 53D1     		bne	.L29
+ 277              		.loc 1 265 0 is_stmt 0 discriminator 1
+ 278 0010 2C4B     		ldr	r3, .L30+4
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 11
+
+
+ 279 0012 1B68     		ldr	r3, [r3]
+ 280 0014 5A1E     		subs	r2, r3, #1
+ 281 0016 2B4B     		ldr	r3, .L30+4
+ 282 0018 1A60     		str	r2, [r3]
+ 283 001a 2A4B     		ldr	r3, .L30+4
+ 284 001c 1B68     		ldr	r3, [r3]
+ 285 001e 002B     		cmp	r3, #0
+ 286 0020 4AD1     		bne	.L29
+ 266:bas.c         ****     {
+ 267:bas.c         ****         batteryTimer = BATTERY_TIMEOUT;
+ 287              		.loc 1 267 0 is_stmt 1
+ 288 0022 284B     		ldr	r3, .L30+4
+ 289 0024 3222     		movs	r2, #50
+ 290 0026 1A60     		str	r2, [r3]
+ 268:bas.c         ****         
+ 269:bas.c         ****         /* Battery Level simulation */
+ 270:bas.c         ****         batteryLevel += SIM_BATTERY_INCREMENT;
+ 291              		.loc 1 270 0
+ 292 0028 274B     		ldr	r3, .L30+8
+ 293 002a 1B78     		ldrb	r3, [r3]
+ 294 002c 0133     		adds	r3, r3, #1
+ 295 002e DAB2     		uxtb	r2, r3
+ 296 0030 254B     		ldr	r3, .L30+8
+ 297 0032 1A70     		strb	r2, [r3]
+ 271:bas.c         ****         if(batteryLevel > SIM_BATTERY_MAX)
+ 298              		.loc 1 271 0
+ 299 0034 244B     		ldr	r3, .L30+8
+ 300 0036 1B78     		ldrb	r3, [r3]
+ 301 0038 142B     		cmp	r3, #20
+ 302 003a 02D9     		bls	.L25
+ 272:bas.c         ****         {
+ 273:bas.c         ****             batteryLevel = SIM_BATTERY_MIN; 
+ 303              		.loc 1 273 0
+ 304 003c 224B     		ldr	r3, .L30+8
+ 305 003e 0222     		movs	r2, #2
+ 306 0040 1A70     		strb	r2, [r3]
+ 307              	.L25:
+ 274:bas.c         ****         }
+ 275:bas.c         ****         if(batterySimulationNotify == ENABLED)
+ 308              		.loc 1 275 0
+ 309 0042 224B     		ldr	r3, .L30+12
+ 310 0044 1B88     		ldrh	r3, [r3]
+ 311 0046 012B     		cmp	r3, #1
+ 312 0048 16D1     		bne	.L26
+ 276:bas.c         ****         {
+ 277:bas.c         ****             /* Update Battery Level characteristic value and send Notification */
+ 278:bas.c         ****              apiResult = CyBle_BassSendNotification(cyBle_connHandle, BAS_SERVICE_SIMULATE, CYBLE_B
+ 313              		.loc 1 278 0
+ 314 004a BC1D     		adds	r4, r7, #6
+ 315 004c 204B     		ldr	r3, .L30+16
+ 316 004e 1E4A     		ldr	r2, .L30+8
+ 317 0050 0092     		str	r2, [sp]
+ 318 0052 1A78     		ldrb	r2, [r3]
+ 319 0054 5B78     		ldrb	r3, [r3, #1]
+ 320 0056 1B02     		lsls	r3, r3, #8
+ 321 0058 1343     		orrs	r3, r2
+ 322 005a 0020     		movs	r0, #0
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 12
+
+
+ 323 005c 1B04     		lsls	r3, r3, #16
+ 324 005e 1B0C     		lsrs	r3, r3, #16
+ 325 0060 020C     		lsrs	r2, r0, #16
+ 326 0062 1204     		lsls	r2, r2, #16
+ 327 0064 1343     		orrs	r3, r2
+ 328 0066 1800     		movs	r0, r3
+ 329 0068 0123     		movs	r3, #1
+ 330 006a 0022     		movs	r2, #0
+ 331 006c 0021     		movs	r1, #0
+ 332 006e FFF7FEFF 		bl	CyBle_BassSendNotification
+ 333 0072 0300     		movs	r3, r0
+ 334 0074 2380     		strh	r3, [r4]
+ 335 0076 08E0     		b	.L27
+ 336              	.L26:
+ 279:bas.c         ****                 sizeof(batteryLevel), &batteryLevel);
+ 280:bas.c         ****         }
+ 281:bas.c         ****         else
+ 282:bas.c         ****         {
+ 283:bas.c         ****             /* Update Battery Level characteristic value */
+ 284:bas.c         ****              apiResult = CyBle_BassSetCharacteristicValue(BAS_SERVICE_SIMULATE, 
+ 337              		.loc 1 284 0
+ 338 0078 BC1D     		adds	r4, r7, #6
+ 339 007a 134B     		ldr	r3, .L30+8
+ 340 007c 0122     		movs	r2, #1
+ 341 007e 0021     		movs	r1, #0
+ 342 0080 0020     		movs	r0, #0
+ 343 0082 FFF7FEFF 		bl	CyBle_BassSetCharacteristicValue
+ 344 0086 0300     		movs	r3, r0
+ 345 0088 2380     		strh	r3, [r4]
+ 346              	.L27:
+ 285:bas.c         ****                 CYBLE_BAS_BATTERY_LEVEL, sizeof(batteryLevel), &batteryLevel);
+ 286:bas.c         ****         }
+ 287:bas.c         ****         if(apiResult != CYBLE_ERROR_OK)
+ 347              		.loc 1 287 0
+ 348 008a BB1D     		adds	r3, r7, #6
+ 349 008c 1B88     		ldrh	r3, [r3]
+ 350 008e 002B     		cmp	r3, #0
+ 351 0090 0AD0     		beq	.L28
+ 288:bas.c         ****         {
+ 289:bas.c         ****             DBG_PRINTF("API Error: %x \r\n", apiResult);
+ 352              		.loc 1 289 0
+ 353 0092 BB1D     		adds	r3, r7, #6
+ 354 0094 1A88     		ldrh	r2, [r3]
+ 355 0096 0F4B     		ldr	r3, .L30+20
+ 356 0098 1100     		movs	r1, r2
+ 357 009a 1800     		movs	r0, r3
+ 358 009c FFF7FEFF 		bl	printf
+ 290:bas.c         ****             batterySimulationNotify = DISABLED;
+ 359              		.loc 1 290 0
+ 360 00a0 0A4B     		ldr	r3, .L30+12
+ 361 00a2 0022     		movs	r2, #0
+ 362 00a4 1A80     		strh	r2, [r3]
+ 291:bas.c         ****         }
+ 292:bas.c         ****         else
+ 293:bas.c         ****         {
+ 294:bas.c         ****             DBG_PRINTF("SimulBatteryLevelUpdate: %d \r\n",batteryLevel);
+ 295:bas.c         ****         }
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 13
+
+
+ 296:bas.c         ****     }
+ 297:bas.c         **** }
+ 363              		.loc 1 297 0
+ 364 00a6 07E0     		b	.L29
+ 365              	.L28:
+ 294:bas.c         ****         }
+ 366              		.loc 1 294 0
+ 367 00a8 074B     		ldr	r3, .L30+8
+ 368 00aa 1B78     		ldrb	r3, [r3]
+ 369 00ac 1A00     		movs	r2, r3
+ 370 00ae 0A4B     		ldr	r3, .L30+24
+ 371 00b0 1100     		movs	r1, r2
+ 372 00b2 1800     		movs	r0, r3
+ 373 00b4 FFF7FEFF 		bl	printf
+ 374              	.L29:
+ 375              		.loc 1 297 0
+ 376 00b8 C046     		nop
+ 377 00ba BD46     		mov	sp, r7
+ 378 00bc 03B0     		add	sp, sp, #12
+ 379              		@ sp needed
+ 380 00be 90BD     		pop	{r4, r7, pc}
+ 381              	.L31:
+ 382              		.align	2
+ 383              	.L30:
+ 384 00c0 00000000 		.word	cyBle_busyStatus
+ 385 00c4 00000000 		.word	batteryTimer.8590
+ 386 00c8 04000000 		.word	batteryLevel.8591
+ 387 00cc 00000000 		.word	batterySimulationNotify
+ 388 00d0 00000000 		.word	cyBle_connHandle
+ 389 00d4 9C000000 		.word	.LC17
+ 390 00d8 B0000000 		.word	.LC19
+ 391              		.cfi_endproc
+ 392              	.LFE38:
+ 393              		.size	SimulateBattery, .-SimulateBattery
+ 394              		.data
+ 395              		.align	2
+ 396              		.type	batteryTimer.8590, %object
+ 397              		.size	batteryTimer.8590, 4
+ 398              	batteryTimer.8590:
+ 399 0000 32000000 		.word	50
+ 400              		.type	batteryLevel.8591, %object
+ 401              		.size	batteryLevel.8591, 1
+ 402              	batteryLevel.8591:
+ 403 0004 02       		.byte	2
+ 404              		.text
+ 405              	.Letext0:
+ 406              		.file 2 "Generated_Source\\PSoC4/cytypes.h"
+ 407              		.file 3 "Generated_Source\\PSoC4/BLE_Stack.h"
+ 408              		.file 4 "Generated_Source\\PSoC4/BLE_StackGatt.h"
+ 409              		.file 5 "Generated_Source\\PSoC4/BLE_bas.h"
+ 410              		.file 6 "Generated_Source\\PSoC4/BLE_dis.h"
+ 411              		.file 7 "Generated_Source\\PSoC4/BLE_eventHandler.h"
+ 412              		.section	.debug_info,"",%progbits
+ 413              	.Ldebug_info0:
+ 414 0000 A30D0000 		.4byte	0xda3
+ 415 0004 0400     		.2byte	0x4
+ 416 0006 00000000 		.4byte	.Ldebug_abbrev0
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 14
+
+
+ 417 000a 04       		.byte	0x4
+ 418 000b 01       		.uleb128 0x1
+ 419 000c A1070000 		.4byte	.LASF455
+ 420 0010 0C       		.byte	0xc
+ 421 0011 E11B0000 		.4byte	.LASF456
+ 422 0015 E1240000 		.4byte	.LASF457
+ 423 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 424 001d 00000000 		.4byte	0
+ 425 0021 00000000 		.4byte	.Ldebug_line0
+ 426 0025 02       		.uleb128 0x2
+ 427 0026 01       		.byte	0x1
+ 428 0027 06       		.byte	0x6
+ 429 0028 4C340000 		.4byte	.LASF0
+ 430 002c 02       		.uleb128 0x2
+ 431 002d 01       		.byte	0x1
+ 432 002e 08       		.byte	0x8
+ 433 002f 2C1B0000 		.4byte	.LASF1
+ 434 0033 02       		.uleb128 0x2
+ 435 0034 02       		.byte	0x2
+ 436 0035 05       		.byte	0x5
+ 437 0036 9E080000 		.4byte	.LASF2
+ 438 003a 02       		.uleb128 0x2
+ 439 003b 02       		.byte	0x2
+ 440 003c 07       		.byte	0x7
+ 441 003d 7E340000 		.4byte	.LASF3
+ 442 0041 02       		.uleb128 0x2
+ 443 0042 04       		.byte	0x4
+ 444 0043 05       		.byte	0x5
+ 445 0044 41270000 		.4byte	.LASF4
+ 446 0048 02       		.uleb128 0x2
+ 447 0049 04       		.byte	0x4
+ 448 004a 07       		.byte	0x7
+ 449 004b 92210000 		.4byte	.LASF5
+ 450 004f 02       		.uleb128 0x2
+ 451 0050 08       		.byte	0x8
+ 452 0051 05       		.byte	0x5
+ 453 0052 E71B0000 		.4byte	.LASF6
+ 454 0056 02       		.uleb128 0x2
+ 455 0057 08       		.byte	0x8
+ 456 0058 07       		.byte	0x7
+ 457 0059 950E0000 		.4byte	.LASF7
+ 458 005d 03       		.uleb128 0x3
+ 459 005e 04       		.byte	0x4
+ 460 005f 05       		.byte	0x5
+ 461 0060 696E7400 		.ascii	"int\000"
+ 462 0064 02       		.uleb128 0x2
+ 463 0065 04       		.byte	0x4
+ 464 0066 07       		.byte	0x7
+ 465 0067 38190000 		.4byte	.LASF8
+ 466 006b 04       		.uleb128 0x4
+ 467 006c B1350000 		.4byte	.LASF9
+ 468 0070 02       		.byte	0x2
+ 469 0071 D201     		.2byte	0x1d2
+ 470 0073 2C000000 		.4byte	0x2c
+ 471 0077 04       		.uleb128 0x4
+ 472 0078 F51A0000 		.4byte	.LASF10
+ 473 007c 02       		.byte	0x2
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 15
+
+
+ 474 007d D301     		.2byte	0x1d3
+ 475 007f 3A000000 		.4byte	0x3a
+ 476 0083 04       		.uleb128 0x4
+ 477 0084 EA200000 		.4byte	.LASF11
+ 478 0088 02       		.byte	0x2
+ 479 0089 D401     		.2byte	0x1d4
+ 480 008b 48000000 		.4byte	0x48
+ 481 008f 02       		.uleb128 0x2
+ 482 0090 04       		.byte	0x4
+ 483 0091 04       		.byte	0x4
+ 484 0092 0A0D0000 		.4byte	.LASF12
+ 485 0096 02       		.uleb128 0x2
+ 486 0097 08       		.byte	0x8
+ 487 0098 04       		.byte	0x4
+ 488 0099 CB130000 		.4byte	.LASF13
+ 489 009d 02       		.uleb128 0x2
+ 490 009e 01       		.byte	0x1
+ 491 009f 08       		.byte	0x8
+ 492 00a0 72170000 		.4byte	.LASF14
+ 493 00a4 05       		.uleb128 0x5
+ 494 00a5 6B000000 		.4byte	0x6b
+ 495 00a9 02       		.uleb128 0x2
+ 496 00aa 08       		.byte	0x8
+ 497 00ab 04       		.byte	0x4
+ 498 00ac D1230000 		.4byte	.LASF15
+ 499 00b0 02       		.uleb128 0x2
+ 500 00b1 04       		.byte	0x4
+ 501 00b2 07       		.byte	0x7
+ 502 00b3 DA2C0000 		.4byte	.LASF16
+ 503 00b7 06       		.uleb128 0x6
+ 504 00b8 04       		.byte	0x4
+ 505 00b9 07       		.uleb128 0x7
+ 506 00ba 01       		.byte	0x1
+ 507 00bb 2C000000 		.4byte	0x2c
+ 508 00bf 03       		.byte	0x3
+ 509 00c0 4D01     		.2byte	0x14d
+ 510 00c2 77020000 		.4byte	0x277
+ 511 00c6 08       		.uleb128 0x8
+ 512 00c7 96280000 		.4byte	.LASF17
+ 513 00cb 00       		.byte	0
+ 514 00cc 08       		.uleb128 0x8
+ 515 00cd EC180000 		.4byte	.LASF18
+ 516 00d1 01       		.byte	0x1
+ 517 00d2 08       		.uleb128 0x8
+ 518 00d3 A5300000 		.4byte	.LASF19
+ 519 00d7 02       		.byte	0x2
+ 520 00d8 08       		.uleb128 0x8
+ 521 00d9 69050000 		.4byte	.LASF20
+ 522 00dd 03       		.byte	0x3
+ 523 00de 08       		.uleb128 0x8
+ 524 00df 20170000 		.4byte	.LASF21
+ 525 00e3 04       		.byte	0x4
+ 526 00e4 08       		.uleb128 0x8
+ 527 00e5 5F0D0000 		.4byte	.LASF22
+ 528 00e9 05       		.byte	0x5
+ 529 00ea 08       		.uleb128 0x8
+ 530 00eb 8E2F0000 		.4byte	.LASF23
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 16
+
+
+ 531 00ef 06       		.byte	0x6
+ 532 00f0 08       		.uleb128 0x8
+ 533 00f1 CB280000 		.4byte	.LASF24
+ 534 00f5 20       		.byte	0x20
+ 535 00f6 08       		.uleb128 0x8
+ 536 00f7 00020000 		.4byte	.LASF25
+ 537 00fb 21       		.byte	0x21
+ 538 00fc 08       		.uleb128 0x8
+ 539 00fd 04090000 		.4byte	.LASF26
+ 540 0101 22       		.byte	0x22
+ 541 0102 08       		.uleb128 0x8
+ 542 0103 65360000 		.4byte	.LASF27
+ 543 0107 23       		.byte	0x23
+ 544 0108 08       		.uleb128 0x8
+ 545 0109 4E130000 		.4byte	.LASF28
+ 546 010d 24       		.byte	0x24
+ 547 010e 08       		.uleb128 0x8
+ 548 010f A8050000 		.4byte	.LASF29
+ 549 0113 25       		.byte	0x25
+ 550 0114 08       		.uleb128 0x8
+ 551 0115 9F200000 		.4byte	.LASF30
+ 552 0119 26       		.byte	0x26
+ 553 011a 08       		.uleb128 0x8
+ 554 011b 25320000 		.4byte	.LASF31
+ 555 011f 27       		.byte	0x27
+ 556 0120 08       		.uleb128 0x8
+ 557 0121 0E2B0000 		.4byte	.LASF32
+ 558 0125 28       		.byte	0x28
+ 559 0126 08       		.uleb128 0x8
+ 560 0127 FC250000 		.4byte	.LASF33
+ 561 012b 29       		.byte	0x29
+ 562 012c 08       		.uleb128 0x8
+ 563 012d 770A0000 		.4byte	.LASF34
+ 564 0131 2A       		.byte	0x2a
+ 565 0132 08       		.uleb128 0x8
+ 566 0133 40370000 		.4byte	.LASF35
+ 567 0137 2B       		.byte	0x2b
+ 568 0138 08       		.uleb128 0x8
+ 569 0139 F62B0000 		.4byte	.LASF36
+ 570 013d 2C       		.byte	0x2c
+ 571 013e 08       		.uleb128 0x8
+ 572 013f CD1C0000 		.4byte	.LASF37
+ 573 0143 2D       		.byte	0x2d
+ 574 0144 08       		.uleb128 0x8
+ 575 0145 E72F0000 		.4byte	.LASF38
+ 576 0149 2E       		.byte	0x2e
+ 577 014a 08       		.uleb128 0x8
+ 578 014b CB290000 		.4byte	.LASF39
+ 579 014f 2F       		.byte	0x2f
+ 580 0150 08       		.uleb128 0x8
+ 581 0151 7B270000 		.4byte	.LASF40
+ 582 0155 30       		.byte	0x30
+ 583 0156 08       		.uleb128 0x8
+ 584 0157 D11A0000 		.4byte	.LASF41
+ 585 015b 31       		.byte	0x31
+ 586 015c 08       		.uleb128 0x8
+ 587 015d 62290000 		.4byte	.LASF42
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 17
+
+
+ 588 0161 32       		.byte	0x32
+ 589 0162 08       		.uleb128 0x8
+ 590 0163 ED030000 		.4byte	.LASF43
+ 591 0167 33       		.byte	0x33
+ 592 0168 08       		.uleb128 0x8
+ 593 0169 18330000 		.4byte	.LASF44
+ 594 016d 34       		.byte	0x34
+ 595 016e 08       		.uleb128 0x8
+ 596 016f 29040000 		.4byte	.LASF45
+ 597 0173 35       		.byte	0x35
+ 598 0174 08       		.uleb128 0x8
+ 599 0175 53330000 		.4byte	.LASF46
+ 600 0179 36       		.byte	0x36
+ 601 017a 08       		.uleb128 0x8
+ 602 017b 96310000 		.4byte	.LASF47
+ 603 017f 37       		.byte	0x37
+ 604 0180 08       		.uleb128 0x8
+ 605 0181 741C0000 		.4byte	.LASF48
+ 606 0185 40       		.byte	0x40
+ 607 0186 08       		.uleb128 0x8
+ 608 0187 C1270000 		.4byte	.LASF49
+ 609 018b 41       		.byte	0x41
+ 610 018c 08       		.uleb128 0x8
+ 611 018d 8C030000 		.4byte	.LASF50
+ 612 0191 42       		.byte	0x42
+ 613 0192 08       		.uleb128 0x8
+ 614 0193 CD040000 		.4byte	.LASF51
+ 615 0197 43       		.byte	0x43
+ 616 0198 08       		.uleb128 0x8
+ 617 0199 1A140000 		.4byte	.LASF52
+ 618 019d 44       		.byte	0x44
+ 619 019e 08       		.uleb128 0x8
+ 620 019f F4290000 		.4byte	.LASF53
+ 621 01a3 45       		.byte	0x45
+ 622 01a4 08       		.uleb128 0x8
+ 623 01a5 77170000 		.4byte	.LASF54
+ 624 01a9 46       		.byte	0x46
+ 625 01aa 08       		.uleb128 0x8
+ 626 01ab B4100000 		.4byte	.LASF55
+ 627 01af 47       		.byte	0x47
+ 628 01b0 08       		.uleb128 0x8
+ 629 01b1 82110000 		.4byte	.LASF56
+ 630 01b5 48       		.byte	0x48
+ 631 01b6 08       		.uleb128 0x8
+ 632 01b7 8C300000 		.4byte	.LASF57
+ 633 01bb 49       		.byte	0x49
+ 634 01bc 08       		.uleb128 0x8
+ 635 01bd 28150000 		.4byte	.LASF58
+ 636 01c1 4A       		.byte	0x4a
+ 637 01c2 08       		.uleb128 0x8
+ 638 01c3 EA270000 		.4byte	.LASF59
+ 639 01c7 4B       		.byte	0x4b
+ 640 01c8 08       		.uleb128 0x8
+ 641 01c9 EA0E0000 		.4byte	.LASF60
+ 642 01cd 4C       		.byte	0x4c
+ 643 01ce 08       		.uleb128 0x8
+ 644 01cf CD0C0000 		.4byte	.LASF61
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 18
+
+
+ 645 01d3 4D       		.byte	0x4d
+ 646 01d4 08       		.uleb128 0x8
+ 647 01d5 31060000 		.4byte	.LASF62
+ 648 01d9 4E       		.byte	0x4e
+ 649 01da 08       		.uleb128 0x8
+ 650 01db 4F320000 		.4byte	.LASF63
+ 651 01df 4F       		.byte	0x4f
+ 652 01e0 08       		.uleb128 0x8
+ 653 01e1 FA110000 		.4byte	.LASF64
+ 654 01e5 50       		.byte	0x50
+ 655 01e6 08       		.uleb128 0x8
+ 656 01e7 58120000 		.4byte	.LASF65
+ 657 01eb 51       		.byte	0x51
+ 658 01ec 08       		.uleb128 0x8
+ 659 01ed 6D000000 		.4byte	.LASF66
+ 660 01f1 52       		.byte	0x52
+ 661 01f2 08       		.uleb128 0x8
+ 662 01f3 16240000 		.4byte	.LASF67
+ 663 01f7 53       		.byte	0x53
+ 664 01f8 08       		.uleb128 0x8
+ 665 01f9 81090000 		.4byte	.LASF68
+ 666 01fd 54       		.byte	0x54
+ 667 01fe 08       		.uleb128 0x8
+ 668 01ff EB040000 		.4byte	.LASF69
+ 669 0203 55       		.byte	0x55
+ 670 0204 08       		.uleb128 0x8
+ 671 0205 4B000000 		.4byte	.LASF70
+ 672 0209 56       		.byte	0x56
+ 673 020a 08       		.uleb128 0x8
+ 674 020b 03130000 		.4byte	.LASF71
+ 675 020f 57       		.byte	0x57
+ 676 0210 08       		.uleb128 0x8
+ 677 0211 97220000 		.4byte	.LASF72
+ 678 0215 58       		.byte	0x58
+ 679 0216 08       		.uleb128 0x8
+ 680 0217 82050000 		.4byte	.LASF73
+ 681 021b 70       		.byte	0x70
+ 682 021c 08       		.uleb128 0x8
+ 683 021d E4060000 		.4byte	.LASF74
+ 684 0221 71       		.byte	0x71
+ 685 0222 08       		.uleb128 0x8
+ 686 0223 9D0D0000 		.4byte	.LASF75
+ 687 0227 72       		.byte	0x72
+ 688 0228 08       		.uleb128 0x8
+ 689 0229 922B0000 		.4byte	.LASF76
+ 690 022d 73       		.byte	0x73
+ 691 022e 08       		.uleb128 0x8
+ 692 022f 13160000 		.4byte	.LASF77
+ 693 0233 74       		.byte	0x74
+ 694 0234 08       		.uleb128 0x8
+ 695 0235 6B280000 		.4byte	.LASF78
+ 696 0239 75       		.byte	0x75
+ 697 023a 08       		.uleb128 0x8
+ 698 023b EF310000 		.4byte	.LASF79
+ 699 023f 76       		.byte	0x76
+ 700 0240 08       		.uleb128 0x8
+ 701 0241 F1200000 		.4byte	.LASF80
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 19
+
+
+ 702 0245 77       		.byte	0x77
+ 703 0246 08       		.uleb128 0x8
+ 704 0247 28090000 		.4byte	.LASF81
+ 705 024b 78       		.byte	0x78
+ 706 024c 08       		.uleb128 0x8
+ 707 024d 07350000 		.4byte	.LASF82
+ 708 0251 79       		.byte	0x79
+ 709 0252 08       		.uleb128 0x8
+ 710 0253 AB2E0000 		.4byte	.LASF83
+ 711 0257 7A       		.byte	0x7a
+ 712 0258 08       		.uleb128 0x8
+ 713 0259 D30B0000 		.4byte	.LASF84
+ 714 025d FA       		.byte	0xfa
+ 715 025e 08       		.uleb128 0x8
+ 716 025f C2050000 		.4byte	.LASF85
+ 717 0263 FB       		.byte	0xfb
+ 718 0264 08       		.uleb128 0x8
+ 719 0265 05220000 		.4byte	.LASF86
+ 720 0269 FC       		.byte	0xfc
+ 721 026a 08       		.uleb128 0x8
+ 722 026b 5B140000 		.4byte	.LASF87
+ 723 026f FD       		.byte	0xfd
+ 724 0270 08       		.uleb128 0x8
+ 725 0271 DC270000 		.4byte	.LASF88
+ 726 0275 FF       		.byte	0xff
+ 727 0276 00       		.byte	0
+ 728 0277 07       		.uleb128 0x7
+ 729 0278 02       		.byte	0x2
+ 730 0279 3A000000 		.4byte	0x3a
+ 731 027d 03       		.byte	0x3
+ 732 027e 0204     		.2byte	0x402
+ 733 0280 50030000 		.4byte	0x350
+ 734 0284 08       		.uleb128 0x8
+ 735 0285 B7350000 		.4byte	.LASF89
+ 736 0289 00       		.byte	0
+ 737 028a 08       		.uleb128 0x8
+ 738 028b AD280000 		.4byte	.LASF90
+ 739 028f 01       		.byte	0x1
+ 740 0290 08       		.uleb128 0x8
+ 741 0291 29050000 		.4byte	.LASF91
+ 742 0295 02       		.byte	0x2
+ 743 0296 08       		.uleb128 0x8
+ 744 0297 C8160000 		.4byte	.LASF92
+ 745 029b 03       		.byte	0x3
+ 746 029c 08       		.uleb128 0x8
+ 747 029d 50180000 		.4byte	.LASF93
+ 748 02a1 04       		.byte	0x4
+ 749 02a2 08       		.uleb128 0x8
+ 750 02a3 46150000 		.4byte	.LASF94
+ 751 02a7 05       		.byte	0x5
+ 752 02a8 08       		.uleb128 0x8
+ 753 02a9 2F2E0000 		.4byte	.LASF95
+ 754 02ad 06       		.byte	0x6
+ 755 02ae 08       		.uleb128 0x8
+ 756 02af C7060000 		.4byte	.LASF96
+ 757 02b3 07       		.byte	0x7
+ 758 02b4 08       		.uleb128 0x8
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 20
+
+
+ 759 02b5 66250000 		.4byte	.LASF97
+ 760 02b9 08       		.byte	0x8
+ 761 02ba 08       		.uleb128 0x8
+ 762 02bb 13030000 		.4byte	.LASF98
+ 763 02bf 09       		.byte	0x9
+ 764 02c0 08       		.uleb128 0x8
+ 765 02c1 80240000 		.4byte	.LASF99
+ 766 02c5 0A       		.byte	0xa
+ 767 02c6 08       		.uleb128 0x8
+ 768 02c7 B90D0000 		.4byte	.LASF100
+ 769 02cb 0B       		.byte	0xb
+ 770 02cc 08       		.uleb128 0x8
+ 771 02cd 5B170000 		.4byte	.LASF101
+ 772 02d1 0C       		.byte	0xc
+ 773 02d2 08       		.uleb128 0x8
+ 774 02d3 38200000 		.4byte	.LASF102
+ 775 02d7 0D       		.byte	0xd
+ 776 02d8 08       		.uleb128 0x8
+ 777 02d9 662D0000 		.4byte	.LASF103
+ 778 02dd 0E       		.byte	0xe
+ 779 02de 08       		.uleb128 0x8
+ 780 02df 2A220000 		.4byte	.LASF104
+ 781 02e3 0F       		.byte	0xf
+ 782 02e4 08       		.uleb128 0x8
+ 783 02e5 341F0000 		.4byte	.LASF105
+ 784 02e9 10       		.byte	0x10
+ 785 02ea 08       		.uleb128 0x8
+ 786 02eb 850C0000 		.4byte	.LASF106
+ 787 02ef 11       		.byte	0x11
+ 788 02f0 08       		.uleb128 0x8
+ 789 02f1 8E350000 		.4byte	.LASF107
+ 790 02f5 12       		.byte	0x12
+ 791 02f6 08       		.uleb128 0x8
+ 792 02f7 111D0000 		.4byte	.LASF108
+ 793 02fb 13       		.byte	0x13
+ 794 02fc 08       		.uleb128 0x8
+ 795 02fd E3210000 		.4byte	.LASF109
+ 796 0301 27       		.byte	0x27
+ 797 0302 08       		.uleb128 0x8
+ 798 0303 BF170000 		.4byte	.LASF110
+ 799 0307 28       		.byte	0x28
+ 800 0308 08       		.uleb128 0x8
+ 801 0309 96180000 		.4byte	.LASF111
+ 802 030d 29       		.byte	0x29
+ 803 030e 08       		.uleb128 0x8
+ 804 030f 6F030000 		.4byte	.LASF112
+ 805 0313 2A       		.byte	0x2a
+ 806 0314 08       		.uleb128 0x8
+ 807 0315 ED160000 		.4byte	.LASF113
+ 808 0319 2B       		.byte	0x2b
+ 809 031a 08       		.uleb128 0x8
+ 810 031b 84250000 		.4byte	.LASF114
+ 811 031f 2C       		.byte	0x2c
+ 812 0320 08       		.uleb128 0x8
+ 813 0321 4E350000 		.4byte	.LASF115
+ 814 0325 FE       		.byte	0xfe
+ 815 0326 08       		.uleb128 0x8
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 21
+
+
+ 816 0327 A31D0000 		.4byte	.LASF116
+ 817 032b FF       		.byte	0xff
+ 818 032c 09       		.uleb128 0x9
+ 819 032d FC1A0000 		.4byte	.LASF117
+ 820 0331 0001     		.2byte	0x100
+ 821 0333 09       		.uleb128 0x9
+ 822 0334 8F130000 		.4byte	.LASF118
+ 823 0338 0101     		.2byte	0x101
+ 824 033a 09       		.uleb128 0x9
+ 825 033b 7C260000 		.4byte	.LASF119
+ 826 033f 0201     		.2byte	0x102
+ 827 0341 09       		.uleb128 0x9
+ 828 0342 67090000 		.4byte	.LASF120
+ 829 0346 0301     		.2byte	0x103
+ 830 0348 09       		.uleb128 0x9
+ 831 0349 151B0000 		.4byte	.LASF121
+ 832 034d 0401     		.2byte	0x104
+ 833 034f 00       		.byte	0
+ 834 0350 04       		.uleb128 0x4
+ 835 0351 17220000 		.4byte	.LASF122
+ 836 0355 03       		.byte	0x3
+ 837 0356 7104     		.2byte	0x471
+ 838 0358 77020000 		.4byte	0x277
+ 839 035c 0A       		.uleb128 0xa
+ 840 035d 04       		.byte	0x4
+ 841 035e 6B000000 		.4byte	0x6b
+ 842 0362 0B       		.uleb128 0xb
+ 843 0363 02       		.byte	0x2
+ 844 0364 04       		.byte	0x4
+ 845 0365 9301     		.2byte	0x193
+ 846 0367 86030000 		.4byte	0x386
+ 847 036b 0C       		.uleb128 0xc
+ 848 036c DA330000 		.4byte	.LASF123
+ 849 0370 04       		.byte	0x4
+ 850 0371 9A01     		.2byte	0x19a
+ 851 0373 6B000000 		.4byte	0x6b
+ 852 0377 00       		.byte	0
+ 853 0378 0C       		.uleb128 0xc
+ 854 0379 E9360000 		.4byte	.LASF124
+ 855 037d 04       		.byte	0x4
+ 856 037e A001     		.2byte	0x1a0
+ 857 0380 6B000000 		.4byte	0x6b
+ 858 0384 01       		.byte	0x1
+ 859 0385 00       		.byte	0
+ 860 0386 04       		.uleb128 0x4
+ 861 0387 9B120000 		.4byte	.LASF125
+ 862 038b 04       		.byte	0x4
+ 863 038c A201     		.2byte	0x1a2
+ 864 038e 62030000 		.4byte	0x362
+ 865 0392 0B       		.uleb128 0xb
+ 866 0393 08       		.byte	0x8
+ 867 0394 04       		.byte	0x4
+ 868 0395 BE01     		.2byte	0x1be
+ 869 0397 C3030000 		.4byte	0x3c3
+ 870 039b 0D       		.uleb128 0xd
+ 871 039c 76616C00 		.ascii	"val\000"
+ 872 03a0 04       		.byte	0x4
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 22
+
+
+ 873 03a1 C101     		.2byte	0x1c1
+ 874 03a3 5C030000 		.4byte	0x35c
+ 875 03a7 00       		.byte	0
+ 876 03a8 0D       		.uleb128 0xd
+ 877 03a9 6C656E00 		.ascii	"len\000"
+ 878 03ad 04       		.byte	0x4
+ 879 03ae C401     		.2byte	0x1c4
+ 880 03b0 77000000 		.4byte	0x77
+ 881 03b4 04       		.byte	0x4
+ 882 03b5 0C       		.uleb128 0xc
+ 883 03b6 352A0000 		.4byte	.LASF126
+ 884 03ba 04       		.byte	0x4
+ 885 03bb CB01     		.2byte	0x1cb
+ 886 03bd 77000000 		.4byte	0x77
+ 887 03c1 06       		.byte	0x6
+ 888 03c2 00       		.byte	0
+ 889 03c3 04       		.uleb128 0x4
+ 890 03c4 D9180000 		.4byte	.LASF127
+ 891 03c8 04       		.byte	0x4
+ 892 03c9 CD01     		.2byte	0x1cd
+ 893 03cb 92030000 		.4byte	0x392
+ 894 03cf 0A       		.uleb128 0xa
+ 895 03d0 04       		.byte	0x4
+ 896 03d1 C3030000 		.4byte	0x3c3
+ 897 03d5 0E       		.uleb128 0xe
+ 898 03d6 01       		.byte	0x1
+ 899 03d7 2C000000 		.4byte	0x2c
+ 900 03db 05       		.byte	0x5
+ 901 03dc 21       		.byte	0x21
+ 902 03dd E8030000 		.4byte	0x3e8
+ 903 03e1 08       		.uleb128 0x8
+ 904 03e2 C52A0000 		.4byte	.LASF128
+ 905 03e6 00       		.byte	0
+ 906 03e7 00       		.byte	0
+ 907 03e8 0E       		.uleb128 0xe
+ 908 03e9 01       		.byte	0x1
+ 909 03ea 2C000000 		.4byte	0x2c
+ 910 03ee 05       		.byte	0x5
+ 911 03ef 3A       		.byte	0x3a
+ 912 03f0 01040000 		.4byte	0x401
+ 913 03f4 08       		.uleb128 0x8
+ 914 03f5 980B0000 		.4byte	.LASF129
+ 915 03f9 00       		.byte	0
+ 916 03fa 08       		.uleb128 0x8
+ 917 03fb 14040000 		.4byte	.LASF130
+ 918 03ff 01       		.byte	0x1
+ 919 0400 00       		.byte	0
+ 920 0401 0F       		.uleb128 0xf
+ 921 0402 10210000 		.4byte	.LASF131
+ 922 0406 05       		.byte	0x5
+ 923 0407 3D       		.byte	0x3d
+ 924 0408 E8030000 		.4byte	0x3e8
+ 925 040c 0E       		.uleb128 0xe
+ 926 040d 01       		.byte	0x1
+ 927 040e 2C000000 		.4byte	0x2c
+ 928 0412 05       		.byte	0x5
+ 929 0413 41       		.byte	0x41
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 23
+
+
+ 930 0414 2B040000 		.4byte	0x42b
+ 931 0418 08       		.uleb128 0x8
+ 932 0419 87060000 		.4byte	.LASF132
+ 933 041d 00       		.byte	0
+ 934 041e 08       		.uleb128 0x8
+ 935 041f 45190000 		.4byte	.LASF133
+ 936 0423 01       		.byte	0x1
+ 937 0424 08       		.uleb128 0x8
+ 938 0425 4A270000 		.4byte	.LASF134
+ 939 0429 02       		.byte	0x2
+ 940 042a 00       		.byte	0
+ 941 042b 10       		.uleb128 0x10
+ 942 042c 08       		.byte	0x8
+ 943 042d 05       		.byte	0x5
+ 944 042e 6A       		.byte	0x6a
+ 945 042f 64040000 		.4byte	0x464
+ 946 0433 11       		.uleb128 0x11
+ 947 0434 11370000 		.4byte	.LASF135
+ 948 0438 05       		.byte	0x5
+ 949 0439 6C       		.byte	0x6c
+ 950 043a 86030000 		.4byte	0x386
+ 951 043e 00       		.byte	0
+ 952 043f 11       		.uleb128 0x11
+ 953 0440 1C2D0000 		.4byte	.LASF136
+ 954 0444 05       		.byte	0x5
+ 955 0445 6D       		.byte	0x6d
+ 956 0446 6B000000 		.4byte	0x6b
+ 957 044a 02       		.byte	0x2
+ 958 044b 11       		.uleb128 0x11
+ 959 044c 8C280000 		.4byte	.LASF137
+ 960 0450 05       		.byte	0x5
+ 961 0451 6E       		.byte	0x6e
+ 962 0452 01040000 		.4byte	0x401
+ 963 0456 03       		.byte	0x3
+ 964 0457 11       		.uleb128 0x11
+ 965 0458 A9110000 		.4byte	.LASF138
+ 966 045c 05       		.byte	0x5
+ 967 045d 6F       		.byte	0x6f
+ 968 045e CF030000 		.4byte	0x3cf
+ 969 0462 04       		.byte	0x4
+ 970 0463 00       		.byte	0
+ 971 0464 0F       		.uleb128 0xf
+ 972 0465 0B300000 		.4byte	.LASF139
+ 973 0469 05       		.byte	0x5
+ 974 046a 70       		.byte	0x70
+ 975 046b 2B040000 		.4byte	0x42b
+ 976 046f 0E       		.uleb128 0xe
+ 977 0470 01       		.byte	0x1
+ 978 0471 2C000000 		.4byte	0x2c
+ 979 0475 06       		.byte	0x6
+ 980 0476 22       		.byte	0x22
+ 981 0477 B8040000 		.4byte	0x4b8
+ 982 047b 08       		.uleb128 0x8
+ 983 047c CA080000 		.4byte	.LASF140
+ 984 0480 00       		.byte	0
+ 985 0481 08       		.uleb128 0x8
+ 986 0482 DE260000 		.4byte	.LASF141
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 24
+
+
+ 987 0486 01       		.byte	0x1
+ 988 0487 08       		.uleb128 0x8
+ 989 0488 5A310000 		.4byte	.LASF142
+ 990 048c 02       		.byte	0x2
+ 991 048d 08       		.uleb128 0x8
+ 992 048e AF120000 		.4byte	.LASF143
+ 993 0492 03       		.byte	0x3
+ 994 0493 08       		.uleb128 0x8
+ 995 0494 F7230000 		.4byte	.LASF144
+ 996 0498 04       		.byte	0x4
+ 997 0499 08       		.uleb128 0x8
+ 998 049a FF180000 		.4byte	.LASF145
+ 999 049e 05       		.byte	0x5
+ 1000 049f 08       		.uleb128 0x8
+ 1001 04a0 54160000 		.4byte	.LASF146
+ 1002 04a4 06       		.byte	0x6
+ 1003 04a5 08       		.uleb128 0x8
+ 1004 04a6 B91A0000 		.4byte	.LASF147
+ 1005 04aa 07       		.byte	0x7
+ 1006 04ab 08       		.uleb128 0x8
+ 1007 04ac B7300000 		.4byte	.LASF148
+ 1008 04b0 08       		.byte	0x8
+ 1009 04b1 08       		.uleb128 0x8
+ 1010 04b2 10320000 		.4byte	.LASF149
+ 1011 04b6 09       		.byte	0x9
+ 1012 04b7 00       		.byte	0
+ 1013 04b8 0E       		.uleb128 0xe
+ 1014 04b9 02       		.byte	0x2
+ 1015 04ba 3A000000 		.4byte	0x3a
+ 1016 04be 07       		.byte	0x7
+ 1017 04bf B1       		.byte	0xb1
+ 1018 04c0 C10C0000 		.4byte	0xcc1
+ 1019 04c4 09       		.uleb128 0x9
+ 1020 04c5 F10A0000 		.4byte	.LASF150
+ 1021 04c9 0001     		.2byte	0x100
+ 1022 04cb 09       		.uleb128 0x9
+ 1023 04cc 550A0000 		.4byte	.LASF151
+ 1024 04d0 0101     		.2byte	0x101
+ 1025 04d2 09       		.uleb128 0x9
+ 1026 04d3 621F0000 		.4byte	.LASF152
+ 1027 04d7 0201     		.2byte	0x102
+ 1028 04d9 09       		.uleb128 0x9
+ 1029 04da 35170000 		.4byte	.LASF153
+ 1030 04de 0301     		.2byte	0x103
+ 1031 04e0 09       		.uleb128 0x9
+ 1032 04e1 BE240000 		.4byte	.LASF154
+ 1033 04e5 0401     		.2byte	0x104
+ 1034 04e7 09       		.uleb128 0x9
+ 1035 04e8 841F0000 		.4byte	.LASF155
+ 1036 04ec 0501     		.2byte	0x105
+ 1037 04ee 09       		.uleb128 0x9
+ 1038 04ef C6120000 		.4byte	.LASF156
+ 1039 04f3 0601     		.2byte	0x106
+ 1040 04f5 09       		.uleb128 0x9
+ 1041 04f6 DA1D0000 		.4byte	.LASF157
+ 1042 04fa 0701     		.2byte	0x107
+ 1043 04fc 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 25
+
+
+ 1044 04fd AF020000 		.4byte	.LASF158
+ 1045 0501 0801     		.2byte	0x108
+ 1046 0503 09       		.uleb128 0x9
+ 1047 0504 58340000 		.4byte	.LASF159
+ 1048 0508 0901     		.2byte	0x109
+ 1049 050a 09       		.uleb128 0x9
+ 1050 050b A81F0000 		.4byte	.LASF160
+ 1051 050f 0A01     		.2byte	0x10a
+ 1052 0511 09       		.uleb128 0x9
+ 1053 0512 F2020000 		.4byte	.LASF161
+ 1054 0516 0B01     		.2byte	0x10b
+ 1055 0518 09       		.uleb128 0x9
+ 1056 0519 A4190000 		.4byte	.LASF162
+ 1057 051d 0C01     		.2byte	0x10c
+ 1058 051f 09       		.uleb128 0x9
+ 1059 0520 63100000 		.4byte	.LASF163
+ 1060 0524 0D01     		.2byte	0x10d
+ 1061 0526 09       		.uleb128 0x9
+ 1062 0527 8E000000 		.4byte	.LASF164
+ 1063 052b 0E01     		.2byte	0x10e
+ 1064 052d 09       		.uleb128 0x9
+ 1065 052e 00000000 		.4byte	.LASF165
+ 1066 0532 0F01     		.2byte	0x10f
+ 1067 0534 09       		.uleb128 0x9
+ 1068 0535 8A230000 		.4byte	.LASF166
+ 1069 0539 1001     		.2byte	0x110
+ 1070 053b 09       		.uleb128 0x9
+ 1071 053c 74020000 		.4byte	.LASF167
+ 1072 0540 1101     		.2byte	0x111
+ 1073 0542 09       		.uleb128 0x9
+ 1074 0543 AF110000 		.4byte	.LASF168
+ 1075 0547 1201     		.2byte	0x112
+ 1076 0549 09       		.uleb128 0x9
+ 1077 054a C3360000 		.4byte	.LASF169
+ 1078 054e 1301     		.2byte	0x113
+ 1079 0550 09       		.uleb128 0x9
+ 1080 0551 31160000 		.4byte	.LASF170
+ 1081 0555 1401     		.2byte	0x114
+ 1082 0557 09       		.uleb128 0x9
+ 1083 0558 3B0D0000 		.4byte	.LASF171
+ 1084 055c 1501     		.2byte	0x115
+ 1085 055e 09       		.uleb128 0x9
+ 1086 055f EE150000 		.4byte	.LASF172
+ 1087 0563 1601     		.2byte	0x116
+ 1088 0565 09       		.uleb128 0x9
+ 1089 0566 D8000000 		.4byte	.LASF173
+ 1090 056a 1701     		.2byte	0x117
+ 1091 056c 09       		.uleb128 0x9
+ 1092 056d 4B090000 		.4byte	.LASF174
+ 1093 0571 1801     		.2byte	0x118
+ 1094 0573 09       		.uleb128 0x9
+ 1095 0574 D1150000 		.4byte	.LASF175
+ 1096 0578 1901     		.2byte	0x119
+ 1097 057a 09       		.uleb128 0x9
+ 1098 057b AC0E0000 		.4byte	.LASF176
+ 1099 057f 1A01     		.2byte	0x11a
+ 1100 0581 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 26
+
+
+ 1101 0582 64150000 		.4byte	.LASF177
+ 1102 0586 1B01     		.2byte	0x11b
+ 1103 0588 09       		.uleb128 0x9
+ 1104 0589 72310000 		.4byte	.LASF178
+ 1105 058d 1C01     		.2byte	0x11c
+ 1106 058f 09       		.uleb128 0x9
+ 1107 0590 5F370000 		.4byte	.LASF179
+ 1108 0594 1D01     		.2byte	0x11d
+ 1109 0596 09       		.uleb128 0x9
+ 1110 0597 7C070000 		.4byte	.LASF180
+ 1111 059b 1E01     		.2byte	0x11e
+ 1112 059d 09       		.uleb128 0x9
+ 1113 059e 46040000 		.4byte	.LASF181
+ 1114 05a2 1F01     		.2byte	0x11f
+ 1115 05a4 09       		.uleb128 0x9
+ 1116 05a5 E91E0000 		.4byte	.LASF182
+ 1117 05a9 2001     		.2byte	0x120
+ 1118 05ab 09       		.uleb128 0x9
+ 1119 05ac D4110000 		.4byte	.LASF183
+ 1120 05b0 2101     		.2byte	0x121
+ 1121 05b2 09       		.uleb128 0x9
+ 1122 05b3 6C060000 		.4byte	.LASF184
+ 1123 05b7 2201     		.2byte	0x122
+ 1124 05b9 09       		.uleb128 0x9
+ 1125 05ba E32C0000 		.4byte	.LASF185
+ 1126 05be 2301     		.2byte	0x123
+ 1127 05c0 09       		.uleb128 0x9
+ 1128 05c1 771B0000 		.4byte	.LASF186
+ 1129 05c5 2401     		.2byte	0x124
+ 1130 05c7 09       		.uleb128 0x9
+ 1131 05c8 BD1B0000 		.4byte	.LASF187
+ 1132 05cc 2501     		.2byte	0x125
+ 1133 05ce 09       		.uleb128 0x9
+ 1134 05cf 321A0000 		.4byte	.LASF188
+ 1135 05d3 2601     		.2byte	0x126
+ 1136 05d5 09       		.uleb128 0x9
+ 1137 05d6 B2230000 		.4byte	.LASF189
+ 1138 05da 2701     		.2byte	0x127
+ 1139 05dc 09       		.uleb128 0x9
+ 1140 05dd 3C110000 		.4byte	.LASF190
+ 1141 05e1 2801     		.2byte	0x128
+ 1142 05e3 09       		.uleb128 0x9
+ 1143 05e4 2B180000 		.4byte	.LASF191
+ 1144 05e8 2901     		.2byte	0x129
+ 1145 05ea 09       		.uleb128 0x9
+ 1146 05eb 6E320000 		.4byte	.LASF192
+ 1147 05ef 2A01     		.2byte	0x12a
+ 1148 05f1 09       		.uleb128 0x9
+ 1149 05f2 6D2E0000 		.4byte	.LASF193
+ 1150 05f6 2B01     		.2byte	0x12b
+ 1151 05f8 09       		.uleb128 0x9
+ 1152 05f9 60110000 		.4byte	.LASF194
+ 1153 05fd 2C01     		.2byte	0x12c
+ 1154 05ff 09       		.uleb128 0x9
+ 1155 0600 29360000 		.4byte	.LASF195
+ 1156 0604 2D01     		.2byte	0x12d
+ 1157 0606 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 27
+
+
+ 1158 0607 30330000 		.4byte	.LASF196
+ 1159 060b 2E01     		.2byte	0x12e
+ 1160 060d 09       		.uleb128 0x9
+ 1161 060e A90C0000 		.4byte	.LASF197
+ 1162 0612 2F01     		.2byte	0x12f
+ 1163 0614 09       		.uleb128 0x9
+ 1164 0615 88320000 		.4byte	.LASF198
+ 1165 0619 3001     		.2byte	0x130
+ 1166 061b 09       		.uleb128 0x9
+ 1167 061c 8A0F0000 		.4byte	.LASF199
+ 1168 0620 3101     		.2byte	0x131
+ 1169 0622 09       		.uleb128 0x9
+ 1170 0623 83370000 		.4byte	.LASF200
+ 1171 0627 3201     		.2byte	0x132
+ 1172 0629 09       		.uleb128 0x9
+ 1173 062a 65040000 		.4byte	.LASF201
+ 1174 062e 3301     		.2byte	0x133
+ 1175 0630 09       		.uleb128 0x9
+ 1176 0631 12290000 		.4byte	.LASF202
+ 1177 0635 3401     		.2byte	0x134
+ 1178 0637 09       		.uleb128 0x9
+ 1179 0638 9A240000 		.4byte	.LASF203
+ 1180 063c 3501     		.2byte	0x135
+ 1181 063e 09       		.uleb128 0x9
+ 1182 063f 41100000 		.4byte	.LASF204
+ 1183 0643 3601     		.2byte	0x136
+ 1184 0645 09       		.uleb128 0x9
+ 1185 0646 87040000 		.4byte	.LASF205
+ 1186 064a 3701     		.2byte	0x137
+ 1187 064c 09       		.uleb128 0x9
+ 1188 064d C8300000 		.4byte	.LASF206
+ 1189 0651 3801     		.2byte	0x138
+ 1190 0653 09       		.uleb128 0x9
+ 1191 0654 D90D0000 		.4byte	.LASF207
+ 1192 0658 3901     		.2byte	0x139
+ 1193 065a 09       		.uleb128 0x9
+ 1194 065b 3F2A0000 		.4byte	.LASF208
+ 1195 065f 3A01     		.2byte	0x13a
+ 1196 0661 09       		.uleb128 0x9
+ 1197 0662 791A0000 		.4byte	.LASF209
+ 1198 0666 3B01     		.2byte	0x13b
+ 1199 0668 09       		.uleb128 0x9
+ 1200 0669 27210000 		.4byte	.LASF210
+ 1201 066d 3C01     		.2byte	0x13c
+ 1202 066f 09       		.uleb128 0x9
+ 1203 0670 4C2B0000 		.4byte	.LASF211
+ 1204 0674 3D01     		.2byte	0x13d
+ 1205 0676 09       		.uleb128 0x9
+ 1206 0677 18010000 		.4byte	.LASF212
+ 1207 067b 3E01     		.2byte	0x13e
+ 1208 067d 09       		.uleb128 0x9
+ 1209 067e EC300000 		.4byte	.LASF213
+ 1210 0682 3F01     		.2byte	0x13f
+ 1211 0684 09       		.uleb128 0x9
+ 1212 0685 3D2C0000 		.4byte	.LASF214
+ 1213 0689 4001     		.2byte	0x140
+ 1214 068b 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 28
+
+
+ 1215 068c 1C100000 		.4byte	.LASF215
+ 1216 0690 4101     		.2byte	0x141
+ 1217 0692 09       		.uleb128 0x9
+ 1218 0693 62070000 		.4byte	.LASF216
+ 1219 0697 4201     		.2byte	0x142
+ 1220 0699 09       		.uleb128 0x9
+ 1221 069a 251E0000 		.4byte	.LASF217
+ 1222 069e 4301     		.2byte	0x143
+ 1223 06a0 09       		.uleb128 0x9
+ 1224 06a1 7B0D0000 		.4byte	.LASF218
+ 1225 06a5 4401     		.2byte	0x144
+ 1226 06a7 09       		.uleb128 0x9
+ 1227 06a8 38140000 		.4byte	.LASF219
+ 1228 06ac 4501     		.2byte	0x145
+ 1229 06ae 09       		.uleb128 0x9
+ 1230 06af 6E210000 		.4byte	.LASF220
+ 1231 06b3 4601     		.2byte	0x146
+ 1232 06b5 09       		.uleb128 0x9
+ 1233 06b6 C0250000 		.4byte	.LASF221
+ 1234 06ba 4701     		.2byte	0x147
+ 1235 06bc 09       		.uleb128 0x9
+ 1236 06bd 49280000 		.4byte	.LASF222
+ 1237 06c1 4801     		.2byte	0x148
+ 1238 06c3 09       		.uleb128 0x9
+ 1239 06c4 411E0000 		.4byte	.LASF223
+ 1240 06c8 4901     		.2byte	0x149
+ 1241 06ca 09       		.uleb128 0x9
+ 1242 06cb 641E0000 		.4byte	.LASF224
+ 1243 06cf 4A01     		.2byte	0x14a
+ 1244 06d1 09       		.uleb128 0x9
+ 1245 06d2 68160000 		.4byte	.LASF225
+ 1246 06d6 4B01     		.2byte	0x14b
+ 1247 06d8 09       		.uleb128 0x9
+ 1248 06d9 710E0000 		.4byte	.LASF226
+ 1249 06dd 4C01     		.2byte	0x14c
+ 1250 06df 09       		.uleb128 0x9
+ 1251 06e0 37240000 		.4byte	.LASF227
+ 1252 06e4 4D01     		.2byte	0x14d
+ 1253 06e6 09       		.uleb128 0x9
+ 1254 06e7 420F0000 		.4byte	.LASF228
+ 1255 06eb 4E01     		.2byte	0x14e
+ 1256 06ed 09       		.uleb128 0x9
+ 1257 06ee 2F080000 		.4byte	.LASF229
+ 1258 06f2 4F01     		.2byte	0x14f
+ 1259 06f4 09       		.uleb128 0x9
+ 1260 06f5 F61C0000 		.4byte	.LASF230
+ 1261 06f9 5001     		.2byte	0x150
+ 1262 06fb 09       		.uleb128 0x9
+ 1263 06fc A72F0000 		.4byte	.LASF231
+ 1264 0700 5101     		.2byte	0x151
+ 1265 0702 09       		.uleb128 0x9
+ 1266 0703 4F060000 		.4byte	.LASF232
+ 1267 0707 5201     		.2byte	0x152
+ 1268 0709 09       		.uleb128 0x9
+ 1269 070a 3A1B0000 		.4byte	.LASF233
+ 1270 070e 5301     		.2byte	0x153
+ 1271 0710 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 29
+
+
+ 1272 0711 612C0000 		.4byte	.LASF234
+ 1273 0715 5401     		.2byte	0x154
+ 1274 0717 09       		.uleb128 0x9
+ 1275 0718 1D270000 		.4byte	.LASF235
+ 1276 071c 5501     		.2byte	0x155
+ 1277 071e 09       		.uleb128 0x9
+ 1278 071f 03150000 		.4byte	.LASF236
+ 1279 0723 5601     		.2byte	0x156
+ 1280 0725 09       		.uleb128 0x9
+ 1281 0726 05360000 		.4byte	.LASF237
+ 1282 072a 5701     		.2byte	0x157
+ 1283 072c 09       		.uleb128 0x9
+ 1284 072d 10310000 		.4byte	.LASF238
+ 1285 0731 5801     		.2byte	0x158
+ 1286 0733 09       		.uleb128 0x9
+ 1287 0734 C71E0000 		.4byte	.LASF239
+ 1288 0738 5901     		.2byte	0x159
+ 1289 073a 09       		.uleb128 0x9
+ 1290 073b 95010000 		.4byte	.LASF240
+ 1291 073f 5A01     		.2byte	0x15a
+ 1292 0741 09       		.uleb128 0x9
+ 1293 0742 50020000 		.4byte	.LASF241
+ 1294 0746 5B01     		.2byte	0x15b
+ 1295 0748 09       		.uleb128 0x9
+ 1296 0749 B0150000 		.4byte	.LASF242
+ 1297 074d 5C01     		.2byte	0x15c
+ 1298 074f 09       		.uleb128 0x9
+ 1299 0750 0B0A0000 		.4byte	.LASF243
+ 1300 0754 5D01     		.2byte	0x15d
+ 1301 0756 09       		.uleb128 0x9
+ 1302 0757 4E2F0000 		.4byte	.LASF244
+ 1303 075b 5E01     		.2byte	0x15e
+ 1304 075d 09       		.uleb128 0x9
+ 1305 075e 09280000 		.4byte	.LASF245
+ 1306 0762 5F01     		.2byte	0x15f
+ 1307 0764 09       		.uleb128 0x9
+ 1308 0765 C6350000 		.4byte	.LASF246
+ 1309 0769 6001     		.2byte	0x160
+ 1310 076b 09       		.uleb128 0x9
+ 1311 076c B6000000 		.4byte	.LASF247
+ 1312 0770 6101     		.2byte	0x161
+ 1313 0772 09       		.uleb128 0x9
+ 1314 0773 19260000 		.4byte	.LASF248
+ 1315 0777 6201     		.2byte	0x162
+ 1316 0779 09       		.uleb128 0x9
+ 1317 077a C5190000 		.4byte	.LASF249
+ 1318 077e 6301     		.2byte	0x163
+ 1319 0780 09       		.uleb128 0x9
+ 1320 0781 D22B0000 		.4byte	.LASF250
+ 1321 0785 6401     		.2byte	0x164
+ 1322 0787 09       		.uleb128 0x9
+ 1323 0788 46300000 		.4byte	.LASF251
+ 1324 078c 6501     		.2byte	0x165
+ 1325 078e 09       		.uleb128 0x9
+ 1326 078f 55080000 		.4byte	.LASF252
+ 1327 0793 6601     		.2byte	0x166
+ 1328 0795 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 30
+
+
+ 1329 0796 73140000 		.4byte	.LASF253
+ 1330 079a 6701     		.2byte	0x167
+ 1331 079c 09       		.uleb128 0x9
+ 1332 079d 1A2C0000 		.4byte	.LASF254
+ 1333 07a1 6801     		.2byte	0x168
+ 1334 07a3 09       		.uleb128 0x9
+ 1335 07a4 25280000 		.4byte	.LASF255
+ 1336 07a8 6901     		.2byte	0x169
+ 1337 07aa 09       		.uleb128 0x9
+ 1338 07ab 2D0A0000 		.4byte	.LASF256
+ 1339 07af 6A01     		.2byte	0x16a
+ 1340 07b1 09       		.uleb128 0x9
+ 1341 07b2 D60A0000 		.4byte	.LASF257
+ 1342 07b6 6B01     		.2byte	0x16b
+ 1343 07b8 09       		.uleb128 0x9
+ 1344 07b9 3C260000 		.4byte	.LASF258
+ 1345 07bd 6C01     		.2byte	0x16c
+ 1346 07bf 09       		.uleb128 0x9
+ 1347 07c0 19120000 		.4byte	.LASF259
+ 1348 07c4 6D01     		.2byte	0x16d
+ 1349 07c6 09       		.uleb128 0x9
+ 1350 07c7 100E0000 		.4byte	.LASF260
+ 1351 07cb 6E01     		.2byte	0x16e
+ 1352 07cd 09       		.uleb128 0x9
+ 1353 07ce D2130000 		.4byte	.LASF261
+ 1354 07d2 6F01     		.2byte	0x16f
+ 1355 07d4 09       		.uleb128 0x9
+ 1356 07d5 330E0000 		.4byte	.LASF262
+ 1357 07d9 7001     		.2byte	0x170
+ 1358 07db 09       		.uleb128 0x9
+ 1359 07dc BE340000 		.4byte	.LASF263
+ 1360 07e0 7101     		.2byte	0x171
+ 1361 07e2 09       		.uleb128 0x9
+ 1362 07e3 C4090000 		.4byte	.LASF264
+ 1363 07e7 7201     		.2byte	0x172
+ 1364 07e9 09       		.uleb128 0x9
+ 1365 07ea F10B0000 		.4byte	.LASF265
+ 1366 07ee 7301     		.2byte	0x173
+ 1367 07f0 09       		.uleb128 0x9
+ 1368 07f1 C4260000 		.4byte	.LASF266
+ 1369 07f5 7401     		.2byte	0x174
+ 1370 07f7 09       		.uleb128 0x9
+ 1371 07f8 302B0000 		.4byte	.LASF267
+ 1372 07fc 7501     		.2byte	0x175
+ 1373 07fe 09       		.uleb128 0x9
+ 1374 07ff 3B010000 		.4byte	.LASF268
+ 1375 0803 7601     		.2byte	0x176
+ 1376 0805 09       		.uleb128 0x9
+ 1377 0806 A4060000 		.4byte	.LASF269
+ 1378 080a 7701     		.2byte	0x177
+ 1379 080c 09       		.uleb128 0x9
+ 1380 080d 5C240000 		.4byte	.LASF270
+ 1381 0811 7801     		.2byte	0x178
+ 1382 0813 09       		.uleb128 0x9
+ 1383 0814 B00B0000 		.4byte	.LASF271
+ 1384 0818 7901     		.2byte	0x179
+ 1385 081a 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 31
+
+
+ 1386 081b 571A0000 		.4byte	.LASF272
+ 1387 081f 7A01     		.2byte	0x17a
+ 1388 0821 09       		.uleb128 0x9
+ 1389 0822 1C370000 		.4byte	.LASF273
+ 1390 0826 7B01     		.2byte	0x17b
+ 1391 0828 09       		.uleb128 0x9
+ 1392 0829 F3000000 		.4byte	.LASF274
+ 1393 082d 7C01     		.2byte	0x17c
+ 1394 082f 09       		.uleb128 0x9
+ 1395 0830 6A300000 		.4byte	.LASF275
+ 1396 0834 7D01     		.2byte	0x17d
+ 1397 0836 09       		.uleb128 0x9
+ 1398 0837 67230000 		.4byte	.LASF276
+ 1399 083b 7E01     		.2byte	0x17e
+ 1400 083d 09       		.uleb128 0x9
+ 1401 083e B31D0000 		.4byte	.LASF277
+ 1402 0842 7F01     		.2byte	0x17f
+ 1403 0844 09       		.uleb128 0x9
+ 1404 0845 5A1C0000 		.4byte	.LASF278
+ 1405 0849 8001     		.2byte	0x180
+ 1406 084b 09       		.uleb128 0x9
+ 1407 084c 8E1C0000 		.4byte	.LASF279
+ 1408 0850 8101     		.2byte	0x181
+ 1409 0852 09       		.uleb128 0x9
+ 1410 0853 8B360000 		.4byte	.LASF280
+ 1411 0857 8201     		.2byte	0x182
+ 1412 0859 09       		.uleb128 0x9
+ 1413 085a EC2E0000 		.4byte	.LASF281
+ 1414 085e 8301     		.2byte	0x183
+ 1415 0860 09       		.uleb128 0x9
+ 1416 0861 E1120000 		.4byte	.LASF282
+ 1417 0865 8401     		.2byte	0x184
+ 1418 0867 09       		.uleb128 0x9
+ 1419 0868 C70E0000 		.4byte	.LASF283
+ 1420 086c 8501     		.2byte	0x185
+ 1421 086e 09       		.uleb128 0x9
+ 1422 086f 4C030000 		.4byte	.LASF284
+ 1423 0873 8601     		.2byte	0x186
+ 1424 0875 09       		.uleb128 0x9
+ 1425 0876 492E0000 		.4byte	.LASF285
+ 1426 087a 8701     		.2byte	0x187
+ 1427 087c 09       		.uleb128 0x9
+ 1428 087d 140B0000 		.4byte	.LASF286
+ 1429 0881 8801     		.2byte	0x188
+ 1430 0883 09       		.uleb128 0x9
+ 1431 0884 040F0000 		.4byte	.LASF287
+ 1432 0888 8901     		.2byte	0x189
+ 1433 088a 09       		.uleb128 0x9
+ 1434 088b 43230000 		.4byte	.LASF288
+ 1435 088f 8A01     		.2byte	0x18a
+ 1436 0891 09       		.uleb128 0x9
+ 1437 0892 B62C0000 		.4byte	.LASF289
+ 1438 0896 8B01     		.2byte	0x18b
+ 1439 0898 09       		.uleb128 0x9
+ 1440 0899 DB010000 		.4byte	.LASF290
+ 1441 089d 8C01     		.2byte	0x18c
+ 1442 089f 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 32
+
+
+ 1443 08a0 A5170000 		.4byte	.LASF291
+ 1444 08a4 8D01     		.2byte	0x18d
+ 1445 08a6 09       		.uleb128 0x9
+ 1446 08a7 401C0000 		.4byte	.LASF292
+ 1447 08ab 8E01     		.2byte	0x18e
+ 1448 08ad 09       		.uleb128 0x9
+ 1449 08ae F1050000 		.4byte	.LASF293
+ 1450 08b2 8F01     		.2byte	0x18f
+ 1451 08b4 09       		.uleb128 0x9
+ 1452 08b5 44250000 		.4byte	.LASF294
+ 1453 08b9 9001     		.2byte	0x190
+ 1454 08bb 09       		.uleb128 0x9
+ 1455 08bc F5320000 		.4byte	.LASF295
+ 1456 08c0 9101     		.2byte	0x191
+ 1457 08c2 09       		.uleb128 0x9
+ 1458 08c3 292D0000 		.4byte	.LASF296
+ 1459 08c7 9201     		.2byte	0x192
+ 1460 08c9 09       		.uleb128 0x9
+ 1461 08ca F6130000 		.4byte	.LASF297
+ 1462 08ce 9301     		.2byte	0x193
+ 1463 08d0 09       		.uleb128 0x9
+ 1464 08d1 001E0000 		.4byte	.LASF298
+ 1465 08d5 9401     		.2byte	0x194
+ 1466 08d7 09       		.uleb128 0x9
+ 1467 08d8 282F0000 		.4byte	.LASF299
+ 1468 08dc 9501     		.2byte	0x195
+ 1469 08de 09       		.uleb128 0x9
+ 1470 08df AA030000 		.4byte	.LASF300
+ 1471 08e3 9601     		.2byte	0x196
+ 1472 08e5 09       		.uleb128 0x9
+ 1473 08e6 16190000 		.4byte	.LASF301
+ 1474 08ea 9701     		.2byte	0x197
+ 1475 08ec 09       		.uleb128 0x9
+ 1476 08ed 9B1B0000 		.4byte	.LASF302
+ 1477 08f1 9801     		.2byte	0x198
+ 1478 08f3 09       		.uleb128 0x9
+ 1479 08f4 F30D0000 		.4byte	.LASF303
+ 1480 08f8 9901     		.2byte	0x199
+ 1481 08fa 09       		.uleb128 0x9
+ 1482 08fb 07340000 		.4byte	.LASF304
+ 1483 08ff 9A01     		.2byte	0x19a
+ 1484 0901 09       		.uleb128 0x9
+ 1485 0902 A1340000 		.4byte	.LASF305
+ 1486 0906 9B01     		.2byte	0x19b
+ 1487 0908 09       		.uleb128 0x9
+ 1488 0909 25070000 		.4byte	.LASF306
+ 1489 090d 9C01     		.2byte	0x19c
+ 1490 090f 09       		.uleb128 0x9
+ 1491 0910 28030000 		.4byte	.LASF307
+ 1492 0914 9D01     		.2byte	0x19d
+ 1493 0916 09       		.uleb128 0x9
+ 1494 0917 77120000 		.4byte	.LASF308
+ 1495 091b 9E01     		.2byte	0x19e
+ 1496 091d 09       		.uleb128 0x9
+ 1497 091e 62190000 		.4byte	.LASF309
+ 1498 0922 9F01     		.2byte	0x19f
+ 1499 0924 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 33
+
+
+ 1500 0925 FA220000 		.4byte	.LASF310
+ 1501 0929 A001     		.2byte	0x1a0
+ 1502 092b 09       		.uleb128 0x9
+ 1503 092c 6A130000 		.4byte	.LASF311
+ 1504 0930 A101     		.2byte	0x1a1
+ 1505 0932 09       		.uleb128 0x9
+ 1506 0933 A4210000 		.4byte	.LASF312
+ 1507 0937 A201     		.2byte	0x1a2
+ 1508 0939 09       		.uleb128 0x9
+ 1509 093a A7360000 		.4byte	.LASF313
+ 1510 093e A301     		.2byte	0x1a3
+ 1511 0940 09       		.uleb128 0x9
+ 1512 0941 2C130000 		.4byte	.LASF314
+ 1513 0945 A401     		.2byte	0x1a4
+ 1514 0947 09       		.uleb128 0x9
+ 1515 0948 EF280000 		.4byte	.LASF315
+ 1516 094c A501     		.2byte	0x1a5
+ 1517 094e 09       		.uleb128 0x9
+ 1518 094f 5C1D0000 		.4byte	.LASF316
+ 1519 0953 A601     		.2byte	0x1a6
+ 1520 0955 09       		.uleb128 0x9
+ 1521 0956 74330000 		.4byte	.LASF317
+ 1522 095a A701     		.2byte	0x1a7
+ 1523 095c 09       		.uleb128 0x9
+ 1524 095d 1B1C0000 		.4byte	.LASF318
+ 1525 0961 A801     		.2byte	0x1a8
+ 1526 0963 09       		.uleb128 0x9
+ 1527 0964 A31E0000 		.4byte	.LASF319
+ 1528 0968 A901     		.2byte	0x1a9
+ 1529 096a 09       		.uleb128 0x9
+ 1530 096b E0350000 		.4byte	.LASF320
+ 1531 096f AA01     		.2byte	0x1aa
+ 1532 0971 09       		.uleb128 0x9
+ 1533 0972 002D0000 		.4byte	.LASF321
+ 1534 0976 AB01     		.2byte	0x1ab
+ 1535 0978 09       		.uleb128 0x9
+ 1536 0979 892E0000 		.4byte	.LASF322
+ 1537 097d AC01     		.2byte	0x1ac
+ 1538 097f 09       		.uleb128 0x9
+ 1539 0980 59260000 		.4byte	.LASF323
+ 1540 0984 AD01     		.2byte	0x1ad
+ 1541 0986 09       		.uleb128 0x9
+ 1542 0987 C7200000 		.4byte	.LASF324
+ 1543 098b AE01     		.2byte	0x1ae
+ 1544 098d 09       		.uleb128 0x9
+ 1545 098e 99140000 		.4byte	.LASF325
+ 1546 0992 AF01     		.2byte	0x1af
+ 1547 0994 09       		.uleb128 0x9
+ 1548 0995 CB310000 		.4byte	.LASF326
+ 1549 0999 B001     		.2byte	0x1b0
+ 1550 099b 09       		.uleb128 0x9
+ 1551 099c A00A0000 		.4byte	.LASF327
+ 1552 09a0 B101     		.2byte	0x1b1
+ 1553 09a2 09       		.uleb128 0x9
+ 1554 09a3 EF360000 		.4byte	.LASF328
+ 1555 09a7 B201     		.2byte	0x1b2
+ 1556 09a9 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 34
+
+
+ 1557 09aa B22D0000 		.4byte	.LASF329
+ 1558 09ae B301     		.2byte	0x1b3
+ 1559 09b0 09       		.uleb128 0x9
+ 1560 09b1 5D200000 		.4byte	.LASF330
+ 1561 09b5 B401     		.2byte	0x1b4
+ 1562 09b7 09       		.uleb128 0x9
+ 1563 09b8 8B160000 		.4byte	.LASF331
+ 1564 09bc B501     		.2byte	0x1b5
+ 1565 09be 09       		.uleb128 0x9
+ 1566 09bf 79010000 		.4byte	.LASF332
+ 1567 09c3 B601     		.2byte	0x1b6
+ 1568 09c5 09       		.uleb128 0x9
+ 1569 09c6 DD230000 		.4byte	.LASF333
+ 1570 09ca B701     		.2byte	0x1b7
+ 1571 09cc 09       		.uleb128 0x9
+ 1572 09cd D2100000 		.4byte	.LASF334
+ 1573 09d1 B801     		.2byte	0x1b8
+ 1574 09d3 09       		.uleb128 0x9
+ 1575 09d4 73180000 		.4byte	.LASF335
+ 1576 09d8 B901     		.2byte	0x1b9
+ 1577 09da 09       		.uleb128 0x9
+ 1578 09db A8130000 		.4byte	.LASF336
+ 1579 09df BA01     		.2byte	0x1ba
+ 1580 09e1 09       		.uleb128 0x9
+ 1581 09e2 F4100000 		.4byte	.LASF337
+ 1582 09e6 BB01     		.2byte	0x1bb
+ 1583 09e8 09       		.uleb128 0x9
+ 1584 09e9 E6080000 		.4byte	.LASF338
+ 1585 09ed BC01     		.2byte	0x1bc
+ 1586 09ef 09       		.uleb128 0x9
+ 1587 09f0 570E0000 		.4byte	.LASF339
+ 1588 09f4 BD01     		.2byte	0x1bd
+ 1589 09f6 09       		.uleb128 0x9
+ 1590 09f7 09180000 		.4byte	.LASF340
+ 1591 09fb BE01     		.2byte	0x1be
+ 1592 09fd 09       		.uleb128 0x9
+ 1593 09fe 6C220000 		.4byte	.LASF341
+ 1594 0a02 BF01     		.2byte	0x1bf
+ 1595 0a04 09       		.uleb128 0x9
+ 1596 0a05 E0140000 		.4byte	.LASF342
+ 1597 0a09 C001     		.2byte	0x1c0
+ 1598 0a0b 09       		.uleb128 0x9
+ 1599 0a0c D30F0000 		.4byte	.LASF343
+ 1600 0a10 C101     		.2byte	0x1c1
+ 1601 0a12 09       		.uleb128 0x9
+ 1602 0a13 22300000 		.4byte	.LASF344
+ 1603 0a17 C201     		.2byte	0x1c2
+ 1604 0a19 09       		.uleb128 0x9
+ 1605 0a1a 81200000 		.4byte	.LASF345
+ 1606 0a1e C301     		.2byte	0x1c3
+ 1607 0a20 09       		.uleb128 0x9
+ 1608 0a21 CF2E0000 		.4byte	.LASF346
+ 1609 0a25 C401     		.2byte	0x1c4
+ 1610 0a27 09       		.uleb128 0x9
+ 1611 0a28 17020000 		.4byte	.LASF347
+ 1612 0a2c C501     		.2byte	0x1c5
+ 1613 0a2e 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 35
+
+
+ 1614 0a2f 47050000 		.4byte	.LASF348
+ 1615 0a33 C601     		.2byte	0x1c6
+ 1616 0a35 09       		.uleb128 0x9
+ 1617 0a36 801D0000 		.4byte	.LASF349
+ 1618 0a3a C701     		.2byte	0x1c7
+ 1619 0a3c 09       		.uleb128 0x9
+ 1620 0a3d CF1F0000 		.4byte	.LASF350
+ 1621 0a41 C801     		.2byte	0x1c8
+ 1622 0a43 09       		.uleb128 0x9
+ 1623 0a44 BD140000 		.4byte	.LASF351
+ 1624 0a48 C901     		.2byte	0x1c9
+ 1625 0a4a 09       		.uleb128 0x9
+ 1626 0a4b 160C0000 		.4byte	.LASF352
+ 1627 0a4f CA01     		.2byte	0x1ca
+ 1628 0a51 09       		.uleb128 0x9
+ 1629 0a52 7A080000 		.4byte	.LASF353
+ 1630 0a56 CB01     		.2byte	0x1cb
+ 1631 0a58 09       		.uleb128 0x9
+ 1632 0a59 160D0000 		.4byte	.LASF354
+ 1633 0a5d CC01     		.2byte	0x1cc
+ 1634 0a5f 09       		.uleb128 0x9
+ 1635 0a60 0F050000 		.4byte	.LASF355
+ 1636 0a64 CD01     		.2byte	0x1cd
+ 1637 0a66 09       		.uleb128 0x9
+ 1638 0a67 5D1B0000 		.4byte	.LASF356
+ 1639 0a6b CE01     		.2byte	0x1ce
+ 1640 0a6d 09       		.uleb128 0x9
+ 1641 0a6e 871E0000 		.4byte	.LASF357
+ 1642 0a72 CF01     		.2byte	0x1cf
+ 1643 0a74 09       		.uleb128 0x9
+ 1644 0a75 062F0000 		.4byte	.LASF358
+ 1645 0a79 D001     		.2byte	0x1d0
+ 1646 0a7b 09       		.uleb128 0x9
+ 1647 0a7c C3370000 		.4byte	.LASF359
+ 1648 0a80 D101     		.2byte	0x1d1
+ 1649 0a82 09       		.uleb128 0x9
+ 1650 0a83 8F2D0000 		.4byte	.LASF360
+ 1651 0a87 D201     		.2byte	0x1d2
+ 1652 0a89 09       		.uleb128 0x9
+ 1653 0a8a 2A350000 		.4byte	.LASF361
+ 1654 0a8e D301     		.2byte	0x1d3
+ 1655 0a90 09       		.uleb128 0x9
+ 1656 0a91 29340000 		.4byte	.LASF362
+ 1657 0a95 D401     		.2byte	0x1d4
+ 1658 0a97 09       		.uleb128 0x9
+ 1659 0a98 C22F0000 		.4byte	.LASF363
+ 1660 0a9c D501     		.2byte	0x1d5
+ 1661 0a9e 09       		.uleb128 0x9
+ 1662 0a9f F60F0000 		.4byte	.LASF364
+ 1663 0aa3 D601     		.2byte	0x1d6
+ 1664 0aa5 09       		.uleb128 0x9
+ 1665 0aa6 270F0000 		.4byte	.LASF365
+ 1666 0aaa D701     		.2byte	0x1d7
+ 1667 0aac 09       		.uleb128 0x9
+ 1668 0aad 9C1A0000 		.4byte	.LASF366
+ 1669 0ab1 D801     		.2byte	0x1d8
+ 1670 0ab3 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 36
+
+
+ 1671 0ab4 28000000 		.4byte	.LASF367
+ 1672 0ab8 D901     		.2byte	0x1d9
+ 1673 0aba 09       		.uleb128 0x9
+ 1674 0abb 83290000 		.4byte	.LASF368
+ 1675 0abf DA01     		.2byte	0x1da
+ 1676 0ac1 09       		.uleb128 0x9
+ 1677 0ac2 D5220000 		.4byte	.LASF369
+ 1678 0ac6 DB01     		.2byte	0x1db
+ 1679 0ac8 09       		.uleb128 0x9
+ 1680 0ac9 580B0000 		.4byte	.LASF370
+ 1681 0acd DC01     		.2byte	0x1dc
+ 1682 0acf 09       		.uleb128 0x9
+ 1683 0ad0 E92A0000 		.4byte	.LASF371
+ 1684 0ad4 DD01     		.2byte	0x1dd
+ 1685 0ad6 09       		.uleb128 0x9
+ 1686 0ad7 682F0000 		.4byte	.LASF372
+ 1687 0adb DE01     		.2byte	0x1de
+ 1688 0add 09       		.uleb128 0x9
+ 1689 0ade A22A0000 		.4byte	.LASF373
+ 1690 0ae2 DF01     		.2byte	0x1df
+ 1691 0ae4 09       		.uleb128 0x9
+ 1692 0ae5 9C250000 		.4byte	.LASF374
+ 1693 0ae9 E001     		.2byte	0x1e0
+ 1694 0aeb 09       		.uleb128 0x9
+ 1695 0aec B2180000 		.4byte	.LASF375
+ 1696 0af0 E101     		.2byte	0x1e1
+ 1697 0af2 09       		.uleb128 0x9
+ 1698 0af3 87190000 		.4byte	.LASF376
+ 1699 0af7 E201     		.2byte	0x1e2
+ 1700 0af9 09       		.uleb128 0x9
+ 1701 0afa BA220000 		.4byte	.LASF377
+ 1702 0afe E301     		.2byte	0x1e3
+ 1703 0b00 09       		.uleb128 0x9
+ 1704 0b01 E70C0000 		.4byte	.LASF378
+ 1705 0b05 E401     		.2byte	0x1e4
+ 1706 0b07 09       		.uleb128 0x9
+ 1707 0b08 18110000 		.4byte	.LASF379
+ 1708 0b0c E501     		.2byte	0x1e5
+ 1709 0b0e 09       		.uleb128 0x9
+ 1710 0b0f 0D060000 		.4byte	.LASF380
+ 1711 0b13 E601     		.2byte	0x1e6
+ 1712 0b15 09       		.uleb128 0x9
+ 1713 0b16 9F260000 		.4byte	.LASF381
+ 1714 0b1a E701     		.2byte	0x1e7
+ 1715 0b1c 09       		.uleb128 0x9
+ 1716 0b1d AC320000 		.4byte	.LASF382
+ 1717 0b21 E801     		.2byte	0x1e8
+ 1718 0b23 09       		.uleb128 0x9
+ 1719 0b24 0E1F0000 		.4byte	.LASF383
+ 1720 0b28 E901     		.2byte	0x1e9
+ 1721 0b2a 09       		.uleb128 0x9
+ 1722 0b2b 4B210000 		.4byte	.LASF384
+ 1723 0b2f EA01     		.2byte	0x1ea
+ 1724 0b31 09       		.uleb128 0x9
+ 1725 0b32 6E2B0000 		.4byte	.LASF385
+ 1726 0b36 EB01     		.2byte	0x1eb
+ 1727 0b38 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 37
+
+
+ 1728 0b39 F5260000 		.4byte	.LASF386
+ 1729 0b3d EC01     		.2byte	0x1ec
+ 1730 0b3f 09       		.uleb128 0x9
+ 1731 0b40 142E0000 		.4byte	.LASF387
+ 1732 0b44 ED01     		.2byte	0x1ed
+ 1733 0b46 09       		.uleb128 0x9
+ 1734 0b47 852A0000 		.4byte	.LASF388
+ 1735 0b4b EE01     		.2byte	0x1ee
+ 1736 0b4d 09       		.uleb128 0x9
+ 1737 0b4e 35020000 		.4byte	.LASF389
+ 1738 0b52 EF01     		.2byte	0x1ef
+ 1739 0b54 09       		.uleb128 0x9
+ 1740 0b55 CA030000 		.4byte	.LASF390
+ 1741 0b59 F001     		.2byte	0x1f0
+ 1742 0b5b 09       		.uleb128 0x9
+ 1743 0b5c A91C0000 		.4byte	.LASF391
+ 1744 0b60 F101     		.2byte	0x1f1
+ 1745 0b62 09       		.uleb128 0x9
+ 1746 0b63 34120000 		.4byte	.LASF392
+ 1747 0b67 F201     		.2byte	0x1f2
+ 1748 0b69 09       		.uleb128 0x9
+ 1749 0b6a 730B0000 		.4byte	.LASF393
+ 1750 0b6e F301     		.2byte	0x1f3
+ 1751 0b70 09       		.uleb128 0x9
+ 1752 0b71 BB330000 		.4byte	.LASF394
+ 1753 0b75 F401     		.2byte	0x1f4
+ 1754 0b77 09       		.uleb128 0x9
+ 1755 0b78 A5160000 		.4byte	.LASF395
+ 1756 0b7c F501     		.2byte	0x1f5
+ 1757 0b7e 09       		.uleb128 0x9
+ 1758 0b7f 852C0000 		.4byte	.LASF396
+ 1759 0b83 F601     		.2byte	0x1f6
+ 1760 0b85 09       		.uleb128 0x9
+ 1761 0b86 0C1A0000 		.4byte	.LASF397
+ 1762 0b8a F701     		.2byte	0x1f7
+ 1763 0b8c 09       		.uleb128 0x9
+ 1764 0b8d 5D0C0000 		.4byte	.LASF398
+ 1765 0b91 F801     		.2byte	0x1f8
+ 1766 0b93 09       		.uleb128 0x9
+ 1767 0b94 4F220000 		.4byte	.LASF399
+ 1768 0b98 F901     		.2byte	0x1f9
+ 1769 0b9a 09       		.uleb128 0x9
+ 1770 0b9b 6A350000 		.4byte	.LASF400
+ 1771 0b9f FA01     		.2byte	0x1fa
+ 1772 0ba1 09       		.uleb128 0x9
+ 1773 0ba2 BE210000 		.4byte	.LASF401
+ 1774 0ba6 FB01     		.2byte	0x1fb
+ 1775 0ba8 09       		.uleb128 0x9
+ 1776 0ba9 612A0000 		.4byte	.LASF402
+ 1777 0bad FC01     		.2byte	0x1fc
+ 1778 0baf 09       		.uleb128 0x9
+ 1779 0bb0 35310000 		.4byte	.LASF403
+ 1780 0bb4 FD01     		.2byte	0x1fd
+ 1781 0bb6 09       		.uleb128 0x9
+ 1782 0bb7 5D010000 		.4byte	.LASF404
+ 1783 0bbb FE01     		.2byte	0x1fe
+ 1784 0bbd 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 38
+
+
+ 1785 0bbe A2090000 		.4byte	.LASF405
+ 1786 0bc2 FF01     		.2byte	0x1ff
+ 1787 0bc4 09       		.uleb128 0x9
+ 1788 0bc5 3A0C0000 		.4byte	.LASF406
+ 1789 0bc9 0002     		.2byte	0x200
+ 1790 0bcb 09       		.uleb128 0x9
+ 1791 0bcc F11F0000 		.4byte	.LASF407
+ 1792 0bd0 0102     		.2byte	0x201
+ 1793 0bd2 09       		.uleb128 0x9
+ 1794 0bd3 DA250000 		.4byte	.LASF408
+ 1795 0bd7 0202     		.2byte	0x202
+ 1796 0bd9 09       		.uleb128 0x9
+ 1797 0bda 391D0000 		.4byte	.LASF409
+ 1798 0bde 0302     		.2byte	0x203
+ 1799 0be0 09       		.uleb128 0x9
+ 1800 0be1 A7290000 		.4byte	.LASF410
+ 1801 0be5 0402     		.2byte	0x204
+ 1802 0be7 09       		.uleb128 0x9
+ 1803 0be8 E3340000 		.4byte	.LASF411
+ 1804 0bec 0502     		.2byte	0x205
+ 1805 0bee 09       		.uleb128 0x9
+ 1806 0bef EF2D0000 		.4byte	.LASF412
+ 1807 0bf3 0602     		.2byte	0x206
+ 1808 0bf5 09       		.uleb128 0x9
+ 1809 0bf6 4C360000 		.4byte	.LASF413
+ 1810 0bfa 0702     		.2byte	0x207
+ 1811 0bfc 09       		.uleb128 0x9
+ 1812 0bfd D52D0000 		.4byte	.LASF414
+ 1813 0c01 0802     		.2byte	0x208
+ 1814 0c03 09       		.uleb128 0x9
+ 1815 0c04 48070000 		.4byte	.LASF415
+ 1816 0c08 0902     		.2byte	0x209
+ 1817 0c0a 09       		.uleb128 0x9
+ 1818 0c0b 94150000 		.4byte	.LASF416
+ 1819 0c0f 0A02     		.2byte	0x20a
+ 1820 0c11 09       		.uleb128 0x9
+ 1821 0c12 A8080000 		.4byte	.LASF417
+ 1822 0c16 0B02     		.2byte	0x20b
+ 1823 0c18 09       		.uleb128 0x9
+ 1824 0c19 E8090000 		.4byte	.LASF418
+ 1825 0c1d 0C02     		.2byte	0x20c
+ 1826 0c1f 09       		.uleb128 0x9
+ 1827 0c20 AA040000 		.4byte	.LASF419
+ 1828 0c24 0D02     		.2byte	0x20d
+ 1829 0c26 09       		.uleb128 0x9
+ 1830 0c27 E8190000 		.4byte	.LASF420
+ 1831 0c2b 0E02     		.2byte	0x20e
+ 1832 0c2d 09       		.uleb128 0x9
+ 1833 0c2e 96100000 		.4byte	.LASF421
+ 1834 0c32 0F02     		.2byte	0x20f
+ 1835 0c34 09       		.uleb128 0x9
+ 1836 0c35 1E230000 		.4byte	.LASF422
+ 1837 0c39 1002     		.2byte	0x210
+ 1838 0c3b 09       		.uleb128 0x9
+ 1839 0c3c F51B0000 		.4byte	.LASF423
+ 1840 0c40 1102     		.2byte	0x211
+ 1841 0c42 09       		.uleb128 0x9
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 39
+
+
+ 1842 0c43 15200000 		.4byte	.LASF424
+ 1843 0c47 1202     		.2byte	0x212
+ 1844 0c49 09       		.uleb128 0x9
+ 1845 0c4a D1320000 		.4byte	.LASF425
+ 1846 0c4e 1302     		.2byte	0x213
+ 1847 0c50 09       		.uleb128 0x9
+ 1848 0c51 9C270000 		.4byte	.LASF426
+ 1849 0c55 1402     		.2byte	0x214
+ 1850 0c57 09       		.uleb128 0x9
+ 1851 0c58 60270000 		.4byte	.LASF427
+ 1852 0c5c 1502     		.2byte	0x215
+ 1853 0c5e 09       		.uleb128 0x9
+ 1854 0c5f D5020000 		.4byte	.LASF428
+ 1855 0c63 1602     		.2byte	0x216
+ 1856 0c65 09       		.uleb128 0x9
+ 1857 0c66 0A070000 		.4byte	.LASF429
+ 1858 0c6a 1702     		.2byte	0x217
+ 1859 0c6c 09       		.uleb128 0x9
+ 1860 0c6d 97330000 		.4byte	.LASF430
+ 1861 0c71 1802     		.2byte	0x218
+ 1862 0c73 09       		.uleb128 0x9
+ 1863 0c74 B8010000 		.4byte	.LASF431
+ 1864 0c78 1902     		.2byte	0x219
+ 1865 0c7a 09       		.uleb128 0x9
+ 1866 0c7b E3330000 		.4byte	.LASF432
+ 1867 0c7f 1A02     		.2byte	0x21a
+ 1868 0c81 09       		.uleb128 0x9
+ 1869 0c82 E4170000 		.4byte	.LASF433
+ 1870 0c86 1B02     		.2byte	0x21b
+ 1871 0c88 09       		.uleb128 0x9
+ 1872 0c89 B02B0000 		.4byte	.LASF434
+ 1873 0c8d 1C02     		.2byte	0x21c
+ 1874 0c8f 09       		.uleb128 0x9
+ 1875 0c90 35290000 		.4byte	.LASF435
+ 1876 0c94 1D02     		.2byte	0x21d
+ 1877 0c96 09       		.uleb128 0x9
+ 1878 0c97 AF0F0000 		.4byte	.LASF436
+ 1879 0c9b 1E02     		.2byte	0x21e
+ 1880 0c9d 09       		.uleb128 0x9
+ 1881 0c9e 1B2A0000 		.4byte	.LASF437
+ 1882 0ca2 1F02     		.2byte	0x21f
+ 1883 0ca4 09       		.uleb128 0x9
+ 1884 0ca5 360B0000 		.4byte	.LASF438
+ 1885 0ca9 2002     		.2byte	0x220
+ 1886 0cab 09       		.uleb128 0x9
+ 1887 0cac 670F0000 		.4byte	.LASF439
+ 1888 0cb0 2102     		.2byte	0x221
+ 1889 0cb2 09       		.uleb128 0x9
+ 1890 0cb3 9F370000 		.4byte	.LASF440
+ 1891 0cb7 2202     		.2byte	0x222
+ 1892 0cb9 09       		.uleb128 0x9
+ 1893 0cba 4C2D0000 		.4byte	.LASF441
+ 1894 0cbe 00E0     		.2byte	0xe000
+ 1895 0cc0 00       		.byte	0
+ 1896 0cc1 12       		.uleb128 0x12
+ 1897 0cc2 AA2C0000 		.4byte	.LASF444
+ 1898 0cc6 01       		.byte	0x1
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 40
+
+
+ 1899 0cc7 2F       		.byte	0x2f
+ 1900 0cc8 00000000 		.4byte	.LFB36
+ 1901 0ccc AC000000 		.4byte	.LFE36-.LFB36
+ 1902 0cd0 01       		.uleb128 0x1
+ 1903 0cd1 9C       		.byte	0x9c
+ 1904 0cd2 010D0000 		.4byte	0xd01
+ 1905 0cd6 13       		.uleb128 0x13
+ 1906 0cd7 100D0000 		.4byte	.LASF442
+ 1907 0cdb 01       		.byte	0x1
+ 1908 0cdc 2F       		.byte	0x2f
+ 1909 0cdd 83000000 		.4byte	0x83
+ 1910 0ce1 02       		.uleb128 0x2
+ 1911 0ce2 91       		.byte	0x91
+ 1912 0ce3 6C       		.sleb128 -20
+ 1913 0ce4 13       		.uleb128 0x13
+ 1914 0ce5 44320000 		.4byte	.LASF443
+ 1915 0ce9 01       		.byte	0x1
+ 1916 0cea 2F       		.byte	0x2f
+ 1917 0ceb B7000000 		.4byte	0xb7
+ 1918 0cef 02       		.uleb128 0x2
+ 1919 0cf0 91       		.byte	0x91
+ 1920 0cf1 68       		.sleb128 -24
+ 1921 0cf2 14       		.uleb128 0x14
+ 1922 0cf3 E1050000 		.4byte	.LASF446
+ 1923 0cf7 01       		.byte	0x1
+ 1924 0cf8 31       		.byte	0x31
+ 1925 0cf9 6B000000 		.4byte	0x6b
+ 1926 0cfd 02       		.uleb128 0x2
+ 1927 0cfe 91       		.byte	0x91
+ 1928 0cff 77       		.sleb128 -9
+ 1929 0d00 00       		.byte	0
+ 1930 0d01 12       		.uleb128 0x12
+ 1931 0d02 0E240000 		.4byte	.LASF445
+ 1932 0d06 01       		.byte	0x1
+ 1933 0d07 6D       		.byte	0x6d
+ 1934 0d08 00000000 		.4byte	.LFB37
+ 1935 0d0c 54000000 		.4byte	.LFE37-.LFB37
+ 1936 0d10 01       		.uleb128 0x1
+ 1937 0d11 9C       		.byte	0x9c
+ 1938 0d12 330D0000 		.4byte	0xd33
+ 1939 0d16 14       		.uleb128 0x14
+ 1940 0d17 B31B0000 		.4byte	.LASF447
+ 1941 0d1b 01       		.byte	0x1
+ 1942 0d1c 6F       		.byte	0x6f
+ 1943 0d1d 50030000 		.4byte	0x350
+ 1944 0d21 02       		.uleb128 0x2
+ 1945 0d22 91       		.byte	0x91
+ 1946 0d23 6E       		.sleb128 -18
+ 1947 0d24 14       		.uleb128 0x14
+ 1948 0d25 58290000 		.4byte	.LASF448
+ 1949 0d29 01       		.byte	0x1
+ 1950 0d2a 70       		.byte	0x70
+ 1951 0d2b 77000000 		.4byte	0x77
+ 1952 0d2f 02       		.uleb128 0x2
+ 1953 0d30 91       		.byte	0x91
+ 1954 0d31 6C       		.sleb128 -20
+ 1955 0d32 00       		.byte	0
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 41
+
+
+ 1956 0d33 15       		.uleb128 0x15
+ 1957 0d34 91340000 		.4byte	.LASF449
+ 1958 0d38 01       		.byte	0x1
+ 1959 0d39 0301     		.2byte	0x103
+ 1960 0d3b 00000000 		.4byte	.LFB38
+ 1961 0d3f DC000000 		.4byte	.LFE38-.LFB38
+ 1962 0d43 01       		.uleb128 0x1
+ 1963 0d44 9C       		.byte	0x9c
+ 1964 0d45 7D0D0000 		.4byte	0xd7d
+ 1965 0d49 16       		.uleb128 0x16
+ 1966 0d4a 87150000 		.4byte	.LASF450
+ 1967 0d4e 01       		.byte	0x1
+ 1968 0d4f 0501     		.2byte	0x105
+ 1969 0d51 83000000 		.4byte	0x83
+ 1970 0d55 05       		.uleb128 0x5
+ 1971 0d56 03       		.byte	0x3
+ 1972 0d57 00000000 		.4byte	batteryTimer.8590
+ 1973 0d5b 16       		.uleb128 0x16
+ 1974 0d5c 98170000 		.4byte	.LASF451
+ 1975 0d60 01       		.byte	0x1
+ 1976 0d61 0601     		.2byte	0x106
+ 1977 0d63 6B000000 		.4byte	0x6b
+ 1978 0d67 05       		.uleb128 0x5
+ 1979 0d68 03       		.byte	0x3
+ 1980 0d69 04000000 		.4byte	batteryLevel.8591
+ 1981 0d6d 16       		.uleb128 0x16
+ 1982 0d6e B31B0000 		.4byte	.LASF447
+ 1983 0d72 01       		.byte	0x1
+ 1984 0d73 0701     		.2byte	0x107
+ 1985 0d75 50030000 		.4byte	0x350
+ 1986 0d79 02       		.uleb128 0x2
+ 1987 0d7a 91       		.byte	0x91
+ 1988 0d7b 6E       		.sleb128 -18
+ 1989 0d7c 00       		.byte	0
+ 1990 0d7d 17       		.uleb128 0x17
+ 1991 0d7e 85100000 		.4byte	.LASF452
+ 1992 0d82 07       		.byte	0x7
+ 1993 0d83 AA0A     		.2byte	0xaaa
+ 1994 0d85 86030000 		.4byte	0x386
+ 1995 0d89 17       		.uleb128 0x17
+ 1996 0d8a C50A0000 		.4byte	.LASF453
+ 1997 0d8e 07       		.byte	0x7
+ 1998 0d8f AB0A     		.2byte	0xaab
+ 1999 0d91 A4000000 		.4byte	0xa4
+ 2000 0d95 18       		.uleb128 0x18
+ 2001 0d96 97020000 		.4byte	.LASF454
+ 2002 0d9a 01       		.byte	0x1
+ 2003 0d9b 17       		.byte	0x17
+ 2004 0d9c 77000000 		.4byte	0x77
+ 2005 0da0 05       		.uleb128 0x5
+ 2006 0da1 03       		.byte	0x3
+ 2007 0da2 00000000 		.4byte	batterySimulationNotify
+ 2008 0da6 00       		.byte	0
+ 2009              		.section	.debug_abbrev,"",%progbits
+ 2010              	.Ldebug_abbrev0:
+ 2011 0000 01       		.uleb128 0x1
+ 2012 0001 11       		.uleb128 0x11
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 42
+
+
+ 2013 0002 01       		.byte	0x1
+ 2014 0003 25       		.uleb128 0x25
+ 2015 0004 0E       		.uleb128 0xe
+ 2016 0005 13       		.uleb128 0x13
+ 2017 0006 0B       		.uleb128 0xb
+ 2018 0007 03       		.uleb128 0x3
+ 2019 0008 0E       		.uleb128 0xe
+ 2020 0009 1B       		.uleb128 0x1b
+ 2021 000a 0E       		.uleb128 0xe
+ 2022 000b 55       		.uleb128 0x55
+ 2023 000c 17       		.uleb128 0x17
+ 2024 000d 11       		.uleb128 0x11
+ 2025 000e 01       		.uleb128 0x1
+ 2026 000f 10       		.uleb128 0x10
+ 2027 0010 17       		.uleb128 0x17
+ 2028 0011 00       		.byte	0
+ 2029 0012 00       		.byte	0
+ 2030 0013 02       		.uleb128 0x2
+ 2031 0014 24       		.uleb128 0x24
+ 2032 0015 00       		.byte	0
+ 2033 0016 0B       		.uleb128 0xb
+ 2034 0017 0B       		.uleb128 0xb
+ 2035 0018 3E       		.uleb128 0x3e
+ 2036 0019 0B       		.uleb128 0xb
+ 2037 001a 03       		.uleb128 0x3
+ 2038 001b 0E       		.uleb128 0xe
+ 2039 001c 00       		.byte	0
+ 2040 001d 00       		.byte	0
+ 2041 001e 03       		.uleb128 0x3
+ 2042 001f 24       		.uleb128 0x24
+ 2043 0020 00       		.byte	0
+ 2044 0021 0B       		.uleb128 0xb
+ 2045 0022 0B       		.uleb128 0xb
+ 2046 0023 3E       		.uleb128 0x3e
+ 2047 0024 0B       		.uleb128 0xb
+ 2048 0025 03       		.uleb128 0x3
+ 2049 0026 08       		.uleb128 0x8
+ 2050 0027 00       		.byte	0
+ 2051 0028 00       		.byte	0
+ 2052 0029 04       		.uleb128 0x4
+ 2053 002a 16       		.uleb128 0x16
+ 2054 002b 00       		.byte	0
+ 2055 002c 03       		.uleb128 0x3
+ 2056 002d 0E       		.uleb128 0xe
+ 2057 002e 3A       		.uleb128 0x3a
+ 2058 002f 0B       		.uleb128 0xb
+ 2059 0030 3B       		.uleb128 0x3b
+ 2060 0031 05       		.uleb128 0x5
+ 2061 0032 49       		.uleb128 0x49
+ 2062 0033 13       		.uleb128 0x13
+ 2063 0034 00       		.byte	0
+ 2064 0035 00       		.byte	0
+ 2065 0036 05       		.uleb128 0x5
+ 2066 0037 35       		.uleb128 0x35
+ 2067 0038 00       		.byte	0
+ 2068 0039 49       		.uleb128 0x49
+ 2069 003a 13       		.uleb128 0x13
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 43
+
+
+ 2070 003b 00       		.byte	0
+ 2071 003c 00       		.byte	0
+ 2072 003d 06       		.uleb128 0x6
+ 2073 003e 0F       		.uleb128 0xf
+ 2074 003f 00       		.byte	0
+ 2075 0040 0B       		.uleb128 0xb
+ 2076 0041 0B       		.uleb128 0xb
+ 2077 0042 00       		.byte	0
+ 2078 0043 00       		.byte	0
+ 2079 0044 07       		.uleb128 0x7
+ 2080 0045 04       		.uleb128 0x4
+ 2081 0046 01       		.byte	0x1
+ 2082 0047 0B       		.uleb128 0xb
+ 2083 0048 0B       		.uleb128 0xb
+ 2084 0049 49       		.uleb128 0x49
+ 2085 004a 13       		.uleb128 0x13
+ 2086 004b 3A       		.uleb128 0x3a
+ 2087 004c 0B       		.uleb128 0xb
+ 2088 004d 3B       		.uleb128 0x3b
+ 2089 004e 05       		.uleb128 0x5
+ 2090 004f 01       		.uleb128 0x1
+ 2091 0050 13       		.uleb128 0x13
+ 2092 0051 00       		.byte	0
+ 2093 0052 00       		.byte	0
+ 2094 0053 08       		.uleb128 0x8
+ 2095 0054 28       		.uleb128 0x28
+ 2096 0055 00       		.byte	0
+ 2097 0056 03       		.uleb128 0x3
+ 2098 0057 0E       		.uleb128 0xe
+ 2099 0058 1C       		.uleb128 0x1c
+ 2100 0059 0B       		.uleb128 0xb
+ 2101 005a 00       		.byte	0
+ 2102 005b 00       		.byte	0
+ 2103 005c 09       		.uleb128 0x9
+ 2104 005d 28       		.uleb128 0x28
+ 2105 005e 00       		.byte	0
+ 2106 005f 03       		.uleb128 0x3
+ 2107 0060 0E       		.uleb128 0xe
+ 2108 0061 1C       		.uleb128 0x1c
+ 2109 0062 05       		.uleb128 0x5
+ 2110 0063 00       		.byte	0
+ 2111 0064 00       		.byte	0
+ 2112 0065 0A       		.uleb128 0xa
+ 2113 0066 0F       		.uleb128 0xf
+ 2114 0067 00       		.byte	0
+ 2115 0068 0B       		.uleb128 0xb
+ 2116 0069 0B       		.uleb128 0xb
+ 2117 006a 49       		.uleb128 0x49
+ 2118 006b 13       		.uleb128 0x13
+ 2119 006c 00       		.byte	0
+ 2120 006d 00       		.byte	0
+ 2121 006e 0B       		.uleb128 0xb
+ 2122 006f 13       		.uleb128 0x13
+ 2123 0070 01       		.byte	0x1
+ 2124 0071 0B       		.uleb128 0xb
+ 2125 0072 0B       		.uleb128 0xb
+ 2126 0073 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 44
+
+
+ 2127 0074 0B       		.uleb128 0xb
+ 2128 0075 3B       		.uleb128 0x3b
+ 2129 0076 05       		.uleb128 0x5
+ 2130 0077 01       		.uleb128 0x1
+ 2131 0078 13       		.uleb128 0x13
+ 2132 0079 00       		.byte	0
+ 2133 007a 00       		.byte	0
+ 2134 007b 0C       		.uleb128 0xc
+ 2135 007c 0D       		.uleb128 0xd
+ 2136 007d 00       		.byte	0
+ 2137 007e 03       		.uleb128 0x3
+ 2138 007f 0E       		.uleb128 0xe
+ 2139 0080 3A       		.uleb128 0x3a
+ 2140 0081 0B       		.uleb128 0xb
+ 2141 0082 3B       		.uleb128 0x3b
+ 2142 0083 05       		.uleb128 0x5
+ 2143 0084 49       		.uleb128 0x49
+ 2144 0085 13       		.uleb128 0x13
+ 2145 0086 38       		.uleb128 0x38
+ 2146 0087 0B       		.uleb128 0xb
+ 2147 0088 00       		.byte	0
+ 2148 0089 00       		.byte	0
+ 2149 008a 0D       		.uleb128 0xd
+ 2150 008b 0D       		.uleb128 0xd
+ 2151 008c 00       		.byte	0
+ 2152 008d 03       		.uleb128 0x3
+ 2153 008e 08       		.uleb128 0x8
+ 2154 008f 3A       		.uleb128 0x3a
+ 2155 0090 0B       		.uleb128 0xb
+ 2156 0091 3B       		.uleb128 0x3b
+ 2157 0092 05       		.uleb128 0x5
+ 2158 0093 49       		.uleb128 0x49
+ 2159 0094 13       		.uleb128 0x13
+ 2160 0095 38       		.uleb128 0x38
+ 2161 0096 0B       		.uleb128 0xb
+ 2162 0097 00       		.byte	0
+ 2163 0098 00       		.byte	0
+ 2164 0099 0E       		.uleb128 0xe
+ 2165 009a 04       		.uleb128 0x4
+ 2166 009b 01       		.byte	0x1
+ 2167 009c 0B       		.uleb128 0xb
+ 2168 009d 0B       		.uleb128 0xb
+ 2169 009e 49       		.uleb128 0x49
+ 2170 009f 13       		.uleb128 0x13
+ 2171 00a0 3A       		.uleb128 0x3a
+ 2172 00a1 0B       		.uleb128 0xb
+ 2173 00a2 3B       		.uleb128 0x3b
+ 2174 00a3 0B       		.uleb128 0xb
+ 2175 00a4 01       		.uleb128 0x1
+ 2176 00a5 13       		.uleb128 0x13
+ 2177 00a6 00       		.byte	0
+ 2178 00a7 00       		.byte	0
+ 2179 00a8 0F       		.uleb128 0xf
+ 2180 00a9 16       		.uleb128 0x16
+ 2181 00aa 00       		.byte	0
+ 2182 00ab 03       		.uleb128 0x3
+ 2183 00ac 0E       		.uleb128 0xe
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 45
+
+
+ 2184 00ad 3A       		.uleb128 0x3a
+ 2185 00ae 0B       		.uleb128 0xb
+ 2186 00af 3B       		.uleb128 0x3b
+ 2187 00b0 0B       		.uleb128 0xb
+ 2188 00b1 49       		.uleb128 0x49
+ 2189 00b2 13       		.uleb128 0x13
+ 2190 00b3 00       		.byte	0
+ 2191 00b4 00       		.byte	0
+ 2192 00b5 10       		.uleb128 0x10
+ 2193 00b6 13       		.uleb128 0x13
+ 2194 00b7 01       		.byte	0x1
+ 2195 00b8 0B       		.uleb128 0xb
+ 2196 00b9 0B       		.uleb128 0xb
+ 2197 00ba 3A       		.uleb128 0x3a
+ 2198 00bb 0B       		.uleb128 0xb
+ 2199 00bc 3B       		.uleb128 0x3b
+ 2200 00bd 0B       		.uleb128 0xb
+ 2201 00be 01       		.uleb128 0x1
+ 2202 00bf 13       		.uleb128 0x13
+ 2203 00c0 00       		.byte	0
+ 2204 00c1 00       		.byte	0
+ 2205 00c2 11       		.uleb128 0x11
+ 2206 00c3 0D       		.uleb128 0xd
+ 2207 00c4 00       		.byte	0
+ 2208 00c5 03       		.uleb128 0x3
+ 2209 00c6 0E       		.uleb128 0xe
+ 2210 00c7 3A       		.uleb128 0x3a
+ 2211 00c8 0B       		.uleb128 0xb
+ 2212 00c9 3B       		.uleb128 0x3b
+ 2213 00ca 0B       		.uleb128 0xb
+ 2214 00cb 49       		.uleb128 0x49
+ 2215 00cc 13       		.uleb128 0x13
+ 2216 00cd 38       		.uleb128 0x38
+ 2217 00ce 0B       		.uleb128 0xb
+ 2218 00cf 00       		.byte	0
+ 2219 00d0 00       		.byte	0
+ 2220 00d1 12       		.uleb128 0x12
+ 2221 00d2 2E       		.uleb128 0x2e
+ 2222 00d3 01       		.byte	0x1
+ 2223 00d4 3F       		.uleb128 0x3f
+ 2224 00d5 19       		.uleb128 0x19
+ 2225 00d6 03       		.uleb128 0x3
+ 2226 00d7 0E       		.uleb128 0xe
+ 2227 00d8 3A       		.uleb128 0x3a
+ 2228 00d9 0B       		.uleb128 0xb
+ 2229 00da 3B       		.uleb128 0x3b
+ 2230 00db 0B       		.uleb128 0xb
+ 2231 00dc 27       		.uleb128 0x27
+ 2232 00dd 19       		.uleb128 0x19
+ 2233 00de 11       		.uleb128 0x11
+ 2234 00df 01       		.uleb128 0x1
+ 2235 00e0 12       		.uleb128 0x12
+ 2236 00e1 06       		.uleb128 0x6
+ 2237 00e2 40       		.uleb128 0x40
+ 2238 00e3 18       		.uleb128 0x18
+ 2239 00e4 9642     		.uleb128 0x2116
+ 2240 00e6 19       		.uleb128 0x19
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 46
+
+
+ 2241 00e7 01       		.uleb128 0x1
+ 2242 00e8 13       		.uleb128 0x13
+ 2243 00e9 00       		.byte	0
+ 2244 00ea 00       		.byte	0
+ 2245 00eb 13       		.uleb128 0x13
+ 2246 00ec 05       		.uleb128 0x5
+ 2247 00ed 00       		.byte	0
+ 2248 00ee 03       		.uleb128 0x3
+ 2249 00ef 0E       		.uleb128 0xe
+ 2250 00f0 3A       		.uleb128 0x3a
+ 2251 00f1 0B       		.uleb128 0xb
+ 2252 00f2 3B       		.uleb128 0x3b
+ 2253 00f3 0B       		.uleb128 0xb
+ 2254 00f4 49       		.uleb128 0x49
+ 2255 00f5 13       		.uleb128 0x13
+ 2256 00f6 02       		.uleb128 0x2
+ 2257 00f7 18       		.uleb128 0x18
+ 2258 00f8 00       		.byte	0
+ 2259 00f9 00       		.byte	0
+ 2260 00fa 14       		.uleb128 0x14
+ 2261 00fb 34       		.uleb128 0x34
+ 2262 00fc 00       		.byte	0
+ 2263 00fd 03       		.uleb128 0x3
+ 2264 00fe 0E       		.uleb128 0xe
+ 2265 00ff 3A       		.uleb128 0x3a
+ 2266 0100 0B       		.uleb128 0xb
+ 2267 0101 3B       		.uleb128 0x3b
+ 2268 0102 0B       		.uleb128 0xb
+ 2269 0103 49       		.uleb128 0x49
+ 2270 0104 13       		.uleb128 0x13
+ 2271 0105 02       		.uleb128 0x2
+ 2272 0106 18       		.uleb128 0x18
+ 2273 0107 00       		.byte	0
+ 2274 0108 00       		.byte	0
+ 2275 0109 15       		.uleb128 0x15
+ 2276 010a 2E       		.uleb128 0x2e
+ 2277 010b 01       		.byte	0x1
+ 2278 010c 3F       		.uleb128 0x3f
+ 2279 010d 19       		.uleb128 0x19
+ 2280 010e 03       		.uleb128 0x3
+ 2281 010f 0E       		.uleb128 0xe
+ 2282 0110 3A       		.uleb128 0x3a
+ 2283 0111 0B       		.uleb128 0xb
+ 2284 0112 3B       		.uleb128 0x3b
+ 2285 0113 05       		.uleb128 0x5
+ 2286 0114 27       		.uleb128 0x27
+ 2287 0115 19       		.uleb128 0x19
+ 2288 0116 11       		.uleb128 0x11
+ 2289 0117 01       		.uleb128 0x1
+ 2290 0118 12       		.uleb128 0x12
+ 2291 0119 06       		.uleb128 0x6
+ 2292 011a 40       		.uleb128 0x40
+ 2293 011b 18       		.uleb128 0x18
+ 2294 011c 9642     		.uleb128 0x2116
+ 2295 011e 19       		.uleb128 0x19
+ 2296 011f 01       		.uleb128 0x1
+ 2297 0120 13       		.uleb128 0x13
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 47
+
+
+ 2298 0121 00       		.byte	0
+ 2299 0122 00       		.byte	0
+ 2300 0123 16       		.uleb128 0x16
+ 2301 0124 34       		.uleb128 0x34
+ 2302 0125 00       		.byte	0
+ 2303 0126 03       		.uleb128 0x3
+ 2304 0127 0E       		.uleb128 0xe
+ 2305 0128 3A       		.uleb128 0x3a
+ 2306 0129 0B       		.uleb128 0xb
+ 2307 012a 3B       		.uleb128 0x3b
+ 2308 012b 05       		.uleb128 0x5
+ 2309 012c 49       		.uleb128 0x49
+ 2310 012d 13       		.uleb128 0x13
+ 2311 012e 02       		.uleb128 0x2
+ 2312 012f 18       		.uleb128 0x18
+ 2313 0130 00       		.byte	0
+ 2314 0131 00       		.byte	0
+ 2315 0132 17       		.uleb128 0x17
+ 2316 0133 34       		.uleb128 0x34
+ 2317 0134 00       		.byte	0
+ 2318 0135 03       		.uleb128 0x3
+ 2319 0136 0E       		.uleb128 0xe
+ 2320 0137 3A       		.uleb128 0x3a
+ 2321 0138 0B       		.uleb128 0xb
+ 2322 0139 3B       		.uleb128 0x3b
+ 2323 013a 05       		.uleb128 0x5
+ 2324 013b 49       		.uleb128 0x49
+ 2325 013c 13       		.uleb128 0x13
+ 2326 013d 3F       		.uleb128 0x3f
+ 2327 013e 19       		.uleb128 0x19
+ 2328 013f 3C       		.uleb128 0x3c
+ 2329 0140 19       		.uleb128 0x19
+ 2330 0141 00       		.byte	0
+ 2331 0142 00       		.byte	0
+ 2332 0143 18       		.uleb128 0x18
+ 2333 0144 34       		.uleb128 0x34
+ 2334 0145 00       		.byte	0
+ 2335 0146 03       		.uleb128 0x3
+ 2336 0147 0E       		.uleb128 0xe
+ 2337 0148 3A       		.uleb128 0x3a
+ 2338 0149 0B       		.uleb128 0xb
+ 2339 014a 3B       		.uleb128 0x3b
+ 2340 014b 0B       		.uleb128 0xb
+ 2341 014c 49       		.uleb128 0x49
+ 2342 014d 13       		.uleb128 0x13
+ 2343 014e 3F       		.uleb128 0x3f
+ 2344 014f 19       		.uleb128 0x19
+ 2345 0150 02       		.uleb128 0x2
+ 2346 0151 18       		.uleb128 0x18
+ 2347 0152 00       		.byte	0
+ 2348 0153 00       		.byte	0
+ 2349 0154 00       		.byte	0
+ 2350              		.section	.debug_aranges,"",%progbits
+ 2351 0000 2C000000 		.4byte	0x2c
+ 2352 0004 0200     		.2byte	0x2
+ 2353 0006 00000000 		.4byte	.Ldebug_info0
+ 2354 000a 04       		.byte	0x4
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 48
+
+
+ 2355 000b 00       		.byte	0
+ 2356 000c 0000     		.2byte	0
+ 2357 000e 0000     		.2byte	0
+ 2358 0010 00000000 		.4byte	.LFB36
+ 2359 0014 AC000000 		.4byte	.LFE36-.LFB36
+ 2360 0018 00000000 		.4byte	.LFB37
+ 2361 001c 54000000 		.4byte	.LFE37-.LFB37
+ 2362 0020 00000000 		.4byte	.LFB38
+ 2363 0024 DC000000 		.4byte	.LFE38-.LFB38
+ 2364 0028 00000000 		.4byte	0
+ 2365 002c 00000000 		.4byte	0
+ 2366              		.section	.debug_ranges,"",%progbits
+ 2367              	.Ldebug_ranges0:
+ 2368 0000 00000000 		.4byte	.LFB36
+ 2369 0004 AC000000 		.4byte	.LFE36
+ 2370 0008 00000000 		.4byte	.LFB37
+ 2371 000c 54000000 		.4byte	.LFE37
+ 2372 0010 00000000 		.4byte	.LFB38
+ 2373 0014 DC000000 		.4byte	.LFE38
+ 2374 0018 00000000 		.4byte	0
+ 2375 001c 00000000 		.4byte	0
+ 2376              		.section	.debug_line,"",%progbits
+ 2377              	.Ldebug_line0:
+ 2378 0000 08010000 		.section	.debug_str,"MS",%progbits,1
+ 2378      02009200 
+ 2378      00000201 
+ 2378      FB0E0D00 
+ 2378      01010101 
+ 2379              	.LASF165:
+ 2380 0000 4359424C 		.ascii	"CYBLE_EVT_GATTC_INCL_DISCOVERY_COMPLETE\000"
+ 2380      455F4556 
+ 2380      545F4741 
+ 2380      5454435F 
+ 2380      494E434C 
+ 2381              	.LASF367:
+ 2382 0028 4359424C 		.ascii	"CYBLE_EVT_PASSC_READ_CHAR_RESPONSE\000"
+ 2382      455F4556 
+ 2382      545F5041 
+ 2382      5353435F 
+ 2382      52454144 
+ 2383              	.LASF70:
+ 2384 004b 4359424C 		.ascii	"CYBLE_EVT_GATTC_STOP_CMD_COMPLETE\000"
+ 2384      455F4556 
+ 2384      545F4741 
+ 2384      5454435F 
+ 2384      53544F50 
+ 2385              	.LASF66:
+ 2386 006d 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_NTF\000"
+ 2386      455F4556 
+ 2386      545F4741 
+ 2386      5454435F 
+ 2386      48414E44 
+ 2387              	.LASF164:
+ 2388 008e 4359424C 		.ascii	"CYBLE_EVT_GATTC_SRVC_DISCOVERY_COMPLETE\000"
+ 2388      455F4556 
+ 2388      545F4741 
+ 2388      5454435F 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 49
+
+
+ 2388      53525643 
+ 2389              	.LASF247:
+ 2390 00b6 4359424C 		.ascii	"CYBLE_EVT_CPSC_READ_CHAR_RESPONSE\000"
+ 2390      455F4556 
+ 2390      545F4350 
+ 2390      53435F52 
+ 2390      4541445F 
+ 2391              	.LASF173:
+ 2392 00d8 4359424C 		.ascii	"CYBLE_EVT_AIOSS_CHAR_WRITE\000"
+ 2392      455F4556 
+ 2392      545F4149 
+ 2392      4F53535F 
+ 2392      43484152 
+ 2393              	.LASF274:
+ 2394 00f3 4359424C 		.ascii	"CYBLE_EVT_ESSS_NOTIFICATION_DISABLED\000"
+ 2394      455F4556 
+ 2394      545F4553 
+ 2394      53535F4E 
+ 2394      4F544946 
+ 2395              	.LASF212:
+ 2396 0118 4359424C 		.ascii	"CYBLE_EVT_BLSS_INDICATION_DISABLED\000"
+ 2396      455F4556 
+ 2396      545F424C 
+ 2396      53535F49 
+ 2396      4E444943 
+ 2397              	.LASF268:
+ 2398 013b 4359424C 		.ascii	"CYBLE_EVT_CTSC_READ_CHAR_RESPONSE\000"
+ 2398      455F4556 
+ 2398      545F4354 
+ 2398      53435F52 
+ 2398      4541445F 
+ 2399              	.LASF404:
+ 2400 015d 4359424C 		.ascii	"CYBLE_EVT_TPSC_NOTIFICATION\000"
+ 2400      455F4556 
+ 2400      545F5450 
+ 2400      53435F4E 
+ 2400      4F544946 
+ 2401              	.LASF332:
+ 2402 0179 4359424C 		.ascii	"CYBLE_EVT_HTSC_NOTIFICATION\000"
+ 2402      455F4556 
+ 2402      545F4854 
+ 2402      53435F4E 
+ 2402      4F544946 
+ 2403              	.LASF240:
+ 2404 0195 4359424C 		.ascii	"CYBLE_EVT_CPSS_INDICATION_DISABLED\000"
+ 2404      455F4556 
+ 2404      545F4350 
+ 2404      53535F49 
+ 2404      4E444943 
+ 2405              	.LASF431:
+ 2406 01b8 4359424C 		.ascii	"CYBLE_EVT_WPTSC_READ_CHAR_RESPONSE\000"
+ 2406      455F4556 
+ 2406      545F5750 
+ 2406      5453435F 
+ 2406      52454144 
+ 2407              	.LASF290:
+ 2408 01db 4359424C 		.ascii	"CYBLE_EVT_GLSS_NOTIFICATION_DISABLED\000"
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 50
+
+
+ 2408      455F4556 
+ 2408      545F474C 
+ 2408      53535F4E 
+ 2408      4F544946 
+ 2409              	.LASF25:
+ 2410 0200 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ\000"
+ 2410      455F4556 
+ 2410      545F4741 
+ 2410      505F4155 
+ 2410      54485F52 
+ 2411              	.LASF347:
+ 2412 0217 4359424C 		.ascii	"CYBLE_EVT_LLSS_WRITE_CHAR_REQ\000"
+ 2412      455F4556 
+ 2412      545F4C4C 
+ 2412      53535F57 
+ 2412      52495445 
+ 2413              	.LASF389:
+ 2414 0235 4359424C 		.ascii	"CYBLE_EVT_RSCSC_INDICATION\000"
+ 2414      455F4556 
+ 2414      545F5253 
+ 2414      4353435F 
+ 2414      494E4449 
+ 2415              	.LASF241:
+ 2416 0250 4359424C 		.ascii	"CYBLE_EVT_CPSS_INDICATION_CONFIRMED\000"
+ 2416      455F4556 
+ 2416      545F4350 
+ 2416      53535F49 
+ 2416      4E444943 
+ 2417              	.LASF167:
+ 2418 0274 4359424C 		.ascii	"CYBLE_EVT_GATTC_DISCOVERY_COMPLETE\000"
+ 2418      455F4556 
+ 2418      545F4741 
+ 2418      5454435F 
+ 2418      44495343 
+ 2419              	.LASF454:
+ 2420 0297 62617474 		.ascii	"batterySimulationNotify\000"
+ 2420      65727953 
+ 2420      696D756C 
+ 2420      6174696F 
+ 2420      6E4E6F74 
+ 2421              	.LASF158:
+ 2422 02af 4359424C 		.ascii	"CYBLE_EVT_GATTC_INCL_DISCOVERY_FAILED\000"
+ 2422      455F4556 
+ 2422      545F4741 
+ 2422      5454435F 
+ 2422      494E434C 
+ 2423              	.LASF428:
+ 2424 02d5 4359424C 		.ascii	"CYBLE_EVT_WPTSC_NOTIFICATION\000"
+ 2424      455F4556 
+ 2424      545F5750 
+ 2424      5453435F 
+ 2424      4E4F5449 
+ 2425              	.LASF161:
+ 2426 02f2 4359424C 		.ascii	"CYBLE_EVT_GATTC_SRVC_DUPLICATION\000"
+ 2426      455F4556 
+ 2426      545F4741 
+ 2426      5454435F 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 51
+
+
+ 2426      53525643 
+ 2427              	.LASF98:
+ 2428 0313 4359424C 		.ascii	"CYBLE_ERROR_GAP_ROLE\000"
+ 2428      455F4552 
+ 2428      524F525F 
+ 2428      4741505F 
+ 2428      524F4C45 
+ 2429              	.LASF307:
+ 2430 0328 4359424C 		.ascii	"CYBLE_EVT_HIDSC_WRITE_CHAR_RESPONSE\000"
+ 2430      455F4556 
+ 2430      545F4849 
+ 2430      4453435F 
+ 2430      57524954 
+ 2431              	.LASF284:
+ 2432 034c 4359424C 		.ascii	"CYBLE_EVT_ESSC_READ_DESCR_RESPONSE\000"
+ 2432      455F4556 
+ 2432      545F4553 
+ 2432      53435F52 
+ 2432      4541445F 
+ 2433              	.LASF112:
+ 2434 036f 4359424C 		.ascii	"CYBLE_ERROR_HARDWARE_FAILURE\000"
+ 2434      455F4552 
+ 2434      524F525F 
+ 2434      48415244 
+ 2434      57415245 
+ 2435              	.LASF50:
+ 2436 038c 4359424C 		.ascii	"CYBLE_EVT_GATT_DISCONNECT_IND\000"
+ 2436      455F4556 
+ 2436      545F4741 
+ 2436      54545F44 
+ 2436      4953434F 
+ 2437              	.LASF300:
+ 2438 03aa 4359424C 		.ascii	"CYBLE_EVT_HIDSS_BOOT_MODE_ENTER\000"
+ 2438      455F4556 
+ 2438      545F4849 
+ 2438      4453535F 
+ 2438      424F4F54 
+ 2439              	.LASF390:
+ 2440 03ca 4359424C 		.ascii	"CYBLE_EVT_RSCSC_READ_CHAR_RESPONSE\000"
+ 2440      455F4556 
+ 2440      545F5253 
+ 2440      4353435F 
+ 2440      52454144 
+ 2441              	.LASF43:
+ 2442 03ed 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_NEGOTIATED_AUTH_INFO\000"
+ 2442      455F4556 
+ 2442      545F4741 
+ 2442      505F534D 
+ 2442      505F4E45 
+ 2443              	.LASF130:
+ 2444 0414 4359424C 		.ascii	"CYBLE_BAS_CHAR_COUNT\000"
+ 2444      455F4241 
+ 2444      535F4348 
+ 2444      41525F43 
+ 2444      4F554E54 
+ 2445              	.LASF45:
+ 2446 0429 4359424C 		.ascii	"CYBLE_EVT_GAP_SCAN_REQ_RECVD\000"
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 52
+
+
+ 2446      455F4556 
+ 2446      545F4741 
+ 2446      505F5343 
+ 2446      414E5F52 
+ 2447              	.LASF181:
+ 2448 0446 4359424C 		.ascii	"CYBLE_EVT_AIOSC_ERROR_RESPONSE\000"
+ 2448      455F4556 
+ 2448      545F4149 
+ 2448      4F53435F 
+ 2448      4552524F 
+ 2449              	.LASF201:
+ 2450 0465 4359424C 		.ascii	"CYBLE_EVT_BASC_READ_CHAR_RESPONSE\000"
+ 2450      455F4556 
+ 2450      545F4241 
+ 2450      53435F52 
+ 2450      4541445F 
+ 2451              	.LASF205:
+ 2452 0487 4359424C 		.ascii	"CYBLE_EVT_BCSS_INDICATION_DISABLED\000"
+ 2452      455F4556 
+ 2452      545F4243 
+ 2452      53535F49 
+ 2452      4E444943 
+ 2453              	.LASF419:
+ 2454 04aa 4359424C 		.ascii	"CYBLE_EVT_UDSC_READ_DESCR_RESPONSE\000"
+ 2454      455F4556 
+ 2454      545F5544 
+ 2454      53435F52 
+ 2454      4541445F 
+ 2455              	.LASF51:
+ 2456 04cd 4359424C 		.ascii	"CYBLE_EVT_GATTS_XCNHG_MTU_REQ\000"
+ 2456      455F4556 
+ 2456      545F4741 
+ 2456      5454535F 
+ 2456      58434E48 
+ 2457              	.LASF69:
+ 2458 04eb 4359424C 		.ascii	"CYBLE_EVT_GATTS_DATA_SIGNED_CMD_REQ\000"
+ 2458      455F4556 
+ 2458      545F4741 
+ 2458      5454535F 
+ 2458      44415441 
+ 2459              	.LASF355:
+ 2460 050f 4359424C 		.ascii	"CYBLE_EVT_LNSS_WRITE_CHAR\000"
+ 2460      455F4556 
+ 2460      545F4C4E 
+ 2460      53535F57 
+ 2460      52495445 
+ 2461              	.LASF91:
+ 2462 0529 4359424C 		.ascii	"CYBLE_ERROR_INVALID_OPERATION\000"
+ 2462      455F4552 
+ 2462      524F525F 
+ 2462      494E5641 
+ 2462      4C49445F 
+ 2463              	.LASF348:
+ 2464 0547 4359424C 		.ascii	"CYBLE_EVT_LLSC_READ_CHAR_RESPONSE\000"
+ 2464      455F4556 
+ 2464      545F4C4C 
+ 2464      53435F52 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 53
+
+
+ 2464      4541445F 
+ 2465              	.LASF20:
+ 2466 0569 4359424C 		.ascii	"CYBLE_EVT_HARDWARE_ERROR\000"
+ 2466      455F4556 
+ 2466      545F4841 
+ 2466      52445741 
+ 2466      52455F45 
+ 2467              	.LASF73:
+ 2468 0582 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_REQ\000"
+ 2468      455F4556 
+ 2468      545F4C32 
+ 2468      4341505F 
+ 2468      434F4E4E 
+ 2469              	.LASF29:
+ 2470 05a8 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_FAILED\000"
+ 2470      455F4556 
+ 2470      545F4741 
+ 2470      505F4155 
+ 2470      54485F46 
+ 2471              	.LASF85:
+ 2472 05c2 4359424C 		.ascii	"CYBLE_EVT_LE_PING_AUTH_TIMEOUT\000"
+ 2472      455F4556 
+ 2472      545F4C45 
+ 2472      5F50494E 
+ 2472      475F4155 
+ 2473              	.LASF446:
+ 2474 05e1 6C6F6353 		.ascii	"locServiceIndex\000"
+ 2474      65727669 
+ 2474      6365496E 
+ 2474      64657800 
+ 2475              	.LASF293:
+ 2476 05f1 4359424C 		.ascii	"CYBLE_EVT_GLSC_NOTIFICATION\000"
+ 2476      455F4556 
+ 2476      545F474C 
+ 2476      53435F4E 
+ 2476      4F544946 
+ 2477              	.LASF380:
+ 2478 060d 4359424C 		.ascii	"CYBLE_EVT_PLXSC_READ_DESCR_RESPONSE\000"
+ 2478      455F4556 
+ 2478      545F504C 
+ 2478      5853435F 
+ 2478      52454144 
+ 2479              	.LASF62:
+ 2480 0631 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_CMD_REQ\000"
+ 2480      455F4556 
+ 2480      545F4741 
+ 2480      5454535F 
+ 2480      57524954 
+ 2481              	.LASF232:
+ 2482 064f 4359424C 		.ascii	"CYBLE_EVT_CGMSC_NOTIFICATION\000"
+ 2482      455F4556 
+ 2482      545F4347 
+ 2482      4D53435F 
+ 2482      4E4F5449 
+ 2483              	.LASF184:
+ 2484 066c 4359424C 		.ascii	"CYBLE_EVT_ANCSS_WRITE_CHAR\000"
+ 2484      455F4556 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 54
+
+
+ 2484      545F414E 
+ 2484      4353535F 
+ 2484      57524954 
+ 2485              	.LASF132:
+ 2486 0687 4359424C 		.ascii	"CYBLE_BAS_BATTERY_LEVEL_CCCD\000"
+ 2486      455F4241 
+ 2486      535F4241 
+ 2486      54544552 
+ 2486      595F4C45 
+ 2487              	.LASF269:
+ 2488 06a4 4359424C 		.ascii	"CYBLE_EVT_CTSC_READ_DESCR_RESPONSE\000"
+ 2488      455F4556 
+ 2488      545F4354 
+ 2488      53435F52 
+ 2488      4541445F 
+ 2489              	.LASF96:
+ 2490 06c7 4359424C 		.ascii	"CYBLE_ERROR_NO_DEVICE_ENTITY\000"
+ 2490      455F4552 
+ 2490      524F525F 
+ 2490      4E4F5F44 
+ 2490      45564943 
+ 2491              	.LASF74:
+ 2492 06e4 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_RSP\000"
+ 2492      455F4556 
+ 2492      545F4C32 
+ 2492      4341505F 
+ 2492      434F4E4E 
+ 2493              	.LASF429:
+ 2494 070a 4359424C 		.ascii	"CYBLE_EVT_WPTSC_INDICATION\000"
+ 2494      455F4556 
+ 2494      545F5750 
+ 2494      5453435F 
+ 2494      494E4449 
+ 2495              	.LASF306:
+ 2496 0725 4359424C 		.ascii	"CYBLE_EVT_HIDSC_READ_CHAR_RESPONSE\000"
+ 2496      455F4556 
+ 2496      545F4849 
+ 2496      4453435F 
+ 2496      52454144 
+ 2497              	.LASF415:
+ 2498 0748 4359424C 		.ascii	"CYBLE_EVT_UDSC_INDICATION\000"
+ 2498      455F4556 
+ 2498      545F5544 
+ 2498      53435F49 
+ 2498      4E444943 
+ 2499              	.LASF216:
+ 2500 0762 4359424C 		.ascii	"CYBLE_EVT_BLSC_INDICATION\000"
+ 2500      455F4556 
+ 2500      545F424C 
+ 2500      53435F49 
+ 2500      4E444943 
+ 2501              	.LASF180:
+ 2502 077c 4359424C 		.ascii	"CYBLE_EVT_AIOSC_WRITE_DESCR_RESPONSE\000"
+ 2502      455F4556 
+ 2502      545F4149 
+ 2502      4F53435F 
+ 2502      57524954 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 55
+
+
+ 2503              	.LASF455:
+ 2504 07a1 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2504      43313120 
+ 2504      352E342E 
+ 2504      31203230 
+ 2504      31363036 
+ 2505 07d4 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 2505      20726576 
+ 2505      6973696F 
+ 2505      6E203233 
+ 2505      37373135 
+ 2506 0807 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2506      66756E63 
+ 2506      74696F6E 
+ 2506      2D736563 
+ 2506      74696F6E 
+ 2507              	.LASF229:
+ 2508 082f 4359424C 		.ascii	"CYBLE_EVT_CGMSS_NOTIFICATION_DISABLED\000"
+ 2508      455F4556 
+ 2508      545F4347 
+ 2508      4D53535F 
+ 2508      4E4F5449 
+ 2509              	.LASF252:
+ 2510 0855 4359424C 		.ascii	"CYBLE_EVT_CSCSS_NOTIFICATION_ENABLED\000"
+ 2510      455F4556 
+ 2510      545F4353 
+ 2510      4353535F 
+ 2510      4E4F5449 
+ 2511              	.LASF353:
+ 2512 087a 4359424C 		.ascii	"CYBLE_EVT_LNSS_NOTIFICATION_ENABLED\000"
+ 2512      455F4556 
+ 2512      545F4C4E 
+ 2512      53535F4E 
+ 2512      4F544946 
+ 2513              	.LASF2:
+ 2514 089e 73686F72 		.ascii	"short int\000"
+ 2514      7420696E 
+ 2514      7400
+ 2515              	.LASF417:
+ 2516 08a8 4359424C 		.ascii	"CYBLE_EVT_UDSC_READ_CHAR_RESPONSE\000"
+ 2516      455F4556 
+ 2516      545F5544 
+ 2516      53435F52 
+ 2516      4541445F 
+ 2517              	.LASF140:
+ 2518 08ca 4359424C 		.ascii	"CYBLE_DIS_MANUFACTURER_NAME\000"
+ 2518      455F4449 
+ 2518      535F4D41 
+ 2518      4E554641 
+ 2518      43545552 
+ 2519              	.LASF338:
+ 2520 08e6 4359424C 		.ascii	"CYBLE_EVT_IASS_WRITE_CHAR_CMD\000"
+ 2520      455F4556 
+ 2520      545F4941 
+ 2520      53535F57 
+ 2520      52495445 
+ 2521              	.LASF26:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 56
+
+
+ 2522 0904 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_ENTRY_REQUEST\000"
+ 2522      455F4556 
+ 2522      545F4741 
+ 2522      505F5041 
+ 2522      53534B45 
+ 2523              	.LASF81:
+ 2524 0928 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_RX_CREDIT_IND\000"
+ 2524      455F4556 
+ 2524      545F4C32 
+ 2524      4341505F 
+ 2524      43424643 
+ 2525              	.LASF174:
+ 2526 094b 4359424C 		.ascii	"CYBLE_EVT_AIOSS_DESCR_WRITE\000"
+ 2526      455F4556 
+ 2526      545F4149 
+ 2526      4F53535F 
+ 2526      44455343 
+ 2527              	.LASF120:
+ 2528 0967 4359424C 		.ascii	"CYBLE_ERROR_INVALID_STATE\000"
+ 2528      455F4552 
+ 2528      524F525F 
+ 2528      494E5641 
+ 2528      4C49445F 
+ 2529              	.LASF68:
+ 2530 0981 4359424C 		.ascii	"CYBLE_EVT_GATTS_HANDLE_VALUE_CNF\000"
+ 2530      455F4556 
+ 2530      545F4741 
+ 2530      5454535F 
+ 2530      48414E44 
+ 2531              	.LASF405:
+ 2532 09a2 4359424C 		.ascii	"CYBLE_EVT_TPSC_READ_CHAR_RESPONSE\000"
+ 2532      455F4556 
+ 2532      545F5450 
+ 2532      53435F52 
+ 2532      4541445F 
+ 2533              	.LASF264:
+ 2534 09c4 4359424C 		.ascii	"CYBLE_EVT_CTSS_NOTIFICATION_ENABLED\000"
+ 2534      455F4556 
+ 2534      545F4354 
+ 2534      53535F4E 
+ 2534      4F544946 
+ 2535              	.LASF418:
+ 2536 09e8 4359424C 		.ascii	"CYBLE_EVT_UDSC_WRITE_CHAR_RESPONSE\000"
+ 2536      455F4556 
+ 2536      545F5544 
+ 2536      53435F57 
+ 2536      52495445 
+ 2537              	.LASF243:
+ 2538 0a0b 4359424C 		.ascii	"CYBLE_EVT_CPSS_BROADCAST_DISABLED\000"
+ 2538      455F4556 
+ 2538      545F4350 
+ 2538      53535F42 
+ 2538      524F4144 
+ 2539              	.LASF256:
+ 2540 0a2d 4359424C 		.ascii	"CYBLE_EVT_CSCSS_INDICATION_CONFIRMATION\000"
+ 2540      455F4556 
+ 2540      545F4353 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 57
+
+
+ 2540      4353535F 
+ 2540      494E4449 
+ 2541              	.LASF151:
+ 2542 0a55 4359424C 		.ascii	"CYBLE_PASSKEY_ENTRY_REQUEST_REPLY\000"
+ 2542      455F5041 
+ 2542      53534B45 
+ 2542      595F454E 
+ 2542      5452595F 
+ 2543              	.LASF34:
+ 2544 0a77 4359424C 		.ascii	"CYBLE_EVT_GAP_CONNECTION_UPDATE_COMPLETE\000"
+ 2544      455F4556 
+ 2544      545F4741 
+ 2544      505F434F 
+ 2544      4E4E4543 
+ 2545              	.LASF327:
+ 2546 0aa0 4359424C 		.ascii	"CYBLE_EVT_HTSS_NOTIFICATION_DISABLED\000"
+ 2546      455F4556 
+ 2546      545F4854 
+ 2546      53535F4E 
+ 2546      4F544946 
+ 2547              	.LASF453:
+ 2548 0ac5 6379426C 		.ascii	"cyBle_busyStatus\000"
+ 2548      655F6275 
+ 2548      73795374 
+ 2548      61747573 
+ 2548      00
+ 2549              	.LASF257:
+ 2550 0ad6 4359424C 		.ascii	"CYBLE_EVT_CSCSS_CHAR_WRITE\000"
+ 2550      455F4556 
+ 2550      545F4353 
+ 2550      4353535F 
+ 2550      43484152 
+ 2551              	.LASF150:
+ 2552 0af1 4359424C 		.ascii	"CYBLE_AUTHENTICATION_REQUEST_REPLY\000"
+ 2552      455F4155 
+ 2552      5448454E 
+ 2552      54494341 
+ 2552      54494F4E 
+ 2553              	.LASF286:
+ 2554 0b14 4359424C 		.ascii	"CYBLE_EVT_GLSS_INDICATION_ENABLED\000"
+ 2554      455F4556 
+ 2554      545F474C 
+ 2554      53535F49 
+ 2554      4E444943 
+ 2555              	.LASF438:
+ 2556 0b36 4359424C 		.ascii	"CYBLE_EVT_WSSC_READ_CHAR_RESPONSE\000"
+ 2556      455F4556 
+ 2556      545F5753 
+ 2556      53435F52 
+ 2556      4541445F 
+ 2557              	.LASF370:
+ 2558 0b58 4359424C 		.ascii	"CYBLE_EVT_PLXSS_WRITE_CHAR\000"
+ 2558      455F4556 
+ 2558      545F504C 
+ 2558      5853535F 
+ 2558      57524954 
+ 2559              	.LASF393:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 58
+
+
+ 2560 0b73 4359424C 		.ascii	"CYBLE_EVT_RSCSC_WRITE_DESCR_RESPONSE\000"
+ 2560      455F4556 
+ 2560      545F5253 
+ 2560      4353435F 
+ 2560      57524954 
+ 2561              	.LASF129:
+ 2562 0b98 4359424C 		.ascii	"CYBLE_BAS_BATTERY_LEVEL\000"
+ 2562      455F4241 
+ 2562      535F4241 
+ 2562      54544552 
+ 2562      595F4C45 
+ 2563              	.LASF271:
+ 2564 0bb0 4359424C 		.ascii	"CYBLE_EVT_CTSC_WRITE_CHAR_RESPONSE\000"
+ 2564      455F4556 
+ 2564      545F4354 
+ 2564      53435F57 
+ 2564      52495445 
+ 2565              	.LASF84:
+ 2566 0bd3 4359424C 		.ascii	"CYBLE_EVT_PENDING_FLASH_WRITE\000"
+ 2566      455F4556 
+ 2566      545F5045 
+ 2566      4E44494E 
+ 2566      475F464C 
+ 2567              	.LASF265:
+ 2568 0bf1 4359424C 		.ascii	"CYBLE_EVT_CTSS_NOTIFICATION_DISABLED\000"
+ 2568      455F4556 
+ 2568      545F4354 
+ 2568      53535F4E 
+ 2568      4F544946 
+ 2569              	.LASF352:
+ 2570 0c16 4359424C 		.ascii	"CYBLE_EVT_LNSS_INDICATION_CONFIRMED\000"
+ 2570      455F4556 
+ 2570      545F4C4E 
+ 2570      53535F49 
+ 2570      4E444943 
+ 2571              	.LASF406:
+ 2572 0c3a 4359424C 		.ascii	"CYBLE_EVT_TPSC_READ_DESCR_RESPONSE\000"
+ 2572      455F4556 
+ 2572      545F5450 
+ 2572      53435F52 
+ 2572      4541445F 
+ 2573              	.LASF398:
+ 2574 0c5d 4359424C 		.ascii	"CYBLE_EVT_SCPSS_SCAN_INT_WIN_CHAR_WRITE\000"
+ 2574      455F4556 
+ 2574      545F5343 
+ 2574      5053535F 
+ 2574      5343414E 
+ 2575              	.LASF106:
+ 2576 0c85 4359424C 		.ascii	"CYBLE_ERROR_L2CAP_CHANNEL_NOT_FOUND\000"
+ 2576      455F4552 
+ 2576      524F525F 
+ 2576      4C324341 
+ 2576      505F4348 
+ 2577              	.LASF197:
+ 2578 0ca9 4359424C 		.ascii	"CYBLE_EVT_ANSC_WRITE_DESCR_RESPONSE\000"
+ 2578      455F4556 
+ 2578      545F414E 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 59
+
+
+ 2578      53435F57 
+ 2578      52495445 
+ 2579              	.LASF61:
+ 2580 0ccd 4359424C 		.ascii	"CYBLE_EVT_GATTC_WRITE_RSP\000"
+ 2580      455F4556 
+ 2580      545F4741 
+ 2580      5454435F 
+ 2580      57524954 
+ 2581              	.LASF378:
+ 2582 0ce7 4359424C 		.ascii	"CYBLE_EVT_PLXSC_READ_CHAR_RESPONSE\000"
+ 2582      455F4556 
+ 2582      545F504C 
+ 2582      5853435F 
+ 2582      52454144 
+ 2583              	.LASF12:
+ 2584 0d0a 666C6F61 		.ascii	"float\000"
+ 2584      7400
+ 2585              	.LASF442:
+ 2586 0d10 6576656E 		.ascii	"event\000"
+ 2586      7400
+ 2587              	.LASF354:
+ 2588 0d16 4359424C 		.ascii	"CYBLE_EVT_LNSS_NOTIFICATION_DISABLED\000"
+ 2588      455F4556 
+ 2588      545F4C4E 
+ 2588      53535F4E 
+ 2588      4F544946 
+ 2589              	.LASF171:
+ 2590 0d3b 4359424C 		.ascii	"CYBLE_EVT_AIOSS_INDICATION_DISABLED\000"
+ 2590      455F4556 
+ 2590      545F4149 
+ 2590      4F53535F 
+ 2590      494E4449 
+ 2591              	.LASF22:
+ 2592 0d5f 4359424C 		.ascii	"CYBLE_EVT_STACK_BUSY_STATUS\000"
+ 2592      455F4556 
+ 2592      545F5354 
+ 2592      41434B5F 
+ 2592      42555359 
+ 2593              	.LASF218:
+ 2594 0d7b 4359424C 		.ascii	"CYBLE_EVT_BLSC_READ_CHAR_RESPONSE\000"
+ 2594      455F4556 
+ 2594      545F424C 
+ 2594      53435F52 
+ 2594      4541445F 
+ 2595              	.LASF75:
+ 2596 0d9d 4359424C 		.ascii	"CYBLE_EVT_L2CAP_COMMAND_REJ\000"
+ 2596      455F4556 
+ 2596      545F4C32 
+ 2596      4341505F 
+ 2596      434F4D4D 
+ 2597              	.LASF100:
+ 2598 0db9 4359424C 		.ascii	"CYBLE_ERROR_BT_ON_NOT_COMPLETED\000"
+ 2598      455F4552 
+ 2598      524F525F 
+ 2598      42545F4F 
+ 2598      4E5F4E4F 
+ 2599              	.LASF207:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 60
+
+
+ 2600 0dd9 4359424C 		.ascii	"CYBLE_EVT_BCSC_INDICATION\000"
+ 2600      455F4556 
+ 2600      545F4243 
+ 2600      53435F49 
+ 2600      4E444943 
+ 2601              	.LASF303:
+ 2602 0df3 4359424C 		.ascii	"CYBLE_EVT_HIDSS_EXIT_SUSPEND\000"
+ 2602      455F4556 
+ 2602      545F4849 
+ 2602      4453535F 
+ 2602      45584954 
+ 2603              	.LASF260:
+ 2604 0e10 4359424C 		.ascii	"CYBLE_EVT_CSCSC_READ_CHAR_RESPONSE\000"
+ 2604      455F4556 
+ 2604      545F4353 
+ 2604      4353435F 
+ 2604      52454144 
+ 2605              	.LASF262:
+ 2606 0e33 4359424C 		.ascii	"CYBLE_EVT_CSCSC_READ_DESCR_RESPONSE\000"
+ 2606      455F4556 
+ 2606      545F4353 
+ 2606      4353435F 
+ 2606      52454144 
+ 2607              	.LASF339:
+ 2608 0e57 4359424C 		.ascii	"CYBLE_EVT_IPSS_WRITE_CHAR\000"
+ 2608      455F4556 
+ 2608      545F4950 
+ 2608      53535F57 
+ 2608      52495445 
+ 2609              	.LASF226:
+ 2610 0e71 4359424C 		.ascii	"CYBLE_EVT_CGMSS_INDICATION_DISABLED\000"
+ 2610      455F4556 
+ 2610      545F4347 
+ 2610      4D53535F 
+ 2610      494E4449 
+ 2611              	.LASF7:
+ 2612 0e95 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2612      206C6F6E 
+ 2612      6720756E 
+ 2612      7369676E 
+ 2612      65642069 
+ 2613              	.LASF176:
+ 2614 0eac 4359424C 		.ascii	"CYBLE_EVT_AIOSC_INDICATION\000"
+ 2614      455F4556 
+ 2614      545F4149 
+ 2614      4F53435F 
+ 2614      494E4449 
+ 2615              	.LASF283:
+ 2616 0ec7 4359424C 		.ascii	"CYBLE_EVT_ESSC_WRITE_CHAR_RESPONSE\000"
+ 2616      455F4556 
+ 2616      545F4553 
+ 2616      53435F57 
+ 2616      52495445 
+ 2617              	.LASF60:
+ 2618 0eea 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_REQ\000"
+ 2618      455F4556 
+ 2618      545F4741 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 61
+
+
+ 2618      5454535F 
+ 2618      57524954 
+ 2619              	.LASF287:
+ 2620 0f04 4359424C 		.ascii	"CYBLE_EVT_GLSS_INDICATION_DISABLED\000"
+ 2620      455F4556 
+ 2620      545F474C 
+ 2620      53535F49 
+ 2620      4E444943 
+ 2621              	.LASF365:
+ 2622 0f27 4359424C 		.ascii	"CYBLE_EVT_PASSS_WRITE_CHAR\000"
+ 2622      455F4556 
+ 2622      545F5041 
+ 2622      5353535F 
+ 2622      57524954 
+ 2623              	.LASF228:
+ 2624 0f42 4359424C 		.ascii	"CYBLE_EVT_CGMSS_NOTIFICATION_ENABLED\000"
+ 2624      455F4556 
+ 2624      545F4347 
+ 2624      4D53535F 
+ 2624      4E4F5449 
+ 2625              	.LASF439:
+ 2626 0f67 4359424C 		.ascii	"CYBLE_EVT_WSSC_READ_DESCR_RESPONSE\000"
+ 2626      455F4556 
+ 2626      545F5753 
+ 2626      53435F52 
+ 2626      4541445F 
+ 2627              	.LASF199:
+ 2628 0f8a 4359424C 		.ascii	"CYBLE_EVT_BASS_NOTIFICATION_DISABLED\000"
+ 2628      455F4556 
+ 2628      545F4241 
+ 2628      53535F4E 
+ 2628      4F544946 
+ 2629              	.LASF436:
+ 2630 0faf 4359424C 		.ascii	"CYBLE_EVT_WSSS_INDICATION_CONFIRMED\000"
+ 2630      455F4556 
+ 2630      545F5753 
+ 2630      53535F49 
+ 2630      4E444943 
+ 2631              	.LASF343:
+ 2632 0fd3 4359424C 		.ascii	"CYBLE_EVT_IPSC_READ_DESCR_RESPONSE\000"
+ 2632      455F4556 
+ 2632      545F4950 
+ 2632      53435F52 
+ 2632      4541445F 
+ 2633              	.LASF364:
+ 2634 0ff6 4359424C 		.ascii	"CYBLE_EVT_PASSS_NOTIFICATION_DISABLED\000"
+ 2634      455F4556 
+ 2634      545F5041 
+ 2634      5353535F 
+ 2634      4E4F5449 
+ 2635              	.LASF215:
+ 2636 101c 4359424C 		.ascii	"CYBLE_EVT_BLSS_NOTIFICATION_DISABLED\000"
+ 2636      455F4556 
+ 2636      545F424C 
+ 2636      53535F4E 
+ 2636      4F544946 
+ 2637              	.LASF204:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 62
+
+
+ 2638 1041 4359424C 		.ascii	"CYBLE_EVT_BCSS_INDICATION_ENABLED\000"
+ 2638      455F4556 
+ 2638      545F4243 
+ 2638      53535F49 
+ 2638      4E444943 
+ 2639              	.LASF163:
+ 2640 1063 4359424C 		.ascii	"CYBLE_EVT_GATTC_DESCR_DUPLICATION\000"
+ 2640      455F4556 
+ 2640      545F4741 
+ 2640      5454435F 
+ 2640      44455343 
+ 2641              	.LASF452:
+ 2642 1085 6379426C 		.ascii	"cyBle_connHandle\000"
+ 2642      655F636F 
+ 2642      6E6E4861 
+ 2642      6E646C65 
+ 2642      00
+ 2643              	.LASF421:
+ 2644 1096 4359424C 		.ascii	"CYBLE_EVT_UDSC_ERROR_RESPONSE\000"
+ 2644      455F4556 
+ 2644      545F5544 
+ 2644      53435F45 
+ 2644      52524F52 
+ 2645              	.LASF55:
+ 2646 10b4 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_INFO_RSP\000"
+ 2646      455F4556 
+ 2646      545F4741 
+ 2646      5454435F 
+ 2646      46494E44 
+ 2647              	.LASF334:
+ 2648 10d2 4359424C 		.ascii	"CYBLE_EVT_HTSC_READ_CHAR_RESPONSE\000"
+ 2648      455F4556 
+ 2648      545F4854 
+ 2648      53435F52 
+ 2648      4541445F 
+ 2649              	.LASF337:
+ 2650 10f4 4359424C 		.ascii	"CYBLE_EVT_HTSC_WRITE_DESCR_RESPONSE\000"
+ 2650      455F4556 
+ 2650      545F4854 
+ 2650      53435F57 
+ 2650      52495445 
+ 2651              	.LASF379:
+ 2652 1118 4359424C 		.ascii	"CYBLE_EVT_PLXSC_WRITE_CHAR_RESPONSE\000"
+ 2652      455F4556 
+ 2652      545F504C 
+ 2652      5853435F 
+ 2652      57524954 
+ 2653              	.LASF190:
+ 2654 113c 4359424C 		.ascii	"CYBLE_EVT_ANSS_NOTIFICATION_ENABLED\000"
+ 2654      455F4556 
+ 2654      545F414E 
+ 2654      53535F4E 
+ 2654      4F544946 
+ 2655              	.LASF194:
+ 2656 1160 4359424C 		.ascii	"CYBLE_EVT_ANSC_READ_CHAR_RESPONSE\000"
+ 2656      455F4556 
+ 2656      545F414E 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 63
+
+
+ 2656      53435F52 
+ 2656      4541445F 
+ 2657              	.LASF56:
+ 2658 1182 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_BY_TYPE_VALUE_RSP\000"
+ 2658      455F4556 
+ 2658      545F4741 
+ 2658      5454435F 
+ 2658      46494E44 
+ 2659              	.LASF138:
+ 2660 11a9 76616C75 		.ascii	"value\000"
+ 2660      6500
+ 2661              	.LASF168:
+ 2662 11af 4359424C 		.ascii	"CYBLE_EVT_AIOSS_NOTIFICATION_ENABLED\000"
+ 2662      455F4556 
+ 2662      545F4149 
+ 2662      4F53535F 
+ 2662      4E4F5449 
+ 2663              	.LASF183:
+ 2664 11d4 4359424C 		.ascii	"CYBLE_EVT_ANCSS_NOTIFICATION_DISABLED\000"
+ 2664      455F4556 
+ 2664      545F414E 
+ 2664      4353535F 
+ 2664      4E4F5449 
+ 2665              	.LASF64:
+ 2666 11fa 4359424C 		.ascii	"CYBLE_EVT_GATTS_EXEC_WRITE_REQ\000"
+ 2666      455F4556 
+ 2666      545F4741 
+ 2666      5454535F 
+ 2666      45584543 
+ 2667              	.LASF259:
+ 2668 1219 4359424C 		.ascii	"CYBLE_EVT_CSCSC_INDICATION\000"
+ 2668      455F4556 
+ 2668      545F4353 
+ 2668      4353435F 
+ 2668      494E4449 
+ 2669              	.LASF392:
+ 2670 1234 4359424C 		.ascii	"CYBLE_EVT_RSCSC_READ_DESCR_RESPONSE\000"
+ 2670      455F4556 
+ 2670      545F5253 
+ 2670      4353435F 
+ 2670      52454144 
+ 2671              	.LASF65:
+ 2672 1258 4359424C 		.ascii	"CYBLE_EVT_GATTC_EXEC_WRITE_RSP\000"
+ 2672      455F4556 
+ 2672      545F4741 
+ 2672      5454435F 
+ 2672      45584543 
+ 2673              	.LASF308:
+ 2674 1277 4359424C 		.ascii	"CYBLE_EVT_HIDSC_READ_DESCR_RESPONSE\000"
+ 2674      455F4556 
+ 2674      545F4849 
+ 2674      4453435F 
+ 2674      52454144 
+ 2675              	.LASF125:
+ 2676 129b 4359424C 		.ascii	"CYBLE_CONN_HANDLE_T\000"
+ 2676      455F434F 
+ 2676      4E4E5F48 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 64
+
+
+ 2676      414E444C 
+ 2676      455F5400 
+ 2677              	.LASF143:
+ 2678 12af 4359424C 		.ascii	"CYBLE_DIS_HARDWARE_REV\000"
+ 2678      455F4449 
+ 2678      535F4841 
+ 2678      52445741 
+ 2678      52455F52 
+ 2679              	.LASF156:
+ 2680 12c6 4359424C 		.ascii	"CYBLE_EVT_GATTC_INDICATION\000"
+ 2680      455F4556 
+ 2680      545F4741 
+ 2680      5454435F 
+ 2680      494E4449 
+ 2681              	.LASF282:
+ 2682 12e1 4359424C 		.ascii	"CYBLE_EVT_ESSC_READ_CHAR_RESPONSE\000"
+ 2682      455F4556 
+ 2682      545F4553 
+ 2682      53435F52 
+ 2682      4541445F 
+ 2683              	.LASF71:
+ 2684 1303 4359424C 		.ascii	"CYBLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ\000"
+ 2684      455F4556 
+ 2684      545F4741 
+ 2684      5454535F 
+ 2684      52454144 
+ 2685              	.LASF314:
+ 2686 132c 4359424C 		.ascii	"CYBLE_EVT_HPSC_READ_CHAR_RESPONSE\000"
+ 2686      455F4556 
+ 2686      545F4850 
+ 2686      53435F52 
+ 2686      4541445F 
+ 2687              	.LASF28:
+ 2688 134e 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_COMPLETE\000"
+ 2688      455F4556 
+ 2688      545F4741 
+ 2688      505F4155 
+ 2688      54485F43 
+ 2689              	.LASF311:
+ 2690 136a 4359424C 		.ascii	"CYBLE_EVT_HPSS_NOTIFICATION_DISABLED\000"
+ 2690      455F4556 
+ 2690      545F4850 
+ 2690      53535F4E 
+ 2690      4F544946 
+ 2691              	.LASF118:
+ 2692 138f 4359424C 		.ascii	"CYBLE_ERROR_IND_DISABLED\000"
+ 2692      455F4552 
+ 2692      524F525F 
+ 2692      494E445F 
+ 2692      44495341 
+ 2693              	.LASF336:
+ 2694 13a8 4359424C 		.ascii	"CYBLE_EVT_HTSC_READ_DESCR_RESPONSE\000"
+ 2694      455F4556 
+ 2694      545F4854 
+ 2694      53435F52 
+ 2694      4541445F 
+ 2695              	.LASF13:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 65
+
+
+ 2696 13cb 646F7562 		.ascii	"double\000"
+ 2696      6C6500
+ 2697              	.LASF261:
+ 2698 13d2 4359424C 		.ascii	"CYBLE_EVT_CSCSC_WRITE_CHAR_RESPONSE\000"
+ 2698      455F4556 
+ 2698      545F4353 
+ 2698      4353435F 
+ 2698      57524954 
+ 2699              	.LASF297:
+ 2700 13f6 4359424C 		.ascii	"CYBLE_EVT_GLSC_WRITE_DESCR_RESPONSE\000"
+ 2700      455F4556 
+ 2700      545F474C 
+ 2700      53435F57 
+ 2700      52495445 
+ 2701              	.LASF52:
+ 2702 141a 4359424C 		.ascii	"CYBLE_EVT_GATTC_XCHNG_MTU_RSP\000"
+ 2702      455F4556 
+ 2702      545F4741 
+ 2702      5454435F 
+ 2702      5843484E 
+ 2703              	.LASF219:
+ 2704 1438 4359424C 		.ascii	"CYBLE_EVT_BLSC_READ_DESCR_RESPONSE\000"
+ 2704      455F4556 
+ 2704      545F424C 
+ 2704      53435F52 
+ 2704      4541445F 
+ 2705              	.LASF87:
+ 2706 145b 4359424C 		.ascii	"CYBLE_EVT_FLASH_CORRUPT\000"
+ 2706      455F4556 
+ 2706      545F464C 
+ 2706      4153485F 
+ 2706      434F5252 
+ 2707              	.LASF253:
+ 2708 1473 4359424C 		.ascii	"CYBLE_EVT_CSCSS_NOTIFICATION_DISABLED\000"
+ 2708      455F4556 
+ 2708      545F4353 
+ 2708      4353535F 
+ 2708      4E4F5449 
+ 2709              	.LASF325:
+ 2710 1499 4359424C 		.ascii	"CYBLE_EVT_HRSC_WRITE_DESCR_RESPONSE\000"
+ 2710      455F4556 
+ 2710      545F4852 
+ 2710      53435F57 
+ 2710      52495445 
+ 2711              	.LASF351:
+ 2712 14bd 4359424C 		.ascii	"CYBLE_EVT_LNSS_INDICATION_DISABLED\000"
+ 2712      455F4556 
+ 2712      545F4C4E 
+ 2712      53535F49 
+ 2712      4E444943 
+ 2713              	.LASF342:
+ 2714 14e0 4359424C 		.ascii	"CYBLE_EVT_IPSC_WRITE_CHAR_RESPONSE\000"
+ 2714      455F4556 
+ 2714      545F4950 
+ 2714      53435F57 
+ 2714      52495445 
+ 2715              	.LASF236:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 66
+
+
+ 2716 1503 4359424C 		.ascii	"CYBLE_EVT_CGMSC_WRITE_DESCR_RESPONSE\000"
+ 2716      455F4556 
+ 2716      545F4347 
+ 2716      4D53435F 
+ 2716      57524954 
+ 2717              	.LASF58:
+ 2718 1528 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BLOB_RSP\000"
+ 2718      455F4556 
+ 2718      545F4741 
+ 2718      5454435F 
+ 2718      52454144 
+ 2719              	.LASF94:
+ 2720 1546 4359424C 		.ascii	"CYBLE_ERROR_OOB_NOT_AVAILABLE\000"
+ 2720      455F4552 
+ 2720      524F525F 
+ 2720      4F4F425F 
+ 2720      4E4F545F 
+ 2721              	.LASF177:
+ 2722 1564 4359424C 		.ascii	"CYBLE_EVT_AIOSC_READ_CHAR_RESPONSE\000"
+ 2722      455F4556 
+ 2722      545F4149 
+ 2722      4F53435F 
+ 2722      52454144 
+ 2723              	.LASF450:
+ 2724 1587 62617474 		.ascii	"batteryTimer\000"
+ 2724      65727954 
+ 2724      696D6572 
+ 2724      00
+ 2725              	.LASF416:
+ 2726 1594 4359424C 		.ascii	"CYBLE_EVT_UDSC_NOTIFICATION\000"
+ 2726      455F4556 
+ 2726      545F5544 
+ 2726      53435F4E 
+ 2726      4F544946 
+ 2727              	.LASF242:
+ 2728 15b0 4359424C 		.ascii	"CYBLE_EVT_CPSS_BROADCAST_ENABLED\000"
+ 2728      455F4556 
+ 2728      545F4350 
+ 2728      53535F42 
+ 2728      524F4144 
+ 2729              	.LASF175:
+ 2730 15d1 4359424C 		.ascii	"CYBLE_EVT_AIOSC_NOTIFICATION\000"
+ 2730      455F4556 
+ 2730      545F4149 
+ 2730      4F53435F 
+ 2730      4E4F5449 
+ 2731              	.LASF172:
+ 2732 15ee 4359424C 		.ascii	"CYBLE_EVT_AIOSS_INDICATION_CONFIRMED\000"
+ 2732      455F4556 
+ 2732      545F4149 
+ 2732      4F53535F 
+ 2732      494E4449 
+ 2733              	.LASF77:
+ 2734 1613 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_CNF\000"
+ 2734      455F4556 
+ 2734      545F4C32 
+ 2734      4341505F 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 67
+
+
+ 2734      43424643 
+ 2735              	.LASF170:
+ 2736 1631 4359424C 		.ascii	"CYBLE_EVT_AIOSS_INDICATION_ENABLED\000"
+ 2736      455F4556 
+ 2736      545F4149 
+ 2736      4F53535F 
+ 2736      494E4449 
+ 2737              	.LASF146:
+ 2738 1654 4359424C 		.ascii	"CYBLE_DIS_SYSTEM_ID\000"
+ 2738      455F4449 
+ 2738      535F5359 
+ 2738      5354454D 
+ 2738      5F494400 
+ 2739              	.LASF225:
+ 2740 1668 4359424C 		.ascii	"CYBLE_EVT_CGMSS_INDICATION_ENABLED\000"
+ 2740      455F4556 
+ 2740      545F4347 
+ 2740      4D53535F 
+ 2740      494E4449 
+ 2741              	.LASF331:
+ 2742 168b 4359424C 		.ascii	"CYBLE_EVT_HTSS_CHAR_WRITE\000"
+ 2742      455F4556 
+ 2742      545F4854 
+ 2742      53535F43 
+ 2742      4841525F 
+ 2743              	.LASF395:
+ 2744 16a5 4359424C 		.ascii	"CYBLE_EVT_RTUSC_READ_CHAR_RESPONSE\000"
+ 2744      455F4556 
+ 2744      545F5254 
+ 2744      5553435F 
+ 2744      52454144 
+ 2745              	.LASF92:
+ 2746 16c8 4359424C 		.ascii	"CYBLE_ERROR_MEMORY_ALLOCATION_FAILED\000"
+ 2746      455F4552 
+ 2746      524F525F 
+ 2746      4D454D4F 
+ 2746      52595F41 
+ 2747              	.LASF113:
+ 2748 16ed 4359424C 		.ascii	"CYBLE_ERROR_UNSUPPORTED_FEATURE_OR_PARAMETER_VALUE\000"
+ 2748      455F4552 
+ 2748      524F525F 
+ 2748      554E5355 
+ 2748      50504F52 
+ 2749              	.LASF21:
+ 2750 1720 4359424C 		.ascii	"CYBLE_EVT_HCI_STATUS\000"
+ 2750      455F4556 
+ 2750      545F4843 
+ 2750      495F5354 
+ 2750      41545553 
+ 2751              	.LASF153:
+ 2752 1735 4359424C 		.ascii	"CYBLE_KEY_EXCHANGE_INFO_REQUEST_REPLY\000"
+ 2752      455F4B45 
+ 2752      595F4558 
+ 2752      4348414E 
+ 2752      47455F49 
+ 2753              	.LASF101:
+ 2754 175b 4359424C 		.ascii	"CYBLE_ERROR_SEC_FAILED\000"
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 68
+
+
+ 2754      455F4552 
+ 2754      524F525F 
+ 2754      5345435F 
+ 2754      4641494C 
+ 2755              	.LASF14:
+ 2756 1772 63686172 		.ascii	"char\000"
+ 2756      00
+ 2757              	.LASF54:
+ 2758 1777 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_TYPE_RSP\000"
+ 2758      455F4556 
+ 2758      545F4741 
+ 2758      5454435F 
+ 2758      52454144 
+ 2759              	.LASF451:
+ 2760 1798 62617474 		.ascii	"batteryLevel\000"
+ 2760      6572794C 
+ 2760      6576656C 
+ 2760      00
+ 2761              	.LASF291:
+ 2762 17a5 4359424C 		.ascii	"CYBLE_EVT_GLSS_WRITE_CHAR\000"
+ 2762      455F4556 
+ 2762      545F474C 
+ 2762      53535F57 
+ 2762      52495445 
+ 2763              	.LASF110:
+ 2764 17bf 4359424C 		.ascii	"CYBLE_ERROR_FLASH_WRITE_NOT_PERMITED\000"
+ 2764      455F4552 
+ 2764      524F525F 
+ 2764      464C4153 
+ 2764      485F5752 
+ 2765              	.LASF433:
+ 2766 17e4 4359424C 		.ascii	"CYBLE_EVT_WPTSC_WRITE_DESCR_RESPONSE\000"
+ 2766      455F4556 
+ 2766      545F5750 
+ 2766      5453435F 
+ 2766      57524954 
+ 2767              	.LASF340:
+ 2768 1809 4359424C 		.ascii	"CYBLE_EVT_IPSC_READ_CHAR_RESPONSE\000"
+ 2768      455F4556 
+ 2768      545F4950 
+ 2768      53435F52 
+ 2768      4541445F 
+ 2769              	.LASF191:
+ 2770 182b 4359424C 		.ascii	"CYBLE_EVT_ANSS_NOTIFICATION_DISABLED\000"
+ 2770      455F4556 
+ 2770      545F414E 
+ 2770      53535F4E 
+ 2770      4F544946 
+ 2771              	.LASF93:
+ 2772 1850 4359424C 		.ascii	"CYBLE_ERROR_INSUFFICIENT_RESOURCES\000"
+ 2772      455F4552 
+ 2772      524F525F 
+ 2772      494E5355 
+ 2772      46464943 
+ 2773              	.LASF335:
+ 2774 1873 4359424C 		.ascii	"CYBLE_EVT_HTSC_WRITE_CHAR_RESPONSE\000"
+ 2774      455F4556 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 69
+
+
+ 2774      545F4854 
+ 2774      53435F57 
+ 2774      52495445 
+ 2775              	.LASF111:
+ 2776 1896 4359424C 		.ascii	"CYBLE_ERROR_MIC_AUTH_FAILED\000"
+ 2776      455F4552 
+ 2776      524F525F 
+ 2776      4D49435F 
+ 2776      41555448 
+ 2777              	.LASF375:
+ 2778 18b2 4359424C 		.ascii	"CYBLE_EVT_PLXS_INDICATION_CONFIRMATION\000"
+ 2778      455F4556 
+ 2778      545F504C 
+ 2778      58535F49 
+ 2778      4E444943 
+ 2779              	.LASF127:
+ 2780 18d9 4359424C 		.ascii	"CYBLE_GATT_VALUE_T\000"
+ 2780      455F4741 
+ 2780      54545F56 
+ 2780      414C5545 
+ 2780      5F5400
+ 2781              	.LASF18:
+ 2782 18ec 4359424C 		.ascii	"CYBLE_EVT_STACK_ON\000"
+ 2782      455F4556 
+ 2782      545F5354 
+ 2782      41434B5F 
+ 2782      4F4E00
+ 2783              	.LASF145:
+ 2784 18ff 4359424C 		.ascii	"CYBLE_DIS_SOFTWARE_REV\000"
+ 2784      455F4449 
+ 2784      535F534F 
+ 2784      46545741 
+ 2784      52455F52 
+ 2785              	.LASF301:
+ 2786 1916 4359424C 		.ascii	"CYBLE_EVT_HIDSS_REPORT_MODE_ENTER\000"
+ 2786      455F4556 
+ 2786      545F4849 
+ 2786      4453535F 
+ 2786      5245504F 
+ 2787              	.LASF8:
+ 2788 1938 756E7369 		.ascii	"unsigned int\000"
+ 2788      676E6564 
+ 2788      20696E74 
+ 2788      00
+ 2789              	.LASF133:
+ 2790 1945 4359424C 		.ascii	"CYBLE_BAS_BATTERY_LEVEL_CPFD\000"
+ 2790      455F4241 
+ 2790      535F4241 
+ 2790      54544552 
+ 2790      595F4C45 
+ 2791              	.LASF309:
+ 2792 1962 4359424C 		.ascii	"CYBLE_EVT_HIDSC_WRITE_DESCR_RESPONSE\000"
+ 2792      455F4556 
+ 2792      545F4849 
+ 2792      4453435F 
+ 2792      57524954 
+ 2793              	.LASF376:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 70
+
+
+ 2794 1987 4359424C 		.ascii	"CYBLE_EVT_PLXSC_NOTIFICATION\000"
+ 2794      455F4556 
+ 2794      545F504C 
+ 2794      5853435F 
+ 2794      4E4F5449 
+ 2795              	.LASF162:
+ 2796 19a4 4359424C 		.ascii	"CYBLE_EVT_GATTC_CHAR_DUPLICATION\000"
+ 2796      455F4556 
+ 2796      545F4741 
+ 2796      5454435F 
+ 2796      43484152 
+ 2797              	.LASF249:
+ 2798 19c5 4359424C 		.ascii	"CYBLE_EVT_CPSC_READ_DESCR_RESPONSE\000"
+ 2798      455F4556 
+ 2798      545F4350 
+ 2798      53435F52 
+ 2798      4541445F 
+ 2799              	.LASF420:
+ 2800 19e8 4359424C 		.ascii	"CYBLE_EVT_UDSC_WRITE_DESCR_RESPONSE\000"
+ 2800      455F4556 
+ 2800      545F5544 
+ 2800      53435F57 
+ 2800      52495445 
+ 2801              	.LASF397:
+ 2802 1a0c 4359424C 		.ascii	"CYBLE_EVT_SCPSS_NOTIFICATION_DISABLED\000"
+ 2802      455F4556 
+ 2802      545F5343 
+ 2802      5053535F 
+ 2802      4E4F5449 
+ 2803              	.LASF188:
+ 2804 1a32 4359424C 		.ascii	"CYBLE_EVT_ANCSC_WRITE_DESCR_RESPONSE\000"
+ 2804      455F4556 
+ 2804      545F414E 
+ 2804      4353435F 
+ 2804      57524954 
+ 2805              	.LASF272:
+ 2806 1a57 4359424C 		.ascii	"CYBLE_EVT_DISC_READ_CHAR_RESPONSE\000"
+ 2806      455F4556 
+ 2806      545F4449 
+ 2806      53435F52 
+ 2806      4541445F 
+ 2807              	.LASF209:
+ 2808 1a79 4359424C 		.ascii	"CYBLE_EVT_BCSC_READ_DESCR_RESPONSE\000"
+ 2808      455F4556 
+ 2808      545F4243 
+ 2808      53435F52 
+ 2808      4541445F 
+ 2809              	.LASF366:
+ 2810 1a9c 4359424C 		.ascii	"CYBLE_EVT_PASSC_NOTIFICATION\000"
+ 2810      455F4556 
+ 2810      545F5041 
+ 2810      5353435F 
+ 2810      4E4F5449 
+ 2811              	.LASF147:
+ 2812 1ab9 4359424C 		.ascii	"CYBLE_DIS_REG_CERT_DATA\000"
+ 2812      455F4449 
+ 2812      535F5245 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 71
+
+
+ 2812      475F4345 
+ 2812      52545F44 
+ 2813              	.LASF41:
+ 2814 1ad1 4359424C 		.ascii	"CYBLE_EVT_GAP_ENHANCE_CONN_COMPLETE\000"
+ 2814      455F4556 
+ 2814      545F4741 
+ 2814      505F454E 
+ 2814      48414E43 
+ 2815              	.LASF10:
+ 2816 1af5 75696E74 		.ascii	"uint16\000"
+ 2816      313600
+ 2817              	.LASF117:
+ 2818 1afc 4359424C 		.ascii	"CYBLE_ERROR_NTF_DISABLED\000"
+ 2818      455F4552 
+ 2818      524F525F 
+ 2818      4E54465F 
+ 2818      44495341 
+ 2819              	.LASF121:
+ 2820 1b15 4359424C 		.ascii	"CYBLE_ERROR_STACK_BUSY\000"
+ 2820      455F4552 
+ 2820      524F525F 
+ 2820      53544143 
+ 2820      4B5F4255 
+ 2821              	.LASF1:
+ 2822 1b2c 756E7369 		.ascii	"unsigned char\000"
+ 2822      676E6564 
+ 2822      20636861 
+ 2822      7200
+ 2823              	.LASF233:
+ 2824 1b3a 4359424C 		.ascii	"CYBLE_EVT_CGMSC_READ_CHAR_RESPONSE\000"
+ 2824      455F4556 
+ 2824      545F4347 
+ 2824      4D53435F 
+ 2824      52454144 
+ 2825              	.LASF356:
+ 2826 1b5d 4359424C 		.ascii	"CYBLE_EVT_LNSC_INDICATION\000"
+ 2826      455F4556 
+ 2826      545F4C4E 
+ 2826      53435F49 
+ 2826      4E444943 
+ 2827              	.LASF186:
+ 2828 1b77 4359424C 		.ascii	"CYBLE_EVT_ANCSC_WRITE_CHAR_RESPONSE\000"
+ 2828      455F4556 
+ 2828      545F414E 
+ 2828      4353435F 
+ 2828      57524954 
+ 2829              	.LASF302:
+ 2830 1b9b 4359424C 		.ascii	"CYBLE_EVT_HIDSS_SUSPEND\000"
+ 2830      455F4556 
+ 2830      545F4849 
+ 2830      4453535F 
+ 2830      53555350 
+ 2831              	.LASF447:
+ 2832 1bb3 61706952 		.ascii	"apiResult\000"
+ 2832      6573756C 
+ 2832      7400
+ 2833              	.LASF187:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 72
+
+
+ 2834 1bbd 4359424C 		.ascii	"CYBLE_EVT_ANCSC_READ_DESCR_RESPONSE\000"
+ 2834      455F4556 
+ 2834      545F414E 
+ 2834      4353435F 
+ 2834      52454144 
+ 2835              	.LASF456:
+ 2836 1be1 6261732E 		.ascii	"bas.c\000"
+ 2836      6300
+ 2837              	.LASF6:
+ 2838 1be7 6C6F6E67 		.ascii	"long long int\000"
+ 2838      206C6F6E 
+ 2838      6720696E 
+ 2838      7400
+ 2839              	.LASF423:
+ 2840 1bf5 4359424C 		.ascii	"CYBLE_EVT_WPTSS_NOTIFICATION_DISABLED\000"
+ 2840      455F4556 
+ 2840      545F5750 
+ 2840      5453535F 
+ 2840      4E4F5449 
+ 2841              	.LASF318:
+ 2842 1c1b 4359424C 		.ascii	"CYBLE_EVT_HRSS_ENERGY_EXPENDED_RESET\000"
+ 2842      455F4556 
+ 2842      545F4852 
+ 2842      53535F45 
+ 2842      4E455247 
+ 2843              	.LASF292:
+ 2844 1c40 4359424C 		.ascii	"CYBLE_EVT_GLSC_INDICATION\000"
+ 2844      455F4556 
+ 2844      545F474C 
+ 2844      53435F49 
+ 2844      4E444943 
+ 2845              	.LASF278:
+ 2846 1c5a 4359424C 		.ascii	"CYBLE_EVT_ESSS_CHAR_WRITE\000"
+ 2846      455F4556 
+ 2846      545F4553 
+ 2846      53535F43 
+ 2846      4841525F 
+ 2847              	.LASF48:
+ 2848 1c74 4359424C 		.ascii	"CYBLE_EVT_GATTC_ERROR_RSP\000"
+ 2848      455F4556 
+ 2848      545F4741 
+ 2848      5454435F 
+ 2848      4552524F 
+ 2849              	.LASF279:
+ 2850 1c8e 4359424C 		.ascii	"CYBLE_EVT_ESSS_DESCR_WRITE\000"
+ 2850      455F4556 
+ 2850      545F4553 
+ 2850      53535F44 
+ 2850      45534352 
+ 2851              	.LASF391:
+ 2852 1ca9 4359424C 		.ascii	"CYBLE_EVT_RSCSC_WRITE_CHAR_RESPONSE\000"
+ 2852      455F4556 
+ 2852      545F5253 
+ 2852      4353435F 
+ 2852      57524954 
+ 2853              	.LASF37:
+ 2854 1ccd 4359424C 		.ascii	"CYBLE_EVT_GAP_NUMERIC_COMPARISON_REQUEST\000"
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 73
+
+
+ 2854      455F4556 
+ 2854      545F4741 
+ 2854      505F4E55 
+ 2854      4D455249 
+ 2855              	.LASF230:
+ 2856 1cf6 4359424C 		.ascii	"CYBLE_EVT_CGMSS_WRITE_CHAR\000"
+ 2856      455F4556 
+ 2856      545F4347 
+ 2856      4D53535F 
+ 2856      57524954 
+ 2857              	.LASF108:
+ 2858 1d11 4359424C 		.ascii	"CYBLE_ERROR_GATT_DB_INVALID_ATTR_HANDLE\000"
+ 2858      455F4552 
+ 2858      524F525F 
+ 2858      47415454 
+ 2858      5F44425F 
+ 2859              	.LASF409:
+ 2860 1d39 4359424C 		.ascii	"CYBLE_EVT_UDSS_INDICATION_DISABLED\000"
+ 2860      455F4556 
+ 2860      545F5544 
+ 2860      53535F49 
+ 2860      4E444943 
+ 2861              	.LASF316:
+ 2862 1d5c 4359424C 		.ascii	"CYBLE_EVT_HPSC_WRITE_DESCR_RESPONSE\000"
+ 2862      455F4556 
+ 2862      545F4850 
+ 2862      53435F57 
+ 2862      52495445 
+ 2863              	.LASF349:
+ 2864 1d80 4359424C 		.ascii	"CYBLE_EVT_LLSC_WRITE_CHAR_RESPONSE\000"
+ 2864      455F4556 
+ 2864      545F4C4C 
+ 2864      53435F57 
+ 2864      52495445 
+ 2865              	.LASF116:
+ 2866 1da3 4359424C 		.ascii	"CYBLE_ERROR_MAX\000"
+ 2866      455F4552 
+ 2866      524F525F 
+ 2866      4D415800 
+ 2867              	.LASF277:
+ 2868 1db3 4359424C 		.ascii	"CYBLE_EVT_ESSS_INDICATION_CONFIRMATION\000"
+ 2868      455F4556 
+ 2868      545F4553 
+ 2868      53535F49 
+ 2868      4E444943 
+ 2869              	.LASF157:
+ 2870 1dda 4359424C 		.ascii	"CYBLE_EVT_GATTC_SRVC_DISCOVERY_FAILED\000"
+ 2870      455F4556 
+ 2870      545F4741 
+ 2870      5454435F 
+ 2870      53525643 
+ 2871              	.LASF298:
+ 2872 1e00 4359424C 		.ascii	"CYBLE_EVT_HIDSS_NOTIFICATION_ENABLED\000"
+ 2872      455F4556 
+ 2872      545F4849 
+ 2872      4453535F 
+ 2872      4E4F5449 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 74
+
+
+ 2873              	.LASF217:
+ 2874 1e25 4359424C 		.ascii	"CYBLE_EVT_BLSC_NOTIFICATION\000"
+ 2874      455F4556 
+ 2874      545F424C 
+ 2874      53435F4E 
+ 2874      4F544946 
+ 2875              	.LASF223:
+ 2876 1e41 4359424C 		.ascii	"CYBLE_EVT_BMSC_WRITE_CHAR_RESPONSE\000"
+ 2876      455F4556 
+ 2876      545F424D 
+ 2876      53435F57 
+ 2876      52495445 
+ 2877              	.LASF224:
+ 2878 1e64 4359424C 		.ascii	"CYBLE_EVT_BMSC_READ_DESCR_RESPONSE\000"
+ 2878      455F4556 
+ 2878      545F424D 
+ 2878      53435F52 
+ 2878      4541445F 
+ 2879              	.LASF357:
+ 2880 1e87 4359424C 		.ascii	"CYBLE_EVT_LNSC_NOTIFICATION\000"
+ 2880      455F4556 
+ 2880      545F4C4E 
+ 2880      53435F4E 
+ 2880      4F544946 
+ 2881              	.LASF319:
+ 2882 1ea3 4359424C 		.ascii	"CYBLE_EVT_HRSS_NOTIFICATION_ENABLED\000"
+ 2882      455F4556 
+ 2882      545F4852 
+ 2882      53535F4E 
+ 2882      4F544946 
+ 2883              	.LASF239:
+ 2884 1ec7 4359424C 		.ascii	"CYBLE_EVT_CPSS_INDICATION_ENABLED\000"
+ 2884      455F4556 
+ 2884      545F4350 
+ 2884      53535F49 
+ 2884      4E444943 
+ 2885              	.LASF182:
+ 2886 1ee9 4359424C 		.ascii	"CYBLE_EVT_ANCSS_NOTIFICATION_ENABLED\000"
+ 2886      455F4556 
+ 2886      545F414E 
+ 2886      4353535F 
+ 2886      4E4F5449 
+ 2887              	.LASF383:
+ 2888 1f0e 4359424C 		.ascii	"CYBLE_EVT_RSCSS_NOTIFICATION_DISABLED\000"
+ 2888      455F4556 
+ 2888      545F5253 
+ 2888      4353535F 
+ 2888      4E4F5449 
+ 2889              	.LASF105:
+ 2890 1f34 4359424C 		.ascii	"CYBLE_ERROR_L2CAP_CONNECTION_ENTITY_NOT_FOUND\000"
+ 2890      455F4552 
+ 2890      524F525F 
+ 2890      4C324341 
+ 2890      505F434F 
+ 2891              	.LASF152:
+ 2892 1f62 4359424C 		.ascii	"CYBLE_LONG_TERM_KEY_REQUEST_REPLY\000"
+ 2892      455F4C4F 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 75
+
+
+ 2892      4E475F54 
+ 2892      45524D5F 
+ 2892      4B45595F 
+ 2893              	.LASF155:
+ 2894 1f84 4359424C 		.ascii	"CYBLE_EVT_GATTS_INDICATION_DISABLED\000"
+ 2894      455F4556 
+ 2894      545F4741 
+ 2894      5454535F 
+ 2894      494E4449 
+ 2895              	.LASF160:
+ 2896 1fa8 4359424C 		.ascii	"CYBLE_EVT_GATTC_DESCR_DISCOVERY_FAILED\000"
+ 2896      455F4556 
+ 2896      545F4741 
+ 2896      5454435F 
+ 2896      44455343 
+ 2897              	.LASF350:
+ 2898 1fcf 4359424C 		.ascii	"CYBLE_EVT_LNSS_INDICATION_ENABLED\000"
+ 2898      455F4556 
+ 2898      545F4C4E 
+ 2898      53535F49 
+ 2898      4E444943 
+ 2899              	.LASF407:
+ 2900 1ff1 4359424C 		.ascii	"CYBLE_EVT_TPSC_WRITE_DESCR_RESPONSE\000"
+ 2900      455F4556 
+ 2900      545F5450 
+ 2900      53435F57 
+ 2900      52495445 
+ 2901              	.LASF424:
+ 2902 2015 4359424C 		.ascii	"CYBLE_EVT_WPTSS_INDICATION_ENABLED\000"
+ 2902      455F4556 
+ 2902      545F5750 
+ 2902      5453535F 
+ 2902      494E4449 
+ 2903              	.LASF102:
+ 2904 2038 4359424C 		.ascii	"CYBLE_ERROR_L2CAP_PSM_WRONG_ENCODING\000"
+ 2904      455F4552 
+ 2904      524F525F 
+ 2904      4C324341 
+ 2904      505F5053 
+ 2905              	.LASF330:
+ 2906 205d 4359424C 		.ascii	"CYBLE_EVT_HTSS_INDICATION_CONFIRMED\000"
+ 2906      455F4556 
+ 2906      545F4854 
+ 2906      53535F49 
+ 2906      4E444943 
+ 2907              	.LASF345:
+ 2908 2081 4359424C 		.ascii	"CYBLE_EVT_IPSC_ERROR_RESPONSE\000"
+ 2908      455F4556 
+ 2908      545F4950 
+ 2908      53435F45 
+ 2908      52524F52 
+ 2909              	.LASF30:
+ 2910 209f 4359424C 		.ascii	"CYBLE_EVT_GAPP_ADVERTISEMENT_START_STOP\000"
+ 2910      455F4556 
+ 2910      545F4741 
+ 2910      50505F41 
+ 2910      44564552 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 76
+
+
+ 2911              	.LASF324:
+ 2912 20c7 4359424C 		.ascii	"CYBLE_EVT_HRSC_READ_DESCR_RESPONSE\000"
+ 2912      455F4556 
+ 2912      545F4852 
+ 2912      53435F52 
+ 2912      4541445F 
+ 2913              	.LASF11:
+ 2914 20ea 75696E74 		.ascii	"uint32\000"
+ 2914      333200
+ 2915              	.LASF80:
+ 2916 20f1 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_READ\000"
+ 2916      455F4556 
+ 2916      545F4C32 
+ 2916      4341505F 
+ 2916      43424643 
+ 2917              	.LASF131:
+ 2918 2110 4359424C 		.ascii	"CYBLE_BAS_CHAR_INDEX_T\000"
+ 2918      455F4241 
+ 2918      535F4348 
+ 2918      41525F49 
+ 2918      4E444558 
+ 2919              	.LASF210:
+ 2920 2127 4359424C 		.ascii	"CYBLE_EVT_BCSC_WRITE_DESCR_RESPONSE\000"
+ 2920      455F4556 
+ 2920      545F4243 
+ 2920      53435F57 
+ 2920      52495445 
+ 2921              	.LASF384:
+ 2922 214b 4359424C 		.ascii	"CYBLE_EVT_RSCSS_INDICATION_ENABLED\000"
+ 2922      455F4556 
+ 2922      545F5253 
+ 2922      4353535F 
+ 2922      494E4449 
+ 2923              	.LASF220:
+ 2924 216e 4359424C 		.ascii	"CYBLE_EVT_BLSC_WRITE_DESCR_RESPONSE\000"
+ 2924      455F4556 
+ 2924      545F424C 
+ 2924      53435F57 
+ 2924      52495445 
+ 2925              	.LASF5:
+ 2926 2192 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2926      20756E73 
+ 2926      69676E65 
+ 2926      6420696E 
+ 2926      7400
+ 2927              	.LASF312:
+ 2928 21a4 4359424C 		.ascii	"CYBLE_EVT_HPSS_CHAR_WRITE\000"
+ 2928      455F4556 
+ 2928      545F4850 
+ 2928      53535F43 
+ 2928      4841525F 
+ 2929              	.LASF401:
+ 2930 21be 4359424C 		.ascii	"CYBLE_EVT_SCPSC_WRITE_DESCR_RESPONSE\000"
+ 2930      455F4556 
+ 2930      545F5343 
+ 2930      5053435F 
+ 2930      57524954 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 77
+
+
+ 2931              	.LASF109:
+ 2932 21e3 4359424C 		.ascii	"CYBLE_ERROR_DEVICE_ALREADY_EXISTS\000"
+ 2932      455F4552 
+ 2932      524F525F 
+ 2932      44455649 
+ 2932      43455F41 
+ 2933              	.LASF86:
+ 2934 2205 4359424C 		.ascii	"CYBLE_EVT_HCI_PKT\000"
+ 2934      455F4556 
+ 2934      545F4843 
+ 2934      495F504B 
+ 2934      5400
+ 2935              	.LASF122:
+ 2936 2217 4359424C 		.ascii	"CYBLE_API_RESULT_T\000"
+ 2936      455F4150 
+ 2936      495F5245 
+ 2936      53554C54 
+ 2936      5F5400
+ 2937              	.LASF104:
+ 2938 222a 4359424C 		.ascii	"CYBLE_ERROR_L2CAP_PSM_NOT_REGISTERED\000"
+ 2938      455F4552 
+ 2938      524F525F 
+ 2938      4C324341 
+ 2938      505F5053 
+ 2939              	.LASF399:
+ 2940 224f 4359424C 		.ascii	"CYBLE_EVT_SCPSC_NOTIFICATION\000"
+ 2940      455F4556 
+ 2940      545F5343 
+ 2940      5053435F 
+ 2940      4E4F5449 
+ 2941              	.LASF341:
+ 2942 226c 4359424C 		.ascii	"CYBLE_EVT_IPSC_READ_MULTIPLE_CHAR_RESPONSE\000"
+ 2942      455F4556 
+ 2942      545F4950 
+ 2942      53435F52 
+ 2942      4541445F 
+ 2943              	.LASF72:
+ 2944 2297 4359424C 		.ascii	"CYBLE_EVT_GATTC_LONG_PROCEDURE_END\000"
+ 2944      455F4556 
+ 2944      545F4741 
+ 2944      5454435F 
+ 2944      4C4F4E47 
+ 2945              	.LASF377:
+ 2946 22ba 4359424C 		.ascii	"CYBLE_EVT_PLXSC_INDICATION\000"
+ 2946      455F4556 
+ 2946      545F504C 
+ 2946      5853435F 
+ 2946      494E4449 
+ 2947              	.LASF369:
+ 2948 22d5 4359424C 		.ascii	"CYBLE_EVT_PASSC_WRITE_DESCR_RESPONSE\000"
+ 2948      455F4556 
+ 2948      545F5041 
+ 2948      5353435F 
+ 2948      57524954 
+ 2949              	.LASF310:
+ 2950 22fa 4359424C 		.ascii	"CYBLE_EVT_HPSS_NOTIFICATION_ENABLED\000"
+ 2950      455F4556 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 78
+
+
+ 2950      545F4850 
+ 2950      53535F4E 
+ 2950      4F544946 
+ 2951              	.LASF422:
+ 2952 231e 4359424C 		.ascii	"CYBLE_EVT_WPTSS_NOTIFICATION_ENABLED\000"
+ 2952      455F4556 
+ 2952      545F5750 
+ 2952      5453535F 
+ 2952      4E4F5449 
+ 2953              	.LASF288:
+ 2954 2343 4359424C 		.ascii	"CYBLE_EVT_GLSS_INDICATION_CONFIRMED\000"
+ 2954      455F4556 
+ 2954      545F474C 
+ 2954      53535F49 
+ 2954      4E444943 
+ 2955              	.LASF276:
+ 2956 2367 4359424C 		.ascii	"CYBLE_EVT_ESSS_INDICATION_DISABLED\000"
+ 2956      455F4556 
+ 2956      545F4553 
+ 2956      53535F49 
+ 2956      4E444943 
+ 2957              	.LASF166:
+ 2958 238a 4359424C 		.ascii	"CYBLE_EVT_GATTC_CHAR_DISCOVERY_COMPLETE\000"
+ 2958      455F4556 
+ 2958      545F4741 
+ 2958      5454435F 
+ 2958      43484152 
+ 2959              	.LASF189:
+ 2960 23b2 4359424C 		.ascii	"CYBLE_EVT_ANCSC_ERROR_RESPONSE\000"
+ 2960      455F4556 
+ 2960      545F414E 
+ 2960      4353435F 
+ 2960      4552524F 
+ 2961              	.LASF15:
+ 2962 23d1 6C6F6E67 		.ascii	"long double\000"
+ 2962      20646F75 
+ 2962      626C6500 
+ 2963              	.LASF333:
+ 2964 23dd 4359424C 		.ascii	"CYBLE_EVT_HTSC_INDICATION\000"
+ 2964      455F4556 
+ 2964      545F4854 
+ 2964      53435F49 
+ 2964      4E444943 
+ 2965              	.LASF144:
+ 2966 23f7 4359424C 		.ascii	"CYBLE_DIS_FIRMWARE_REV\000"
+ 2966      455F4449 
+ 2966      535F4649 
+ 2966      524D5741 
+ 2966      52455F52 
+ 2967              	.LASF445:
+ 2968 240e 42617349 		.ascii	"BasInit\000"
+ 2968      6E697400 
+ 2969              	.LASF67:
+ 2970 2416 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_IND\000"
+ 2970      455F4556 
+ 2970      545F4741 
+ 2970      5454435F 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 79
+
+
+ 2970      48414E44 
+ 2971              	.LASF227:
+ 2972 2437 4359424C 		.ascii	"CYBLE_EVT_CGMSS_INDICATION_CONFIRMED\000"
+ 2972      455F4556 
+ 2972      545F4347 
+ 2972      4D53535F 
+ 2972      494E4449 
+ 2973              	.LASF270:
+ 2974 245c 4359424C 		.ascii	"CYBLE_EVT_CTSC_WRITE_DESCR_RESPONSE\000"
+ 2974      455F4556 
+ 2974      545F4354 
+ 2974      53435F57 
+ 2974      52495445 
+ 2975              	.LASF99:
+ 2976 2480 4359424C 		.ascii	"CYBLE_ERROR_TX_POWER_READ\000"
+ 2976      455F4552 
+ 2976      524F525F 
+ 2976      54585F50 
+ 2976      4F574552 
+ 2977              	.LASF203:
+ 2978 249a 4359424C 		.ascii	"CYBLE_EVT_BASC_WRITE_DESCR_RESPONSE\000"
+ 2978      455F4556 
+ 2978      545F4241 
+ 2978      53435F57 
+ 2978      52495445 
+ 2979              	.LASF154:
+ 2980 24be 4359424C 		.ascii	"CYBLE_EVT_GATTS_INDICATION_ENABLED\000"
+ 2980      455F4556 
+ 2980      545F4741 
+ 2980      5454535F 
+ 2980      494E4449 
+ 2981              	.LASF457:
+ 2982 24e1 433A5C55 		.ascii	"C:\\Users\\black\\OneDrive\\Documents\\PSoC Creator"
+ 2982      73657273 
+ 2982      5C626C61 
+ 2982      636B5C4F 
+ 2982      6E654472 
+ 2983 250f 5C424C45 		.ascii	"\\BLE_HID_Keyboard212006\\BLE_HID_Keyboard212006.cy"
+ 2983      5F484944 
+ 2983      5F4B6579 
+ 2983      626F6172 
+ 2983      64323132 
+ 2984 2540 64736E00 		.ascii	"dsn\000"
+ 2985              	.LASF294:
+ 2986 2544 4359424C 		.ascii	"CYBLE_EVT_GLSC_READ_CHAR_RESPONSE\000"
+ 2986      455F4556 
+ 2986      545F474C 
+ 2986      53435F52 
+ 2986      4541445F 
+ 2987              	.LASF97:
+ 2988 2566 4359424C 		.ascii	"CYBLE_ERROR_REPEATED_ATTEMPTS\000"
+ 2988      455F4552 
+ 2988      524F525F 
+ 2988      52455045 
+ 2988      41544544 
+ 2989              	.LASF114:
+ 2990 2584 4359424C 		.ascii	"CYBLE_ERROR_FLASH_WRITE\000"
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 80
+
+
+ 2990      455F4552 
+ 2990      524F525F 
+ 2990      464C4153 
+ 2990      485F5752 
+ 2991              	.LASF374:
+ 2992 259c 4359424C 		.ascii	"CYBLE_EVT_PLXSS_INDICATION_DISABLED\000"
+ 2992      455F4556 
+ 2992      545F504C 
+ 2992      5853535F 
+ 2992      494E4449 
+ 2993              	.LASF221:
+ 2994 25c0 4359424C 		.ascii	"CYBLE_EVT_BMSS_WRITE_CHAR\000"
+ 2994      455F4556 
+ 2994      545F424D 
+ 2994      53535F57 
+ 2994      52495445 
+ 2995              	.LASF408:
+ 2996 25da 4359424C 		.ascii	"CYBLE_EVT_UDSS_INDICATION_ENABLED\000"
+ 2996      455F4556 
+ 2996      545F5544 
+ 2996      53535F49 
+ 2996      4E444943 
+ 2997              	.LASF33:
+ 2998 25fc 4359424C 		.ascii	"CYBLE_EVT_GAP_ENCRYPT_CHANGE\000"
+ 2998      455F4556 
+ 2998      545F4741 
+ 2998      505F454E 
+ 2998      43525950 
+ 2999              	.LASF248:
+ 3000 2619 4359424C 		.ascii	"CYBLE_EVT_CPSC_WRITE_CHAR_RESPONSE\000"
+ 3000      455F4556 
+ 3000      545F4350 
+ 3000      53435F57 
+ 3000      52495445 
+ 3001              	.LASF258:
+ 3002 263c 4359424C 		.ascii	"CYBLE_EVT_CSCSC_NOTIFICATION\000"
+ 3002      455F4556 
+ 3002      545F4353 
+ 3002      4353435F 
+ 3002      4E4F5449 
+ 3003              	.LASF323:
+ 3004 2659 4359424C 		.ascii	"CYBLE_EVT_HRSC_WRITE_CHAR_RESPONSE\000"
+ 3004      455F4556 
+ 3004      545F4852 
+ 3004      53435F57 
+ 3004      52495445 
+ 3005              	.LASF119:
+ 3006 267c 4359424C 		.ascii	"CYBLE_ERROR_CHAR_IS_NOT_DISCOVERED\000"
+ 3006      455F4552 
+ 3006      524F525F 
+ 3006      43484152 
+ 3006      5F49535F 
+ 3007              	.LASF381:
+ 3008 269f 4359424C 		.ascii	"CYBLE_EVT_PLXSC_WRITE_DESCR_RESPONSE\000"
+ 3008      455F4556 
+ 3008      545F504C 
+ 3008      5853435F 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 81
+
+
+ 3008      57524954 
+ 3009              	.LASF266:
+ 3010 26c4 4359424C 		.ascii	"CYBLE_EVT_CTSS_CHAR_WRITE\000"
+ 3010      455F4556 
+ 3010      545F4354 
+ 3010      53535F43 
+ 3010      4841525F 
+ 3011              	.LASF141:
+ 3012 26de 4359424C 		.ascii	"CYBLE_DIS_MODEL_NUMBER\000"
+ 3012      455F4449 
+ 3012      535F4D4F 
+ 3012      44454C5F 
+ 3012      4E554D42 
+ 3013              	.LASF386:
+ 3014 26f5 4359424C 		.ascii	"CYBLE_EVT_RSCSS_INDICATION_CONFIRMATION\000"
+ 3014      455F4556 
+ 3014      545F5253 
+ 3014      4353535F 
+ 3014      494E4449 
+ 3015              	.LASF235:
+ 3016 271d 4359424C 		.ascii	"CYBLE_EVT_CGMSC_READ_DESCR_RESPONSE\000"
+ 3016      455F4556 
+ 3016      545F4347 
+ 3016      4D53435F 
+ 3016      52454144 
+ 3017              	.LASF4:
+ 3018 2741 6C6F6E67 		.ascii	"long int\000"
+ 3018      20696E74 
+ 3018      00
+ 3019              	.LASF134:
+ 3020 274a 4359424C 		.ascii	"CYBLE_BAS_DESCR_COUNT\000"
+ 3020      455F4241 
+ 3020      535F4445 
+ 3020      5343525F 
+ 3020      434F554E 
+ 3021              	.LASF427:
+ 3022 2760 4359424C 		.ascii	"CYBLE_EVT_WPTSS_WRITE_CHAR\000"
+ 3022      455F4556 
+ 3022      545F5750 
+ 3022      5453535F 
+ 3022      57524954 
+ 3023              	.LASF40:
+ 3024 277b 4359424C 		.ascii	"CYBLE_EVT_GAP_DATA_LENGTH_CHANGE\000"
+ 3024      455F4556 
+ 3024      545F4741 
+ 3024      505F4441 
+ 3024      54415F4C 
+ 3025              	.LASF426:
+ 3026 279c 4359424C 		.ascii	"CYBLE_EVT_WPTSS_INDICATION_CONFIRMED\000"
+ 3026      455F4556 
+ 3026      545F5750 
+ 3026      5453535F 
+ 3026      494E4449 
+ 3027              	.LASF49:
+ 3028 27c1 4359424C 		.ascii	"CYBLE_EVT_GATT_CONNECT_IND\000"
+ 3028      455F4556 
+ 3028      545F4741 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 82
+
+
+ 3028      54545F43 
+ 3028      4F4E4E45 
+ 3029              	.LASF88:
+ 3030 27dc 4359424C 		.ascii	"CYBLE_EVT_MAX\000"
+ 3030      455F4556 
+ 3030      545F4D41 
+ 3030      5800
+ 3031              	.LASF59:
+ 3032 27ea 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_MULTI_RSP\000"
+ 3032      455F4556 
+ 3032      545F4741 
+ 3032      5454435F 
+ 3032      52454144 
+ 3033              	.LASF245:
+ 3034 2809 4359424C 		.ascii	"CYBLE_EVT_CPSC_NOTIFICATION\000"
+ 3034      455F4556 
+ 3034      545F4350 
+ 3034      53435F4E 
+ 3034      4F544946 
+ 3035              	.LASF255:
+ 3036 2825 4359424C 		.ascii	"CYBLE_EVT_CSCSS_INDICATION_DISABLED\000"
+ 3036      455F4556 
+ 3036      545F4353 
+ 3036      4353535F 
+ 3036      494E4449 
+ 3037              	.LASF222:
+ 3038 2849 4359424C 		.ascii	"CYBLE_EVT_BMSC_READ_CHAR_RESPONSE\000"
+ 3038      455F4556 
+ 3038      545F424D 
+ 3038      53435F52 
+ 3038      4541445F 
+ 3039              	.LASF78:
+ 3040 286b 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_IND\000"
+ 3040      455F4556 
+ 3040      545F4C32 
+ 3040      4341505F 
+ 3040      43424643 
+ 3041              	.LASF137:
+ 3042 288c 63686172 		.ascii	"charIndex\000"
+ 3042      496E6465 
+ 3042      7800
+ 3043              	.LASF17:
+ 3044 2896 4359424C 		.ascii	"CYBLE_EVT_HOST_INVALID\000"
+ 3044      455F4556 
+ 3044      545F484F 
+ 3044      53545F49 
+ 3044      4E56414C 
+ 3045              	.LASF90:
+ 3046 28ad 4359424C 		.ascii	"CYBLE_ERROR_INVALID_PARAMETER\000"
+ 3046      455F4552 
+ 3046      524F525F 
+ 3046      494E5641 
+ 3046      4C49445F 
+ 3047              	.LASF24:
+ 3048 28cb 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_PROGRESS_RESULT\000"
+ 3048      455F4556 
+ 3048      545F4741 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 83
+
+
+ 3048      50435F53 
+ 3048      43414E5F 
+ 3049              	.LASF315:
+ 3050 28ef 4359424C 		.ascii	"CYBLE_EVT_HPSC_READ_DESCR_RESPONSE\000"
+ 3050      455F4556 
+ 3050      545F4850 
+ 3050      53435F52 
+ 3050      4541445F 
+ 3051              	.LASF202:
+ 3052 2912 4359424C 		.ascii	"CYBLE_EVT_BASC_READ_DESCR_RESPONSE\000"
+ 3052      455F4556 
+ 3052      545F4241 
+ 3052      53435F52 
+ 3052      4541445F 
+ 3053              	.LASF435:
+ 3054 2935 4359424C 		.ascii	"CYBLE_EVT_WSSS_INDICATION_DISABLED\000"
+ 3054      455F4556 
+ 3054      545F5753 
+ 3054      53535F49 
+ 3054      4E444943 
+ 3055              	.LASF448:
+ 3056 2958 63636364 		.ascii	"cccdValue\000"
+ 3056      56616C75 
+ 3056      6500
+ 3057              	.LASF42:
+ 3058 2962 4359424C 		.ascii	"CYBLE_EVT_GAPC_DIRECT_ADV_REPORT\000"
+ 3058      455F4556 
+ 3058      545F4741 
+ 3058      50435F44 
+ 3058      49524543 
+ 3059              	.LASF368:
+ 3060 2983 4359424C 		.ascii	"CYBLE_EVT_PASSC_READ_DESCR_RESPONSE\000"
+ 3060      455F4556 
+ 3060      545F5041 
+ 3060      5353435F 
+ 3060      52454144 
+ 3061              	.LASF410:
+ 3062 29a7 4359424C 		.ascii	"CYBLE_EVT_UDSS_INDICATION_CONFIRMED\000"
+ 3062      455F4556 
+ 3062      545F5544 
+ 3062      53535F49 
+ 3062      4E444943 
+ 3063              	.LASF39:
+ 3064 29cb 4359424C 		.ascii	"CYBLE_EVT_GAP_OOB_GENERATED_NOTIFICATION\000"
+ 3064      455F4556 
+ 3064      545F4741 
+ 3064      505F4F4F 
+ 3064      425F4745 
+ 3065              	.LASF53:
+ 3066 29f4 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_GROUP_TYPE_RSP\000"
+ 3066      455F4556 
+ 3066      545F4741 
+ 3066      5454435F 
+ 3066      52454144 
+ 3067              	.LASF437:
+ 3068 2a1b 4359424C 		.ascii	"CYBLE_EVT_WSSC_INDICATION\000"
+ 3068      455F4556 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 84
+
+
+ 3068      545F5753 
+ 3068      53435F49 
+ 3068      4E444943 
+ 3069              	.LASF126:
+ 3070 2a35 61637475 		.ascii	"actualLen\000"
+ 3070      616C4C65 
+ 3070      6E00
+ 3071              	.LASF208:
+ 3072 2a3f 4359424C 		.ascii	"CYBLE_EVT_BCSC_READ_CHAR_RESPONSE\000"
+ 3072      455F4556 
+ 3072      545F4243 
+ 3072      53435F52 
+ 3072      4541445F 
+ 3073              	.LASF402:
+ 3074 2a61 4359424C 		.ascii	"CYBLE_EVT_TPSS_NOTIFICATION_ENABLED\000"
+ 3074      455F4556 
+ 3074      545F5450 
+ 3074      53535F4E 
+ 3074      4F544946 
+ 3075              	.LASF388:
+ 3076 2a85 4359424C 		.ascii	"CYBLE_EVT_RSCSC_NOTIFICATION\000"
+ 3076      455F4556 
+ 3076      545F5253 
+ 3076      4353435F 
+ 3076      4E4F5449 
+ 3077              	.LASF373:
+ 3078 2aa2 4359424C 		.ascii	"CYBLE_EVT_PLXSS_INDICATION_ENABLED\000"
+ 3078      455F4556 
+ 3078      545F504C 
+ 3078      5853535F 
+ 3078      494E4449 
+ 3079              	.LASF128:
+ 3080 2ac5 4359424C 		.ascii	"CYBLE_BATTERY_SERVICE_SERVICE_INDEX\000"
+ 3080      455F4241 
+ 3080      54544552 
+ 3080      595F5345 
+ 3080      52564943 
+ 3081              	.LASF371:
+ 3082 2ae9 4359424C 		.ascii	"CYBLE_EVT_PLXSS_NOTIFICATION_ENABLED\000"
+ 3082      455F4556 
+ 3082      545F504C 
+ 3082      5853535F 
+ 3082      4E4F5449 
+ 3083              	.LASF32:
+ 3084 2b0e 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_DISCONNECTED\000"
+ 3084      455F4556 
+ 3084      545F4741 
+ 3084      505F4445 
+ 3084      56494345 
+ 3085              	.LASF267:
+ 3086 2b30 4359424C 		.ascii	"CYBLE_EVT_CTSC_NOTIFICATION\000"
+ 3086      455F4556 
+ 3086      545F4354 
+ 3086      53435F4E 
+ 3086      4F544946 
+ 3087              	.LASF211:
+ 3088 2b4c 4359424C 		.ascii	"CYBLE_EVT_BLSS_INDICATION_ENABLED\000"
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 85
+
+
+ 3088      455F4556 
+ 3088      545F424C 
+ 3088      53535F49 
+ 3088      4E444943 
+ 3089              	.LASF385:
+ 3090 2b6e 4359424C 		.ascii	"CYBLE_EVT_RSCSS_INDICATION_DISABLED\000"
+ 3090      455F4556 
+ 3090      545F5253 
+ 3090      4353535F 
+ 3090      494E4449 
+ 3091              	.LASF76:
+ 3092 2b92 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_IND\000"
+ 3092      455F4556 
+ 3092      545F4C32 
+ 3092      4341505F 
+ 3092      43424643 
+ 3093              	.LASF434:
+ 3094 2bb0 4359424C 		.ascii	"CYBLE_EVT_WSSS_INDICATION_ENABLED\000"
+ 3094      455F4556 
+ 3094      545F5753 
+ 3094      53535F49 
+ 3094      4E444943 
+ 3095              	.LASF250:
+ 3096 2bd2 4359424C 		.ascii	"CYBLE_EVT_CPSC_WRITE_DESCR_RESPONSE\000"
+ 3096      455F4556 
+ 3096      545F4350 
+ 3096      53435F57 
+ 3096      52495445 
+ 3097              	.LASF36:
+ 3098 2bf6 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYINFO_EXCHNGE_CMPLT\000"
+ 3098      455F4556 
+ 3098      545F4741 
+ 3098      505F4B45 
+ 3098      59494E46 
+ 3099              	.LASF254:
+ 3100 2c1a 4359424C 		.ascii	"CYBLE_EVT_CSCSS_INDICATION_ENABLED\000"
+ 3100      455F4556 
+ 3100      545F4353 
+ 3100      4353535F 
+ 3100      494E4449 
+ 3101              	.LASF214:
+ 3102 2c3d 4359424C 		.ascii	"CYBLE_EVT_BLSS_NOTIFICATION_ENABLED\000"
+ 3102      455F4556 
+ 3102      545F424C 
+ 3102      53535F4E 
+ 3102      4F544946 
+ 3103              	.LASF234:
+ 3104 2c61 4359424C 		.ascii	"CYBLE_EVT_CGMSC_WRITE_CHAR_RESPONSE\000"
+ 3104      455F4556 
+ 3104      545F4347 
+ 3104      4D53435F 
+ 3104      57524954 
+ 3105              	.LASF396:
+ 3106 2c85 4359424C 		.ascii	"CYBLE_EVT_SCPSS_NOTIFICATION_ENABLED\000"
+ 3106      455F4556 
+ 3106      545F5343 
+ 3106      5053535F 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 86
+
+
+ 3106      4E4F5449 
+ 3107              	.LASF444:
+ 3108 2caa 42617343 		.ascii	"BasCallBack\000"
+ 3108      616C6C42 
+ 3108      61636B00 
+ 3109              	.LASF289:
+ 3110 2cb6 4359424C 		.ascii	"CYBLE_EVT_GLSS_NOTIFICATION_ENABLED\000"
+ 3110      455F4556 
+ 3110      545F474C 
+ 3110      53535F4E 
+ 3110      4F544946 
+ 3111              	.LASF16:
+ 3112 2cda 73697A65 		.ascii	"sizetype\000"
+ 3112      74797065 
+ 3112      00
+ 3113              	.LASF185:
+ 3114 2ce3 4359424C 		.ascii	"CYBLE_EVT_ANCSC_NOTIFICATION\000"
+ 3114      455F4556 
+ 3114      545F414E 
+ 3114      4353435F 
+ 3114      4E4F5449 
+ 3115              	.LASF321:
+ 3116 2d00 4359424C 		.ascii	"CYBLE_EVT_HRSC_NOTIFICATION\000"
+ 3116      455F4556 
+ 3116      545F4852 
+ 3116      53435F4E 
+ 3116      4F544946 
+ 3117              	.LASF136:
+ 3118 2d1c 73657276 		.ascii	"serviceIndex\000"
+ 3118      69636549 
+ 3118      6E646578 
+ 3118      00
+ 3119              	.LASF296:
+ 3120 2d29 4359424C 		.ascii	"CYBLE_EVT_GLSC_READ_DESCR_RESPONSE\000"
+ 3120      455F4556 
+ 3120      545F474C 
+ 3120      53435F52 
+ 3120      4541445F 
+ 3121              	.LASF441:
+ 3122 2d4c 4359424C 		.ascii	"CYBLE_DEBUG_EVT_BLESS_INT\000"
+ 3122      455F4445 
+ 3122      4255475F 
+ 3122      4556545F 
+ 3122      424C4553 
+ 3123              	.LASF103:
+ 3124 2d66 4359424C 		.ascii	"CYBLE_ERROR_L2CAP_PSM_ALREADY_REGISTERED\000"
+ 3124      455F4552 
+ 3124      524F525F 
+ 3124      4C324341 
+ 3124      505F5053 
+ 3125              	.LASF360:
+ 3126 2d8f 4359424C 		.ascii	"CYBLE_EVT_LNSC_READ_DESCR_RESPONSE\000"
+ 3126      455F4556 
+ 3126      545F4C4E 
+ 3126      53435F52 
+ 3126      4541445F 
+ 3127              	.LASF329:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 87
+
+
+ 3128 2db2 4359424C 		.ascii	"CYBLE_EVT_HTSS_INDICATION_DISABLED\000"
+ 3128      455F4556 
+ 3128      545F4854 
+ 3128      53535F49 
+ 3128      4E444943 
+ 3129              	.LASF414:
+ 3130 2dd5 4359424C 		.ascii	"CYBLE_EVT_UDSS_WRITE_CHAR\000"
+ 3130      455F4556 
+ 3130      545F5544 
+ 3130      53535F57 
+ 3130      52495445 
+ 3131              	.LASF412:
+ 3132 2def 4359424C 		.ascii	"CYBLE_EVT_UDSS_NOTIFICATION_DISABLED\000"
+ 3132      455F4556 
+ 3132      545F5544 
+ 3132      53535F4E 
+ 3132      4F544946 
+ 3133              	.LASF387:
+ 3134 2e14 4359424C 		.ascii	"CYBLE_EVT_RSCSS_CHAR_WRITE\000"
+ 3134      455F4556 
+ 3134      545F5253 
+ 3134      4353535F 
+ 3134      43484152 
+ 3135              	.LASF95:
+ 3136 2e2f 4359424C 		.ascii	"CYBLE_ERROR_NO_CONNECTION\000"
+ 3136      455F4552 
+ 3136      524F525F 
+ 3136      4E4F5F43 
+ 3136      4F4E4E45 
+ 3137              	.LASF285:
+ 3138 2e49 4359424C 		.ascii	"CYBLE_EVT_ESSC_WRITE_DESCR_RESPONSE\000"
+ 3138      455F4556 
+ 3138      545F4553 
+ 3138      53435F57 
+ 3138      52495445 
+ 3139              	.LASF193:
+ 3140 2e6d 4359424C 		.ascii	"CYBLE_EVT_ANSC_NOTIFICATION\000"
+ 3140      455F4556 
+ 3140      545F414E 
+ 3140      53435F4E 
+ 3140      4F544946 
+ 3141              	.LASF322:
+ 3142 2e89 4359424C 		.ascii	"CYBLE_EVT_HRSC_READ_CHAR_RESPONSE\000"
+ 3142      455F4556 
+ 3142      545F4852 
+ 3142      53435F52 
+ 3142      4541445F 
+ 3143              	.LASF83:
+ 3144 2eab 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_WRITE_IND\000"
+ 3144      455F4556 
+ 3144      545F4C32 
+ 3144      4341505F 
+ 3144      43424643 
+ 3145              	.LASF346:
+ 3146 2ecf 4359424C 		.ascii	"CYBLE_EVT_IPSC_READ_BLOB_RSP\000"
+ 3146      455F4556 
+ 3146      545F4950 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 88
+
+
+ 3146      53435F52 
+ 3146      4541445F 
+ 3147              	.LASF281:
+ 3148 2eec 4359424C 		.ascii	"CYBLE_EVT_ESSC_INDICATION\000"
+ 3148      455F4556 
+ 3148      545F4553 
+ 3148      53435F49 
+ 3148      4E444943 
+ 3149              	.LASF358:
+ 3150 2f06 4359424C 		.ascii	"CYBLE_EVT_LNSC_READ_CHAR_RESPONSE\000"
+ 3150      455F4556 
+ 3150      545F4C4E 
+ 3150      53435F52 
+ 3150      4541445F 
+ 3151              	.LASF299:
+ 3152 2f28 4359424C 		.ascii	"CYBLE_EVT_HIDSS_NOTIFICATION_DISABLED\000"
+ 3152      455F4556 
+ 3152      545F4849 
+ 3152      4453535F 
+ 3152      4E4F5449 
+ 3153              	.LASF244:
+ 3154 2f4e 4359424C 		.ascii	"CYBLE_EVT_CPSS_CHAR_WRITE\000"
+ 3154      455F4556 
+ 3154      545F4350 
+ 3154      53535F43 
+ 3154      4841525F 
+ 3155              	.LASF372:
+ 3156 2f68 4359424C 		.ascii	"CYBLE_EVT_PLXSS_NOTIFICATION_DISABLED\000"
+ 3156      455F4556 
+ 3156      545F504C 
+ 3156      5853535F 
+ 3156      4E4F5449 
+ 3157              	.LASF23:
+ 3158 2f8e 4359424C 		.ascii	"CYBLE_EVT_MEMORY_REQUEST\000"
+ 3158      455F4556 
+ 3158      545F4D45 
+ 3158      4D4F5259 
+ 3158      5F524551 
+ 3159              	.LASF231:
+ 3160 2fa7 4359424C 		.ascii	"CYBLE_EVT_CGMSC_INDICATION\000"
+ 3160      455F4556 
+ 3160      545F4347 
+ 3160      4D53435F 
+ 3160      494E4449 
+ 3161              	.LASF363:
+ 3162 2fc2 4359424C 		.ascii	"CYBLE_EVT_PASSS_NOTIFICATION_ENABLED\000"
+ 3162      455F4556 
+ 3162      545F5041 
+ 3162      5353535F 
+ 3162      4E4F5449 
+ 3163              	.LASF38:
+ 3164 2fe7 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYPRESS_NOTIFICATION\000"
+ 3164      455F4556 
+ 3164      545F4741 
+ 3164      505F4B45 
+ 3164      59505245 
+ 3165              	.LASF139:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 89
+
+
+ 3166 300b 4359424C 		.ascii	"CYBLE_BAS_CHAR_VALUE_T\000"
+ 3166      455F4241 
+ 3166      535F4348 
+ 3166      41525F56 
+ 3166      414C5545 
+ 3167              	.LASF344:
+ 3168 3022 4359424C 		.ascii	"CYBLE_EVT_IPSC_WRITE_DESCR_RESPONSE\000"
+ 3168      455F4556 
+ 3168      545F4950 
+ 3168      53435F57 
+ 3168      52495445 
+ 3169              	.LASF251:
+ 3170 3046 4359424C 		.ascii	"CYBLE_EVT_CPSC_SCAN_PROGRESS_RESULT\000"
+ 3170      455F4556 
+ 3170      545F4350 
+ 3170      53435F53 
+ 3170      43414E5F 
+ 3171              	.LASF275:
+ 3172 306a 4359424C 		.ascii	"CYBLE_EVT_ESSS_INDICATION_ENABLED\000"
+ 3172      455F4556 
+ 3172      545F4553 
+ 3172      53535F49 
+ 3172      4E444943 
+ 3173              	.LASF57:
+ 3174 308c 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_RSP\000"
+ 3174      455F4556 
+ 3174      545F4741 
+ 3174      5454435F 
+ 3174      52454144 
+ 3175              	.LASF19:
+ 3176 30a5 4359424C 		.ascii	"CYBLE_EVT_TIMEOUT\000"
+ 3176      455F4556 
+ 3176      545F5449 
+ 3176      4D454F55 
+ 3176      5400
+ 3177              	.LASF148:
+ 3178 30b7 4359424C 		.ascii	"CYBLE_DIS_PNP_ID\000"
+ 3178      455F4449 
+ 3178      535F504E 
+ 3178      505F4944 
+ 3178      00
+ 3179              	.LASF206:
+ 3180 30c8 4359424C 		.ascii	"CYBLE_EVT_BCSS_INDICATION_CONFIRMED\000"
+ 3180      455F4556 
+ 3180      545F4243 
+ 3180      53535F49 
+ 3180      4E444943 
+ 3181              	.LASF213:
+ 3182 30ec 4359424C 		.ascii	"CYBLE_EVT_BLSS_INDICATION_CONFIRMED\000"
+ 3182      455F4556 
+ 3182      545F424C 
+ 3182      53535F49 
+ 3182      4E444943 
+ 3183              	.LASF238:
+ 3184 3110 4359424C 		.ascii	"CYBLE_EVT_CPSS_NOTIFICATION_DISABLED\000"
+ 3184      455F4556 
+ 3184      545F4350 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 90
+
+
+ 3184      53535F4E 
+ 3184      4F544946 
+ 3185              	.LASF403:
+ 3186 3135 4359424C 		.ascii	"CYBLE_EVT_TPSS_NOTIFICATION_DISABLED\000"
+ 3186      455F4556 
+ 3186      545F5450 
+ 3186      53535F4E 
+ 3186      4F544946 
+ 3187              	.LASF142:
+ 3188 315a 4359424C 		.ascii	"CYBLE_DIS_SERIAL_NUMBER\000"
+ 3188      455F4449 
+ 3188      535F5345 
+ 3188      5249414C 
+ 3188      5F4E554D 
+ 3189              	.LASF178:
+ 3190 3172 4359424C 		.ascii	"CYBLE_EVT_AIOSC_WRITE_CHAR_RESPONSE\000"
+ 3190      455F4556 
+ 3190      545F4149 
+ 3190      4F53435F 
+ 3190      57524954 
+ 3191              	.LASF47:
+ 3192 3196 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_LOC_P256_KEYS_GEN_AND_SET_COMPLET"
+ 3192      455F4556 
+ 3192      545F4741 
+ 3192      505F534D 
+ 3192      505F4C4F 
+ 3193 31c9 4500     		.ascii	"E\000"
+ 3194              	.LASF326:
+ 3195 31cb 4359424C 		.ascii	"CYBLE_EVT_HTSS_NOTIFICATION_ENABLED\000"
+ 3195      455F4556 
+ 3195      545F4854 
+ 3195      53535F4E 
+ 3195      4F544946 
+ 3196              	.LASF79:
+ 3197 31ef 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_CNF\000"
+ 3197      455F4556 
+ 3197      545F4C32 
+ 3197      4341505F 
+ 3197      43424643 
+ 3198              	.LASF149:
+ 3199 3210 4359424C 		.ascii	"CYBLE_DIS_CHAR_COUNT\000"
+ 3199      455F4449 
+ 3199      535F4348 
+ 3199      41525F43 
+ 3199      4F554E54 
+ 3200              	.LASF31:
+ 3201 3225 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_CONNECTED\000"
+ 3201      455F4556 
+ 3201      545F4741 
+ 3201      505F4445 
+ 3201      56494345 
+ 3202              	.LASF443:
+ 3203 3244 6576656E 		.ascii	"eventParam\000"
+ 3203      74506172 
+ 3203      616D00
+ 3204              	.LASF63:
+ 3205 324f 4359424C 		.ascii	"CYBLE_EVT_GATTS_PREP_WRITE_REQ\000"
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 91
+
+
+ 3205      455F4556 
+ 3205      545F4741 
+ 3205      5454535F 
+ 3205      50524550 
+ 3206              	.LASF192:
+ 3207 326e 4359424C 		.ascii	"CYBLE_EVT_ANSS_CHAR_WRITE\000"
+ 3207      455F4556 
+ 3207      545F414E 
+ 3207      53535F43 
+ 3207      4841525F 
+ 3208              	.LASF198:
+ 3209 3288 4359424C 		.ascii	"CYBLE_EVT_BASS_NOTIFICATION_ENABLED\000"
+ 3209      455F4556 
+ 3209      545F4241 
+ 3209      53535F4E 
+ 3209      4F544946 
+ 3210              	.LASF382:
+ 3211 32ac 4359424C 		.ascii	"CYBLE_EVT_RSCSS_NOTIFICATION_ENABLED\000"
+ 3211      455F4556 
+ 3211      545F5253 
+ 3211      4353535F 
+ 3211      4E4F5449 
+ 3212              	.LASF425:
+ 3213 32d1 4359424C 		.ascii	"CYBLE_EVT_WPTSS_INDICATION_DISABLED\000"
+ 3213      455F4556 
+ 3213      545F5750 
+ 3213      5453535F 
+ 3213      494E4449 
+ 3214              	.LASF295:
+ 3215 32f5 4359424C 		.ascii	"CYBLE_EVT_GLSC_WRITE_CHAR_RESPONSE\000"
+ 3215      455F4556 
+ 3215      545F474C 
+ 3215      53435F57 
+ 3215      52495445 
+ 3216              	.LASF44:
+ 3217 3318 4359424C 		.ascii	"CYBLE_EVT_GAP_CONN_ESTB\000"
+ 3217      455F4556 
+ 3217      545F4741 
+ 3217      505F434F 
+ 3217      4E4E5F45 
+ 3218              	.LASF196:
+ 3219 3330 4359424C 		.ascii	"CYBLE_EVT_ANSC_READ_DESCR_RESPONSE\000"
+ 3219      455F4556 
+ 3219      545F414E 
+ 3219      53435F52 
+ 3219      4541445F 
+ 3220              	.LASF46:
+ 3221 3353 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ_REPLY_ERR\000"
+ 3221      455F4556 
+ 3221      545F4741 
+ 3221      505F4155 
+ 3221      54485F52 
+ 3222              	.LASF317:
+ 3223 3374 4359424C 		.ascii	"CYBLE_EVT_HPSC_WRITE_CHAR_RESPONSE\000"
+ 3223      455F4556 
+ 3223      545F4850 
+ 3223      53435F57 
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 92
+
+
+ 3223      52495445 
+ 3224              	.LASF430:
+ 3225 3397 4359424C 		.ascii	"CYBLE_EVT_WPTSC_WRITE_CHAR_RESPONSE\000"
+ 3225      455F4556 
+ 3225      545F5750 
+ 3225      5453435F 
+ 3225      57524954 
+ 3226              	.LASF394:
+ 3227 33bb 4359424C 		.ascii	"CYBLE_EVT_RTUSS_WRITE_CHAR_CMD\000"
+ 3227      455F4556 
+ 3227      545F5254 
+ 3227      5553535F 
+ 3227      57524954 
+ 3228              	.LASF123:
+ 3229 33da 62644861 		.ascii	"bdHandle\000"
+ 3229      6E646C65 
+ 3229      00
+ 3230              	.LASF432:
+ 3231 33e3 4359424C 		.ascii	"CYBLE_EVT_WPTSC_READ_DESCR_RESPONSE\000"
+ 3231      455F4556 
+ 3231      545F5750 
+ 3231      5453435F 
+ 3231      52454144 
+ 3232              	.LASF304:
+ 3233 3407 4359424C 		.ascii	"CYBLE_EVT_HIDSS_REPORT_CHAR_WRITE\000"
+ 3233      455F4556 
+ 3233      545F4849 
+ 3233      4453535F 
+ 3233      5245504F 
+ 3234              	.LASF362:
+ 3235 3429 4359424C 		.ascii	"CYBLE_EVT_NDCSC_READ_CHAR_RESPONSE\000"
+ 3235      455F4556 
+ 3235      545F4E44 
+ 3235      4353435F 
+ 3235      52454144 
+ 3236              	.LASF0:
+ 3237 344c 7369676E 		.ascii	"signed char\000"
+ 3237      65642063 
+ 3237      68617200 
+ 3238              	.LASF159:
+ 3239 3458 4359424C 		.ascii	"CYBLE_EVT_GATTC_CHAR_DISCOVERY_FAILED\000"
+ 3239      455F4556 
+ 3239      545F4741 
+ 3239      5454435F 
+ 3239      43484152 
+ 3240              	.LASF3:
+ 3241 347e 73686F72 		.ascii	"short unsigned int\000"
+ 3241      7420756E 
+ 3241      7369676E 
+ 3241      65642069 
+ 3241      6E7400
+ 3242              	.LASF449:
+ 3243 3491 53696D75 		.ascii	"SimulateBattery\000"
+ 3243      6C617465 
+ 3243      42617474 
+ 3243      65727900 
+ 3244              	.LASF305:
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 93
+
+
+ 3245 34a1 4359424C 		.ascii	"CYBLE_EVT_HIDSC_NOTIFICATION\000"
+ 3245      455F4556 
+ 3245      545F4849 
+ 3245      4453435F 
+ 3245      4E4F5449 
+ 3246              	.LASF263:
+ 3247 34be 4359424C 		.ascii	"CYBLE_EVT_CSCSC_WRITE_DESCR_RESPONSE\000"
+ 3247      455F4556 
+ 3247      545F4353 
+ 3247      4353435F 
+ 3247      57524954 
+ 3248              	.LASF411:
+ 3249 34e3 4359424C 		.ascii	"CYBLE_EVT_UDSS_NOTIFICATION_ENABLED\000"
+ 3249      455F4556 
+ 3249      545F5544 
+ 3249      53535F4E 
+ 3249      4F544946 
+ 3250              	.LASF82:
+ 3251 3507 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_TX_CREDIT_IND\000"
+ 3251      455F4556 
+ 3251      545F4C32 
+ 3251      4341505F 
+ 3251      43424643 
+ 3252              	.LASF361:
+ 3253 352a 4359424C 		.ascii	"CYBLE_EVT_LNSC_WRITE_DESCR_RESPONSE\000"
+ 3253      455F4556 
+ 3253      545F4C4E 
+ 3253      53435F57 
+ 3253      52495445 
+ 3254              	.LASF115:
+ 3255 354e 4359424C 		.ascii	"CYBLE_ERROR_CONTROLLER_BUSY\000"
+ 3255      455F4552 
+ 3255      524F525F 
+ 3255      434F4E54 
+ 3255      524F4C4C 
+ 3256              	.LASF400:
+ 3257 356a 4359424C 		.ascii	"CYBLE_EVT_SCPSC_READ_DESCR_RESPONSE\000"
+ 3257      455F4556 
+ 3257      545F5343 
+ 3257      5053435F 
+ 3257      52454144 
+ 3258              	.LASF107:
+ 3259 358e 4359424C 		.ascii	"CYBLE_ERROR_L2CAP_PSM_NOT_IN_RANGE\000"
+ 3259      455F4552 
+ 3259      524F525F 
+ 3259      4C324341 
+ 3259      505F5053 
+ 3260              	.LASF9:
+ 3261 35b1 75696E74 		.ascii	"uint8\000"
+ 3261      3800
+ 3262              	.LASF89:
+ 3263 35b7 4359424C 		.ascii	"CYBLE_ERROR_OK\000"
+ 3263      455F4552 
+ 3263      524F525F 
+ 3263      4F4B00
+ 3264              	.LASF246:
+ 3265 35c6 4359424C 		.ascii	"CYBLE_EVT_CPSC_INDICATION\000"
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 94
+
+
+ 3265      455F4556 
+ 3265      545F4350 
+ 3265      53435F49 
+ 3265      4E444943 
+ 3266              	.LASF320:
+ 3267 35e0 4359424C 		.ascii	"CYBLE_EVT_HRSS_NOTIFICATION_DISABLED\000"
+ 3267      455F4556 
+ 3267      545F4852 
+ 3267      53535F4E 
+ 3267      4F544946 
+ 3268              	.LASF237:
+ 3269 3605 4359424C 		.ascii	"CYBLE_EVT_CPSS_NOTIFICATION_ENABLED\000"
+ 3269      455F4556 
+ 3269      545F4350 
+ 3269      53535F4E 
+ 3269      4F544946 
+ 3270              	.LASF195:
+ 3271 3629 4359424C 		.ascii	"CYBLE_EVT_ANSC_WRITE_CHAR_RESPONSE\000"
+ 3271      455F4556 
+ 3271      545F414E 
+ 3271      53435F57 
+ 3271      52495445 
+ 3272              	.LASF413:
+ 3273 364c 4359424C 		.ascii	"CYBLE_EVT_UDSS_READ_CHAR\000"
+ 3273      455F4556 
+ 3273      545F5544 
+ 3273      53535F52 
+ 3273      4541445F 
+ 3274              	.LASF27:
+ 3275 3665 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_DISPLAY_REQUEST\000"
+ 3275      455F4556 
+ 3275      545F4741 
+ 3275      505F5041 
+ 3275      53534B45 
+ 3276              	.LASF280:
+ 3277 368b 4359424C 		.ascii	"CYBLE_EVT_ESSC_NOTIFICATION\000"
+ 3277      455F4556 
+ 3277      545F4553 
+ 3277      53435F4E 
+ 3277      4F544946 
+ 3278              	.LASF313:
+ 3279 36a7 4359424C 		.ascii	"CYBLE_EVT_HPSC_NOTIFICATION\000"
+ 3279      455F4556 
+ 3279      545F4850 
+ 3279      53435F4E 
+ 3279      4F544946 
+ 3280              	.LASF169:
+ 3281 36c3 4359424C 		.ascii	"CYBLE_EVT_AIOSS_NOTIFICATION_DISABLED\000"
+ 3281      455F4556 
+ 3281      545F4149 
+ 3281      4F53535F 
+ 3281      4E4F5449 
+ 3282              	.LASF124:
+ 3283 36e9 61747449 		.ascii	"attId\000"
+ 3283      6400
+ 3284              	.LASF328:
+ 3285 36ef 4359424C 		.ascii	"CYBLE_EVT_HTSS_INDICATION_ENABLED\000"
+ARM GAS  C:\Users\black\AppData\Local\Temp\ccoGyMo4.s 			page 95
+
+
+ 3285      455F4556 
+ 3285      545F4854 
+ 3285      53535F49 
+ 3285      4E444943 
+ 3286              	.LASF135:
+ 3287 3711 636F6E6E 		.ascii	"connHandle\000"
+ 3287      48616E64 
+ 3287      6C6500
+ 3288              	.LASF273:
+ 3289 371c 4359424C 		.ascii	"CYBLE_EVT_ESSS_NOTIFICATION_ENABLED\000"
+ 3289      455F4556 
+ 3289      545F4553 
+ 3289      53535F4E 
+ 3289      4F544946 
+ 3290              	.LASF35:
+ 3291 3740 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_START_STOP\000"
+ 3291      455F4556 
+ 3291      545F4741 
+ 3291      50435F53 
+ 3291      43414E5F 
+ 3292              	.LASF179:
+ 3293 375f 4359424C 		.ascii	"CYBLE_EVT_AIOSC_READ_DESCR_RESPONSE\000"
+ 3293      455F4556 
+ 3293      545F4149 
+ 3293      4F53435F 
+ 3293      52454144 
+ 3294              	.LASF200:
+ 3295 3783 4359424C 		.ascii	"CYBLE_EVT_BASC_NOTIFICATION\000"
+ 3295      455F4556 
+ 3295      545F4241 
+ 3295      53435F4E 
+ 3295      4F544946 
+ 3296              	.LASF440:
+ 3297 379f 4359424C 		.ascii	"CYBLE_EVT_WSSC_WRITE_DESCR_RESPONSE\000"
+ 3297      455F4556 
+ 3297      545F5753 
+ 3297      53435F57 
+ 3297      52495445 
+ 3298              	.LASF359:
+ 3299 37c3 4359424C 		.ascii	"CYBLE_EVT_LNSC_WRITE_CHAR_RESPONSE\000"
+ 3299      455F4556 
+ 3299      545F4C4E 
+ 3299      53435F57 
+ 3299      52495445 
+ 3300              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

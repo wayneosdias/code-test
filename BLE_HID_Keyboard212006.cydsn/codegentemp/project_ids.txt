@@ -1,0 +1,6 @@
+C:\Program Files (x86)\Cypress\PSoC Creator\4.1\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|a89cafd1-3be9-437e-94b8-ca43235371d1
+C:\Users\black\OneDrive\Documents\PSoC Creator\4.1\Downloads ( 4.1).cylib\Downloads ( 4.1).cyprj|ad6f6ca0-4e5c-4ec0-8746-33d99e389dec
+C:\Program Files (x86)\Cypress\PSoC Creator\4.1\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|86f075a1-34f3-477f-b9fd-8f3cbbbe60bf
+C:\Program Files (x86)\Cypress\PSoC Creator\4.1\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|9ef6ce77-e723-4425-8fd5-2d8f5b53df19
+C:\Program Files (x86)\Cypress\PSoC Creator\4.1\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|c1dfd07e-f621-4214-bbeb-33d18b604f37
+C:\Users\black\OneDrive\Documents\PSoC Creator\BLE_HID_Keyboard212006\BLE_HID_Keyboard212006.cydsn\BLE_HID_Keyboard212006.cyprj|46b40d98-90d1-4e2c-9a9e-5eb36aab73a7
